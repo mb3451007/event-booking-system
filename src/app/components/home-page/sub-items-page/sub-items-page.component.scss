@@ -12,9 +12,13 @@
         height: 20px;
     }
   }
+  .headingTitle {
+    display: flex;
+    justify-content: space-between;
+  }
   .AddItem{
     width: 30px;
-    margin-left: 4px;
+   
         height: 30px;
   }
   .headerNewItem{
