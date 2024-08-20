@@ -32,8 +32,9 @@
                 <td>{{ item.subItem }}</td>
                 <td class="slot">
                   <!-- <img [src]="item.viewItem" alt="Hanna Gover" /> -->
-                  <img [src]="item.editItem" alt="Hanna Gover" />
-                  <img [src]="item.deleteItem" alt="Hanna Gover" />
+                  <img src="assets/view-eye-svgrepo-com.svg" alt="Hanna Gover" />
+                  <img src="assets/edit-4-svgrepo-com.svg" alt="Hanna Gover"(click)="openUpdateModal(item)" />
+                  <img src="assets/delete-svgrepo-com.svg" alt="Hanna Gover" (click)="deleteSubItem(item.id)"/>
                 </td>
               </tr>
             </tbody>
@@ -66,6 +67,8 @@
  </table>
   </div> -->
 </div>
+
+<!-- add Item -->
 <div
   class="modal"
   tabindex="-1"
@@ -76,7 +79,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Add New Item</h3>
+        <h3 class="title">Add New Sub Item</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
@@ -86,13 +89,14 @@
         />
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="onSubmit()">
+        <form [formGroup]="addSubItemForm" (ngSubmit)="onSubmit()">
           <div class="form-group inputFormGroup">
             <label for="name">Name</label>
             <input
               type="text"
               id="name"
               class="form-control"
+              formControlName="name"
               [(ngModel)]="formData.name"
               name="name"
               required
@@ -103,6 +107,7 @@
             <input
               type="text"
               id="price"
+              formControlName="price"
               class="form-control"
               [(ngModel)]="formData.price"
               name="price"
@@ -113,6 +118,7 @@
             <label for="itemName">Item</label>
             <select
               id="itemName"
+              formControlName="itemName"
               class="form-control"
               [(ngModel)]="formData.itemName"
               name="itemName"
@@ -128,6 +134,7 @@
             <input
               type="checkbox"
               id="isAvailable"
+              formControlName="isAvailable"
               class="form-check-input"
               [(ngModel)]="formData.isAvailable"
               name="isAvailable"
@@ -136,7 +143,52 @@
               >Is Available</label
             >
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary" (click)="addSubItem()" >Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- add sUb Item -->
+<!-- Update model -->
+<div
+  class="modal"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ show: showUpdateModal }"
+  style="display: {{ showUpdateModal ? 'block' : 'none' }}"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header headerNewItem">
+        <h3 class="title">Update Item</h3>
+        <img
+          src="assets/close-sm-svgrepo-com.svg"
+          alt=""
+          class="close closeBtn"
+          (click)="closeUpdateModal()"
+          aria-label="Close"
+        />
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addSubItemForm" (ngSubmit)="onSubmit()">
+          <div class="form-group inputFormGroup">
+            <label for="name">Name</label>
+            <input type="text" id="name" formControlName="name" class="form-control" [(ngModel)]="subItem.name" name="name" required />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="price">price</label>
+            <input type="text" id="price" formControlName="price" class="form-control" [(ngModel)]="subItem.price" name="price" required />
+          </div>
+          <div class="form-group form-check inputFormGroup">
+            <input type="checkbox" id="isAvailable" formControlName="isAvailable" class="form-check-input" [(ngModel)]="subItem.isAvailable" name="isAvailable" />
+            <label class="form-check-label" for="isAvailable"
+              >Is Available</label
+            >
+          </div>
+          <button type="submit" class="btn btn-primary" (click)="updateSubItem()">Submit</button>
         </form>
       </div>
     </div>
