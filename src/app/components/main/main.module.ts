@@ -17,7 +17,10 @@ import { CustomerPageComponent } from '../home-page/customer-page/customer-page.
 import { TransactionPageComponent } from '../home-page/transaction-page/transaction-page.component';
 import { ItemsPageComponent } from '../home-page/items-page/items-page.component';
 import { SubItemsPageComponent } from '../home-page/sub-items-page/sub-items-page.component';
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {NgFor, AsyncPipe} from '@angular/common';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,8 @@ import { SubItemsPageComponent } from '../home-page/sub-items-page/sub-items-pag
     TransactionPageComponent,
     ItemsPageComponent,
     SubItemsPageComponent,
-    
+   
+
 
   ],
   imports: [
@@ -44,7 +48,12 @@ import { SubItemsPageComponent } from '../home-page/sub-items-page/sub-items-pag
     ReactiveFormsModule,
     BrowserAnimationsModule,
     NgChartsModule,
-    FormsModule
+    FormsModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatInputModule,
+    NgFor, 
+    AsyncPipe,
    
   ]
 })

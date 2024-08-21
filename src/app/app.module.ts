@@ -6,6 +6,9 @@ import { MainModule } from './components/main/main.module';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LogInComponent } from './components/log-in/log-in.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+
 
 
 
@@ -26,7 +29,8 @@ import { LogInComponent } from './components/log-in/log-in.component';
     AppRoutingModule,
     MainModule,
     BrowserAnimationsModule,  
-   
+    HttpClientModule,
+   FormsModule
   
   ],
   providers: [],

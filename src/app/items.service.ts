@@ -12,6 +12,7 @@ export class ItemsService {
 
     // Add Item
     addItem(item:any): Observable<any> {
+      console.log(item,'this is the data to add item')
       return this.http.post(`${this.apiUrl}/item/add-item`, item);
     }
   
@@ -33,6 +34,7 @@ export class ItemsService {
   
     // Update Item
     updateItem(itemId: number, item:any): Observable<any> {
+      console.log(item,'this is the data to update item')
       return this.http.patch(`${this.apiUrl}/item/update-item/${itemId}`, item);
     }
     

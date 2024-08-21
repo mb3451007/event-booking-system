@@ -71,6 +71,7 @@ export class SubItemsPageComponent {
       console.log(this.addSubItemForm.value,'this is formValue to send data')
       this.subItemService.addSubItem(newItem).subscribe(response => {
         this.getAllSubItems();
+        this.getPaginatedSubItems(1)
         console.log(response);
       });
     }
@@ -84,7 +85,7 @@ export class SubItemsPageComponent {
   
     getPaginatedSubItems(pageNumber: number) {
       this.subItemService.getPaginatedSubItems(pageNumber).subscribe(response => {
-        this.subItems=response.pItems
+        this.subItems=response.items
         console.log(this.subItems, 'these are peginated items');
         
         console.log(response);
@@ -104,7 +105,7 @@ export class SubItemsPageComponent {
       console.log(this.subItem.id);
       console.log(this.subItem);
       
-      this.subItemService.updateSubItem(this.subItem.id, this.subItem).subscribe(response => {
+      this.subItemService.updateSubItem(this.subItem._id, this.subItem).subscribe(response => {
         console.log(response);
         this.closeUpdateModal();
         this.getAllSubItems()
