@@ -133,3 +133,28 @@
 .btn-remove:hover {
   background-color: #c82333;
 }
+.filter-form {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between elements */
+}
+
+.filter-form input {
+  flex: 1; /* Makes the input fields take equal space */
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.filter-form button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.filter-form button:hover {
+  background-color: #0056b3;
+}

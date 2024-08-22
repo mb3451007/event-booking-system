@@ -11,7 +11,16 @@
             class="AddItem"
           />
         </div>
+        <form [formGroup]="filterForm" class="filter-form" >
+          <input type="text" formControlName="filtername" placeholder="Type Name for Filter">
+          <input type="number" formControlName="filterprice" placeholder="Type Price for Filter">
+          <button class="btn btn-primary" (click)="filterIem()">Filter</button>
+        </form>
 
+        <div *ngFor="let name of filterItemArray">
+          <h2>{{name.name}}</h2>
+        </div>
+        
         <div class="table-responsive">
           <table class="table align-middle">
             <thead>

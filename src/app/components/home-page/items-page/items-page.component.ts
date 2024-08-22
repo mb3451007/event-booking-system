@@ -15,6 +15,7 @@ export class ItemsPageComponent implements OnInit {
   filteredItems: string[] = [];
   showSubItems:boolean=false
   ListItems: any = [];
+  ListAllItems: any = [];
   pListItems: any = [];
   showModal: boolean = false;
   showUpdateModal: boolean = false;
@@ -22,11 +23,12 @@ export class ItemsPageComponent implements OnInit {
   items: Array<{ name: string; price: string; isAvailable: boolean }> = [];
   itemId: any;
   addItemForm: FormGroup;
+  filterItemArray:any[]=[]
   
   AddItmePlus = 'assets/plus-circle-svgrepo-com.svg';
   item: any;
   showSubItemsSearch: boolean = false;
-
+  filterForm:FormGroup
   subItems :any = []
   searchTerm: string = '';
   selectedSubItems: any[] = [];
@@ -48,6 +50,10 @@ export class ItemsPageComponent implements OnInit {
       isAvailable: ['', Validators.required],
       subItems: this.selectedSubItems.map(item => item._id),
       subItemsSearch: ['']
+    });
+    this.filterForm = this.fb.group({
+      filtername: ['', Validators.required],
+      filterprice: ['', Validators.required],
     });
   }
   onInput() {
@@ -146,8 +152,8 @@ export class ItemsPageComponent implements OnInit {
 
   getAllItems() {
     this.itemService.getAllItems().subscribe((response: any) => {
-      // this.ListItems=response.items
-      console.log(response, 'this is a list of  All items');
+      this.ListAllItems=response.items
+      console.log(this.ListAllItems, 'this is a list of  All items');
     });
   }
 
@@ -235,6 +241,7 @@ export class ItemsPageComponent implements OnInit {
     this.showSubItems=true
   }
  
+ 
   onBlurActive(){
     this.showSubItems=false;
   }
@@ -257,5 +264,18 @@ export class ItemsPageComponent implements OnInit {
       this.pageNumber++;
       this.getPaginatedItems(this.pageNumber); 
     }
+  }
+  filterIem(){
+    console.log(this.filterForm.value.filtername, 'THIS IS FILTER FORM')
+    console.log(this.filterForm.value.filterprice, 'THIS IS FILTER FORM')
+    const filterName= this.filterForm.value.filtername.toLowerCase() || '';
+    const filterPrice= this.filterForm.value.filterprice.toString()  || '';
+    this.filterItemArray=this.ListAllItems.filter((item:any)=>{
+      const matchesName=item.name.toLowerCase().includes(filterName);
+      const matchesPrice=item.price.toString().includes(filterPrice)
+      return matchesName && matchesPrice
+    });
+    console.log(this.filterItemArray, 'filterItemArray Items ######');
+    
   }
 }
