@@ -23,7 +23,6 @@ export class ItemsService {
   
     // Get All Items
     getAllItems(): Observable<any> {
-      console.log('here at all items');
       return this.http.get(`${this.apiUrl}/item/get-items`);
     }
   

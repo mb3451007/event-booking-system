@@ -36,11 +36,10 @@
             </tbody>
           </table>
         </div>
-          <!-- Pagination Buttons -->
-          <div class="pagination-buttons mt-3 d-flex justify-content-between">
-            <button class="btn btn-primary" (click)="previousPage()">Previous</button>
-            <button class="btn btn-primary" (click)="nextPage()">Next</button>
-          </div>
+        <div class="pagination-buttons mt-3 d-flex justify-content-between">
+          <button class="btn btn-primary" [disabled]="pageNumber === 1" (click)="previousPage()">Previous</button>
+          <button class="btn btn-primary" [disabled]="pageNumber === totalPages" (click)="nextPage()">Next</button>
+        </div>
       </div>
     </div>
   </div>

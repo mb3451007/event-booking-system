@@ -72,6 +72,7 @@ export class ItemsPageComponent implements OnInit {
     this.itemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     this.getAllItems();
     this.getPaginatedItems(this.pageNumber);
+    this.getAllSubItems()
 
     this.item = {
       name: this.addItemForm.value.name,
@@ -86,10 +87,28 @@ export class ItemsPageComponent implements OnInit {
   openModal() {
     this.showModal = true;
   }
+
   openUpdateModal(item: any) {
     this.item = { ...item };
+    this.selectedSubItems = this.subItems.filter((subItem:any) =>
+      item.subItems.includes(subItem._id)
+    );
+  
+    this.filteredSubItems = this.subItems.filter((subItem:any) => 
+      !this.selectedSubItems.some(selectedItem => selectedItem._id === subItem._id)
+    );
+  console.log(this.filteredSubItems,'this is filtered subItems')
+    this.addItemForm.patchValue({
+      name: this.item.name,
+      price: this.item.price,
+      isAvailable: this.item.isAvailable,
+      subItems: this.selectedSubItems.map(subItem => subItem._id)
+    });
+  
     this.showUpdateModal = true;
   }
+  
+
 
   closeModal() {
     this.showModal = false;
@@ -128,15 +147,12 @@ export class ItemsPageComponent implements OnInit {
   getAllItems() {
     this.itemService.getAllItems().subscribe((response: any) => {
       // this.ListItems=response.items
-      console.log(this.ListItems, 'this is a list of items');
+      console.log(response, 'this is a list of  All items');
     });
   }
 
   getPaginatedItems(pageNumber: number) {
-    this.itemService.getPaginatedItems(pageNumber).subscribe((response) => {
-      // this.pListItems=response.Items
-      // console.log(this.pListItems, 'these are peginated items');
-
+    this.itemService.getPaginatedItems(pageNumber).subscribe((response:any) => {
       this.ListItems = response.items;
       this.totalPages= response.totalPages
       console.log(this.totalPages, 'these are total Pages');
@@ -217,7 +233,6 @@ export class ItemsPageComponent implements OnInit {
   }
   onFocusActive(){
     this.showSubItems=true
-    this.getAllSubItems()
   }
  
   onBlurActive(){
