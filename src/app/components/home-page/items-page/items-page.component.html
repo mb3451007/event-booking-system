@@ -17,6 +17,10 @@
           <button class="btn btn-primary" (click)="filterIem()">Filter</button>
         </form>
 
+        <div *ngIf="filterItemArray.length === 0 && filterError">
+          <p class="text-danger">No items match your filter criteria.</p>
+        </div>
+        
         <div *ngFor="let name of filterItemArray">
           <h2>{{name.name}}</h2>
         </div>
@@ -46,8 +50,16 @@
           </table>
         </div>
         <div class="pagination-buttons mt-3 d-flex justify-content-between">
-          <button class="btn btn-primary" [disabled]="pageNumber === 1" (click)="previousPage()">Previous</button>
-          <button class="btn btn-primary" [disabled]="pageNumber === totalPages" (click)="nextPage()">Next</button>
+          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === 1" (click)="previousPage()">Previous</button>
+          
+          <div class="pagination">
+            <div *ngFor="let page of pageCountArray" (click)="getPaginatedItems(page)" 
+                 [class.active]="page === pageNumber" class="page-number-button">
+              {{ page }}
+            </div>
+          </div>
+          
+          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === totalPages" (click)="nextPage()">Next</button>
         </div>
       </div>
     </div>

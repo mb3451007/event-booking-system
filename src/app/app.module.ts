@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LogInComponent } from './components/log-in/log-in.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -30,7 +30,9 @@ import { FormsModule } from '@angular/forms';
     MainModule,
     BrowserAnimationsModule,  
     HttpClientModule,
-   FormsModule
+   FormsModule,
+   ReactiveFormsModule,
+   
   
   ],
   providers: [],

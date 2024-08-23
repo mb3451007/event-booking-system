@@ -11,7 +11,7 @@ import { SubItemsService } from 'src/app/sub-items.service';
 })
 export class ItemsPageComponent implements OnInit {
   autoSearchTerm: string = '';
-  autoitems: string[] = ['Mohsin', 'Zeeshan', 'Hameed'];
+  autoitems: string[] = [];
   filteredItems: string[] = [];
   showSubItems:boolean=false
   ListItems: any = [];
@@ -24,7 +24,7 @@ export class ItemsPageComponent implements OnInit {
   itemId: any;
   addItemForm: FormGroup;
   filterItemArray:any[]=[]
-  
+  pageCountArray:any[]=[]
   AddItmePlus = 'assets/plus-circle-svgrepo-com.svg';
   item: any;
   showSubItemsSearch: boolean = false;
@@ -33,11 +33,11 @@ export class ItemsPageComponent implements OnInit {
   searchTerm: string = '';
   selectedSubItems: any[] = [];
   subItemsSearch: any ;
+  filterError:boolean=false;
   
   filteredSubItems:any[] = [];
- 
   pageNumber:number =1
-  totalPages:number =10
+  totalPages:number =1
   constructor(
     private itemService: ItemsService,
     private subItemService: SubItemsService,
@@ -69,8 +69,8 @@ export class ItemsPageComponent implements OnInit {
     this.filteredItems = [];
   }
   ngOnInit(): void {
- 
-
+    const localStoragePage=localStorage.getItem('pageNumber')
+    this.pageNumber=localStoragePage? parseInt(localStoragePage):1;
     this.addItemForm.get('subItemsSearch')?.valueChanges.subscribe(() => {
       this.filterSubItems();
     });
@@ -79,6 +79,7 @@ export class ItemsPageComponent implements OnInit {
     this.getAllItems();
     this.getPaginatedItems(this.pageNumber);
     this.getAllSubItems()
+    this.pagesCount()
 
     this.item = {
       name: this.addItemForm.value.name,
@@ -92,6 +93,7 @@ export class ItemsPageComponent implements OnInit {
 
   openModal() {
     this.showModal = true;
+    this.resetFilteredSubItems()
   }
 
   openUpdateModal(item: any) {
@@ -138,8 +140,11 @@ export class ItemsPageComponent implements OnInit {
       console.log(this.addItemForm.value, 'this is formValue to send data');
       this.itemService.addItem(newItem).subscribe((response) => {
         this.getAllItems();
-        this.getPaginatedItems(1);
+        this.getPaginatedItems(this.pageNumber);
         this.addItemForm.reset();
+        this.resetFilteredSubItems();
+        // this.filteredSubItems = this.subItems;
+        this.getAllSubItems()
         this.addItemForm.markAsPristine();
         this.selectedSubItems = [];
         console.log(response);
@@ -156,12 +161,14 @@ export class ItemsPageComponent implements OnInit {
       console.log(this.ListAllItems, 'this is a list of  All items');
     });
   }
-
-  getPaginatedItems(pageNumber: number) {
-    this.itemService.getPaginatedItems(pageNumber).subscribe((response:any) => {
+ 
+  getPaginatedItems(page: number) {
+    this.pageNumber=page
+    localStorage.setItem('pageNumber',this.pageNumber.toString())
+    this.itemService.getPaginatedItems(this.pageNumber).subscribe((response:any) => {
       this.ListItems = response.items;
       this.totalPages= response.totalPages
-      console.log(this.totalPages, 'these are total Pages');
+      this.pagesCount();
       console.log(this.pageNumber, 'this is  PageNumber');
       console.log(response, 'these are paginated items');
     });
@@ -259,23 +266,36 @@ export class ItemsPageComponent implements OnInit {
     }
   }
   
+  
   nextPage() {
     if (this.pageNumber < this.totalPages) {
       this.pageNumber++;
       this.getPaginatedItems(this.pageNumber); 
     }
   }
+  pagesCount(){
+    this.pageCountArray = [];
+    for(let i=1; i<=this.totalPages; i++){
+      this.pageCountArray.push(i)
+    }
+    console.log(this.pageCountArray, 'these are the page numbers Array');
+  }
   filterIem(){
-    console.log(this.filterForm.value.filtername, 'THIS IS FILTER FORM')
-    console.log(this.filterForm.value.filterprice, 'THIS IS FILTER FORM')
     const filterName= this.filterForm.value.filtername.toLowerCase() || '';
     const filterPrice= this.filterForm.value.filterprice.toString()  || '';
     this.filterItemArray=this.ListAllItems.filter((item:any)=>{
       const matchesName=item.name.toLowerCase().includes(filterName);
       const matchesPrice=item.price.toString().includes(filterPrice)
+      this.filterErrorShow()
       return matchesName && matchesPrice
     });
     console.log(this.filterItemArray, 'filterItemArray Items ######');
     
+  }
+  filterErrorShow(){
+    this.filterError=true;
+  }
+  resetFilteredSubItems() {
+    this.filteredSubItems = [...this.subItems];
   }
 }

@@ -12,9 +12,11 @@ import { CustomerPageComponent } from '../home-page/customer-page/customer-page.
 import { TransactionPageComponent } from '../home-page/transaction-page/transaction-page.component';
 import { ItemsPageComponent } from '../home-page/items-page/items-page.component';
 import { SubItemsPageComponent } from '../home-page/sub-items-page/sub-items-page.component';
+import { authGuard } from 'src/app/auth.guard';
 
 const routes: Routes = [
-  {path: '', component:HomePageComponent,children:[
+  {path: '', component:HomePageComponent,canActivate:[authGuard],
+    children:[
     {
       path: '',
       redirectTo: 'dashboard',
