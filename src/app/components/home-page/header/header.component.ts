@@ -6,7 +6,8 @@ import { Component, HostListener } from '@angular/core';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  options: string[] = ['My Profile', 'My Balance', 'Inbox','Account Settings','Logout'];
+  // options: string[] = ['My Profile', 'My Balance', 'Inbox','Account Settings','Logout'];
+  options: string[] = ['Logout'];
   creats: string[] = ['Action', 'Another action ', 'Something else here'];
 
   selectedOption: string | null = null;

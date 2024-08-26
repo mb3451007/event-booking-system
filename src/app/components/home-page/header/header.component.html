@@ -1,14 +1,14 @@
-<nav class="navbar navbar-expand-lg main-header__header-container"> 
+<nav class="navbar navbar-expand-lg main-header__header-container h-75"> 
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
-              <li class="nav-item main-header__header-nav">
+              <li class="nav-item main-header__header-nav d-none">
                 <a class="nav-link active" aria-current="page" href="#">Starter</a>
               </li>
-              <li class="nav-item nav-item main-header__header-nav">
+              <li class="nav-item nav-item main-header__header-nav d-none">
                 <a class="nav-link" href="#">About</a>
               </li>
-              <div class="dropdown-container " (click)="toggleCreateDropdown($event)" >
+              <div class="dropdown-container d-none" (click)="toggleCreateDropdown($event)" >
                 <div class="dropdown-header nav-link dropdown-toggle">
                   <!-- {{ selectedOption || 'Create New' }} -->
                   Create New
@@ -26,8 +26,8 @@
       <div class="dropdown-container " (click)="toggleDropdown($event)" >
         <div class="dropdown-header nav-link dropdown-toggle">
           <!-- {{ selectedOption || 'Steve Jobs' }} -->
-          <img src="assets/img_avatar.png" alt="Avatar" class="main-header__avatar">
-          Steve Jobs
+          <img src="assets/img_avatar.png" alt="Avatar" class="main-header__avatar d-none">
+          Admin
         </div>
         <ul class="dropdown-options" [class.show]="isDropdownOpen">
           <li *ngFor="let option of options let i = index"   
