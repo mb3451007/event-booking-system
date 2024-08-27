@@ -6,9 +6,9 @@
       <input
         type="number"
         [(ngModel)]="flatRate.value"
-        (ngModelChange)="onInputChange($event, flatRate.key)"
+        (ngModelChange)="onInputChange(flatRate._id, flatRate.key, flatRate.value)"
         name="flatRate{{i}}"
-        (change)="updateFlatRate()"
+        (change)="updateFlatRate(flatRate._id, flatRate.key, flatRate.value)"
         placeholder="Enter amount"
       />
     </div>

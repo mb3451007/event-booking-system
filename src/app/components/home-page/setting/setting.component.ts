@@ -18,18 +18,16 @@ export class SettingComponent {
 loadFlatRates(): void {
   this.settingService.getFlatRate().subscribe(
     (response) => {
-      this.flatrRatesData= response.items;
       this.flatRates = response.items;
-      this.editingFlatRate = { ...this.flatRates[0] };
-      console.log(response.items, 'these are totals flats keys');
+      this.flatrRatesData = response.items;
+      console.log(this.flatRates, 'these are the flat rates');
     },
     (error) => console.error('Error loading flat rates:', error)
   );
 }
 
-updateFlatRate(): void {
-  const { _id, key, value } = this.editingFlatRate;
-  this.settingService.updateFlatRate(_id, key, value).subscribe(
+updateFlatRate(id: string, key: string, value: number): void {
+  this.settingService.updateFlatRate(id, key, value).subscribe(
     (response) => {
       console.log('Flat rate updated successfully:', response);
       this.loadFlatRates(); // Reload rates after update
@@ -38,7 +36,8 @@ updateFlatRate(): void {
   );
 }
 
-onInputChange(event: any, field: string): void {
-  this.editingFlatRate[field] = event.target.value;
+onInputChange(id: string, key: string, value: number): void {
+  this.updateFlatRate(id, key, value);
 }
+
 }
