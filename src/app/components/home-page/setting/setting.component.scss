@@ -1,0 +1,36 @@
+form {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-size: 18px;
+    color: #333;
+    margin-right: 10px;
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+}
+
+input[type="number"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: calc(100% - 140px);
+    box-sizing: border-box;
+}
+
+form div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+form div:last-child {
+    margin-bottom: 0;
+}

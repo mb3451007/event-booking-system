@@ -13,6 +13,7 @@ import { TransactionPageComponent } from '../home-page/transaction-page/transact
 import { ItemsPageComponent } from '../home-page/items-page/items-page.component';
 import { SubItemsPageComponent } from '../home-page/sub-items-page/sub-items-page.component';
 import { authGuard } from 'src/app/auth.guard';
+import { SettingComponent } from '../home-page/setting/setting.component';
 
 const routes: Routes = [
   {path: '', component:HomePageComponent,canActivate:[authGuard],
@@ -33,6 +34,7 @@ const routes: Routes = [
     {path:'Transactions',component:TransactionPageComponent},
     {path:'items',component:ItemsPageComponent},
     {path:'subitems',component:SubItemsPageComponent},
+    {path:'setting',component:SettingComponent},
 
   ]},
 ];

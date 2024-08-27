@@ -1,0 +1,16 @@
+<!-- flat-rate.component.html -->
+<form >
+    <div *ngFor="let flatRate of flatrRatesData; let i = index">
+      <!-- <label>Flat Rate {{i + 1}}:</label> -->
+      <label>Flat Rate {{i + 1}}:</label>
+      <input
+        type="number"
+        [(ngModel)]="flatRate.value"
+        (ngModelChange)="onInputChange($event, flatRate.key)"
+        name="flatRate{{i}}"
+        (change)="updateFlatRate()"
+        placeholder="Enter amount"
+      />
+    </div>
+  </form>
+  
