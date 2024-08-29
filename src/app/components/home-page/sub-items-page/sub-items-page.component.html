@@ -20,7 +20,8 @@
                 <th scope="col ">Name</th>
                 <th scope="col ">Price</th>
                 <th scope="col ">Items</th>
-                <th scope="col" style="visibility: hidden">Sub-items</th>
+                <th scope="col ">Action</th>
+                <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
                 <!-- <th scope="col">Transactions  </th> -->
               </tr>
             </thead>
@@ -143,7 +144,7 @@
               >Is Available</label
             >
           </div>
-          <button type="submit" class="btn btn-primary" (click)="addSubItem()" >Submit</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!addSubItemForm.valid" (click)="addSubItem()" >Submit</button>
         </form>
       </div>
     </div>

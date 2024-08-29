@@ -30,8 +30,8 @@
             <thead>
               <tr>
                 <th scope="col ">Name</th>
-                <th scope="col ">Price</th>
-                <th scope="col" style="visibility: hidden">Sub-items</th>
+                <th scope="col ">Action</th>
+                <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
                 <!-- <th scope="col">Transactions  </th> -->
               </tr>
             </thead>
@@ -39,7 +39,6 @@
             <tbody>
               <tr *ngFor="let item of ListItems">
                 <td>{{ item.name }}</td>
-                <td>{{ item.price }}</td>
                 <td class="slot">
                   <img src="assets/view-eye-svgrepo-com.svg" alt="Hanna Gover" />
                   <img src="assets/edit-4-svgrepo-com.svg" alt="Hanna Gover"(click)="openUpdateModal(item)" />
@@ -54,7 +53,7 @@
           
           <div class="pagination">
             <div *ngFor="let page of pageCountArray" (click)="getPaginatedItems(page)" 
-                 [class.active]="page === pageNumber" class="page-number-button">
+                 [class.active]="page === pageNumber" class="page-number-button buttom-hover">
               {{ page }}
             </div>
           </div>
@@ -106,36 +105,8 @@ style="display: {{ showModal ? 'block' : 'none' }}"
             <div *ngIf="addItemForm.controls['name'].invalid && addItemForm.controls['name'].touched" class="text-danger">
               Name is required.
             </div>
-          </div>
-          <div class="form-group inputFormGroup">
-            <label for="price">price</label>
-            <input
-              type="number"
-              id="price"
-              formControlName="price"
-              class="form-control"
-              [(ngModel)]="formData.price"
-              name="price"
-              required
-            />
-            <div *ngIf="addItemForm.controls['price'].invalid && addItemForm.controls['price'].touched" class="text-danger">
-              Price is required.
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          </div>          
+      
 
 
             <!-- autocomplete -->
@@ -180,34 +151,8 @@ style="display: {{ showModal ? 'block' : 'none' }}"
 </div>
 
 
-            
-             <!--  -->
+          
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          </div>
           <div class="form-group form-check inputFormGroup">
             <input
               type="checkbox"
@@ -253,24 +198,7 @@ style="display: {{ showModal ? 'block' : 'none' }}"
             <label for="name">Name</label>
             <input type="text" id="name" formControlName="name" class="form-control" [(ngModel)]="item.name" name="name" required />
           </div>
-          <div class="form-group inputFormGroup">
-            <label for="price">price</label>
-            <input type="number" id="price" formControlName="price" class="form-control" [(ngModel)]="item.price" name="price" required />
-          </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+         
            <!-- autocomplete -->
         <!-- Search Sub-Items -->
         <div class="form-group inputFormGroup">
@@ -313,19 +241,7 @@ style="display: {{ showModal ? 'block' : 'none' }}"
         </div>
         
         
-                    
-                     <!--  -->
-        
-        
-
-
-
-
-
-
-
-
-
+                 
 
           <div class="form-group form-check inputFormGroup">
             <input type="checkbox" id="isAvailable" formControlName="isAvailable" class="form-check-input" [(ngModel)]="item.isAvailable" name="isAvailable" />
@@ -337,5 +253,4 @@ style="display: {{ showModal ? 'block' : 'none' }}"
         </form>
       </div>
     </div>
-  </div>
 </div>

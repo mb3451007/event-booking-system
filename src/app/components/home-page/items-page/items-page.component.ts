@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+// import { ToastrService } from 'ngx-toastr';
+
 import { map, Observable, startWith } from 'rxjs';
 import { ItemsService } from 'src/app/items.service';
 import { SubItemsService } from 'src/app/sub-items.service';
@@ -42,11 +45,11 @@ export class ItemsPageComponent implements OnInit {
     private itemService: ItemsService,
     private subItemService: SubItemsService,
     private fb: FormBuilder,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private toastr: ToastrService
   ) {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
-      price: ['', Validators.required],
       isAvailable: ['', Validators.required],
       subItems: this.selectedSubItems.map(item => item._id),
       subItemsSearch: ['']
@@ -83,7 +86,6 @@ export class ItemsPageComponent implements OnInit {
 
     this.item = {
       name: this.addItemForm.value.name,
-      price: this.addItemForm.value.price,
       isAvailable: this.addItemForm.value.isAvailable,
       subItems:this.selectedSubItems.map(item => item._id),
     };
@@ -108,7 +110,6 @@ export class ItemsPageComponent implements OnInit {
   console.log(this.filteredSubItems,'this is filtered subItems')
     this.addItemForm.patchValue({
       name: this.item.name,
-      price: this.item.price,
       isAvailable: this.item.isAvailable,
       subItems: this.selectedSubItems.map(subItem => subItem._id)
     });
@@ -133,12 +134,13 @@ export class ItemsPageComponent implements OnInit {
     if (this.addItemForm.valid) {
       const newItem = {
         name: this.addItemForm.value.name,
-        price: this.addItemForm.value.price,
         isAvailable: this.addItemForm.value.isAvailable,
         subItems: this.selectedSubItems.map(item => item._id)
       };
       console.log(this.addItemForm.value, 'this is formValue to send data');
-      this.itemService.addItem(newItem).subscribe((response) => {
+      this.itemService.addItem(newItem).subscribe({
+      next:(response:any)=>{
+        this.toastr.success('Item added successfully!');
         this.getAllItems();
         this.getPaginatedItems(this.pageNumber);
         this.addItemForm.reset();
@@ -149,7 +151,12 @@ export class ItemsPageComponent implements OnInit {
         this.selectedSubItems = [];
         console.log(response);
         this.closeModal();
-      });
+      },
+      error:(err)=>{
+      this.toastr.error('Error Adding Item.');
+      console.log(err)
+      }
+      })
     } else {
       this.addItemForm.markAllAsTouched(); 
     }
@@ -179,7 +186,8 @@ export class ItemsPageComponent implements OnInit {
     this.itemService.deleteItem(itemId).subscribe((response) => {
       console.log(response);
       this.getAllItems();
-      this.getPaginatedItems(1);
+      this.getPaginatedItems(this.pageNumber);
+      this.toastr.error('Item deleted successfully!');
     });
   }
 
@@ -190,13 +198,22 @@ export class ItemsPageComponent implements OnInit {
         subItems: this.selectedSubItems.map(item => item._id)
 
       }
-      this.itemService.updateItem(this.item._id, updatedItem).subscribe((response) => {
+      this.itemService.updateItem(this.item._id, updatedItem).subscribe({
+        next: (response:any) =>{
           console.log(response);
           this.getAllItems();
+          this.getPaginatedItems(this.pageNumber)
+          this.toastr.info('Item updated successfully!');
           this.addItemForm.markAsPristine();
           this.addItemForm.reset();
           this.closeUpdateModal();
-        });
+        },
+        error: (error) =>{
+          this.toastr.error('Error Updating Item.');
+          console.log(error);
+        }
+      })
+     
     }
   }
 
@@ -229,6 +246,7 @@ export class ItemsPageComponent implements OnInit {
         subItem.name.toLowerCase().includes(searchTerm)
       );
     } else {
+      this.toastr.warning('No items match your filter criteria.');
       this.filteredSubItems = [...this.subItems];
     }
   }
@@ -282,12 +300,10 @@ export class ItemsPageComponent implements OnInit {
   }
   filterIem(){
     const filterName= this.filterForm.value.filtername.toLowerCase() || '';
-    const filterPrice= this.filterForm.value.filterprice.toString()  || '';
     this.filterItemArray=this.ListAllItems.filter((item:any)=>{
       const matchesName=item.name.toLowerCase().includes(filterName);
-      const matchesPrice=item.price.toString().includes(filterPrice)
       this.filterErrorShow()
-      return matchesName && matchesPrice
+      return matchesName
     });
     console.log(this.filterItemArray, 'filterItemArray Items ######');
     

@@ -3,3 +3,27 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Montserrat';    
      background: #F4F6F9; }
+
+     // src/styles.scss
+     @import 'ngx-toastr/toastr';
+
+
+.toast-top-right {
+  top: 70px !important; // Adjust this value as needed
+}
+
+.toast-success {
+  background-color: #28a745 !important; // Success color
+}
+
+.toast-error {
+  background-color: #dc3545 !important; // Error color
+}
+
+.toast-info {
+  background-color: #17a2b8 !important; // Info color
+}
+
+.toast-warning {
+  background-color: #ffc107 !important; // Warning color
+}

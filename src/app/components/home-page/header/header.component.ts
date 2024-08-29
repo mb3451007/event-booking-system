@@ -1,4 +1,5 @@
 import { Component, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -6,6 +7,7 @@ import { Component, HostListener } from '@angular/core';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
+
   // options: string[] = ['My Profile', 'My Balance', 'Inbox','Account Settings','Logout'];
   options: string[] = ['Logout'];
   creats: string[] = ['Action', 'Another action ', 'Something else here'];
@@ -15,6 +17,7 @@ export class HeaderComponent {
   selectedCreate: string | null = null;
   isDropdownCreateOpen: boolean = false;
 
+  constructor(private router: Router) {}
   toggleDropdown(event: MouseEvent) {
     this.isDropdownOpen = !this.isDropdownOpen;
     event.stopPropagation();
@@ -37,6 +40,11 @@ export class HeaderComponent {
   selectOption(option: string) {
     this.selectedOption = option;
     this.isDropdownOpen = false;
+    if(option==='Logout'){
+      localStorage.removeItem('token')
+      this.router.navigate(['/login']);
+      // this.getRouterLink('Logout')
+    }
   }
   selectcreate(create: string) {
     this.selectedCreate = create;

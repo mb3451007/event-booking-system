@@ -9,6 +9,7 @@ import { LogInComponent } from './components/log-in/log-in.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingComponent } from './components/home-page/setting/setting.component';
+import { ToastrModule } from 'ngx-toastr';
 
 
 
@@ -34,6 +35,11 @@ import { SettingComponent } from './components/home-page/setting/setting.compone
     HttpClientModule,
    FormsModule,
    ReactiveFormsModule,
+   ToastrModule.forRoot({
+    timeOut: 3000,
+    positionClass: 'toast-top-right',
+    preventDuplicates: true,
+  }),
    
   
   ],
