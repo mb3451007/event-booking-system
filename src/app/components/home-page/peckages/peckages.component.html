@@ -1,0 +1,245 @@
+<app-loader [isLoading]="isLoading"></app-loader>
+<div *ngIf="!isLoading"></div>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="table-container bg-white rounded shadow p-4 mt-5">
+        <div class="headingTitle">
+          <h2 class="mb-3">Packages</h2>
+          <img
+            [src]="AddItmePlus"
+            alt="Add new item"
+            (click)="openModal()"
+            class="AddItem"
+          />
+        </div>   
+        
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th scope="col ">Name</th>
+                <th scope="col ">Action</th>
+                <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
+                <!-- <th scope="col">Transactions  </th> -->
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of ListItems">
+                <td>{{ item.name }}</td>
+                <td class="slot">
+                  <img src="assets/view-eye-svgrepo-com.svg" alt="Hanna Gover" />
+                  <img src="assets/edit-4-svgrepo-com.svg" alt="Hanna Gover"(click)="openUpdateModal(item)" />
+                  <img src="assets/delete-svgrepo-com.svg" alt="Hanna Gover" (click)="deleteItem(item._id)"/>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination-buttons mt-3 d-flex justify-content-between">
+          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === 1" (click)="previousPage()">Previous</button>
+          
+          <div class="pagination">
+            <div *ngFor="let page of pageCountArray" (click)="getPaginatedItems(page)" 
+                 [class.active]="page === pageNumber" class="page-number-button buttom-hover">
+              {{ page }}
+            </div>
+          </div>
+          
+          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === totalPages" (click)="nextPage()">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- add model -->
+<div
+  class="modal"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ show: showModal }"
+style="display: {{ showModal ? 'block' : 'none' }}"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header headerNewItem">
+        <h3 class="title">add Package</h3>
+        <img
+          src="assets/close-sm-svgrepo-com.svg"
+          alt=""
+          class="close closeBtn"
+          (click)="closeModal()"
+          aria-label="Close"
+        />
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+          <div class="form-group inputFormGroup">
+            <div *ngIf="!addItemForm.valid && addItemForm.touched" class="alert alert-danger">
+             <h5 class="text-danger"> Please fill all required fields.</h5>
+            </div>
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+              [(ngModel)]="formData.name"
+              name="name"
+              required
+            />
+            <div *ngIf="addItemForm.controls['name'].invalid && addItemForm.controls['name'].touched" class="text-danger">
+              Name is required.
+            </div>
+          </div>          
+      
+
+
+            <!-- autocomplete -->
+        <!-- Search Sub-Items -->
+<div class="form-group inputFormGroup">
+  <label for="subItemsSearch">Search Sub-Items</label>
+  <input
+    type="text"
+    id="subItemsSearch"
+    class="form-control"
+    (focus)="onFocusActive()"
+    formControlName="subItemsSearch" 
+    placeholder="Search Sub-Items"
+  />
+</div>
+
+<!-- Sub-Item List -->
+<ul
+  *ngIf="showSubItems"
+  class="list-group subitem-list"
+>
+  <li
+    *ngFor="let subItem of filteredSubItems"
+    class="list-group-item list-group-item-action subitem"
+    (click)="selectSubItem(subItem)"
+  >
+    {{ subItem.name }}
+  </li>
+</ul>
+
+<!-- Display Selected Sub-Items -->
+<div *ngIf="selectedSubItems.length > 0" class="selected-subitems-container">
+  <h4 class="selected-subitems-header">Selected Sub Items</h4>
+  <ul class="selected-subitems-list">
+    <li *ngFor="let subItem of selectedSubItems" class="selected-subitem">
+      {{ subItem.name }}
+      <button type="button" class="btn-remove" (click)="removeSubItem(subItem)">
+        Remove
+      </button>
+    </li>
+  </ul>
+</div>
+
+
+          
+
+          <div class="form-group form-check inputFormGroup">
+            <input
+              type="checkbox"
+              id="isAvailable"
+              formControlName="isAvailable"
+              class="form-check-input"
+              [(ngModel)]="formData.isAvailable"
+              name="isAvailable"
+            />
+            <label class="form-check-label" for="isAvailable"
+              >Is Available</label
+            >
+          </div>
+          <button type="submit" class="btn btn-primary"  (click)="addItem()">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update model -->
+<div
+  class="modal"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ show: showUpdateModal }"
+  style="display: {{ showUpdateModal ? 'block' : 'none' }}"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header headerNewItem">
+        <h3 class="title">Update Package</h3>
+        <img
+          src="assets/close-sm-svgrepo-com.svg"
+          alt=""
+          class="close closeBtn"
+          (click)="closeUpdateModal()"
+          aria-label="Close"
+        />
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+          <div class="form-group inputFormGroup">
+            <label for="name">Name</label>
+            <input type="text" id="name" formControlName="name" class="form-control" [(ngModel)]="item.name" name="name" required />
+          </div>
+         
+           <!-- autocomplete -->
+        <!-- Search Sub-Items -->
+        <div class="form-group inputFormGroup">
+          <label for="subItemsSearch">Search for Update Sub-Items</label>
+          <input
+            type="text"
+            id="subItemsSearch"
+            class="form-control"
+            (focus)="onFocusActive()"
+            formControlName="subItemsSearch" 
+            placeholder="Search Sub-Items"
+          />
+        </div>
+        
+        <!-- Sub-Item List -->
+        <ul
+          *ngIf="showSubItems"
+          class="list-group subitem-list"
+        >
+          <li
+            *ngFor="let subItem of filteredSubItems"
+            class="list-group-item list-group-item-action subitem"
+            (click)="selectSubItem(subItem)"
+          >
+            {{ subItem.name }}
+          </li>
+        </ul>
+        
+        <!-- Display Selected Sub-Items -->
+        <div *ngIf="selectedSubItems.length > 0" class="selected-subitems-container">
+          <h4 class="selected-subitems-header">Selected Sub Items</h4>
+          <ul class="selected-subitems-list">
+            <li *ngFor="let subItem of selectedSubItems" class="selected-subitem">
+              {{ subItem.name }}
+              <button type="button" class="btn-remove" (click)="removeSubItem(subItem)">
+                Remove
+              </button>
+            </li>
+          </ul>
+        </div>
+        
+        
+                 
+
+          <div class="form-group form-check inputFormGroup">
+            <input type="checkbox" id="isAvailable" formControlName="isAvailable" class="form-check-input" [(ngModel)]="item.isAvailable" name="isAvailable" />
+            <label class="form-check-label" for="isAvailable"
+              >Is Available</label
+            >
+          </div>
+          <button type="submit" class="btn btn-primary"  (click)="updateItem()">Submit</button>
+        </form>
+      </div>
+    </div>
+</div>

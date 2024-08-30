@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingComponent } from './components/home-page/setting/setting.component';
 import { ToastrModule } from 'ngx-toastr';
+import { PeckagesComponent } from './components/home-page/peckages/peckages.component';
 
 
 
@@ -21,6 +22,7 @@ import { ToastrModule } from 'ngx-toastr';
     AppComponent,
     LogInComponent,
     SettingComponent,
+    PeckagesComponent,
   
   ],
   imports: [
