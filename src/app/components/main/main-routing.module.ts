@@ -20,7 +20,7 @@ const routes: Routes = [
     children:[
     {
       path: '',
-      redirectTo: 'dashboard',
+      redirectTo: 'booking',
       pathMatch: 'full',
     },
     {path: 'dashboard', component:DashBoardComponent},

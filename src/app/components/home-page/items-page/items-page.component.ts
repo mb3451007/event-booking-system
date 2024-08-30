@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -41,6 +42,7 @@ export class ItemsPageComponent implements OnInit {
   filteredSubItems:any[] = [];
   pageNumber:number =1
   totalPages:number =1
+  isLoading : boolean = false;
   constructor(
     private itemService: ItemsService,
     private subItemService: SubItemsService,
@@ -50,7 +52,7 @@ export class ItemsPageComponent implements OnInit {
   ) {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
-      isAvailable: ['', Validators.required],
+      isAvailable: [true],
       subItems: this.selectedSubItems.map(item => item._id),
       subItemsSearch: ['']
     });
@@ -131,6 +133,7 @@ export class ItemsPageComponent implements OnInit {
   }
 
   addItem() {
+    this.isLoading =true;
     if (this.addItemForm.valid) {
       const newItem = {
         name: this.addItemForm.value.name,
@@ -140,6 +143,7 @@ export class ItemsPageComponent implements OnInit {
       console.log(this.addItemForm.value, 'this is formValue to send data');
       this.itemService.addItem(newItem).subscribe({
       next:(response:any)=>{
+        this.isLoading=false;
         this.toastr.success('Item added successfully!');
         this.getAllItems();
         this.getPaginatedItems(this.pageNumber);
@@ -153,6 +157,7 @@ export class ItemsPageComponent implements OnInit {
         this.closeModal();
       },
       error:(err)=>{
+      this.isLoading=false;
       this.toastr.error('Error Adding Item.');
       console.log(err)
       }
@@ -170,9 +175,11 @@ export class ItemsPageComponent implements OnInit {
   }
  
   getPaginatedItems(page: number) {
+    this.isLoading=true
     this.pageNumber=page
     localStorage.setItem('pageNumber',this.pageNumber.toString())
     this.itemService.getPaginatedItems(this.pageNumber).subscribe((response:any) => {
+      this.isLoading=false
       this.ListItems = response.items;
       this.totalPages= response.totalPages
       this.pagesCount();
@@ -192,6 +199,7 @@ export class ItemsPageComponent implements OnInit {
   }
 
   updateItem() {
+    this.isLoading=true
     if (this.addItemForm.dirty) {
       const updatedItem ={
         ...this.item,
@@ -200,6 +208,7 @@ export class ItemsPageComponent implements OnInit {
       }
       this.itemService.updateItem(this.item._id, updatedItem).subscribe({
         next: (response:any) =>{
+          this.isLoading=false
           console.log(response);
           this.getAllItems();
           this.getPaginatedItems(this.pageNumber)
@@ -209,6 +218,7 @@ export class ItemsPageComponent implements OnInit {
           this.closeUpdateModal();
         },
         error: (error) =>{
+          this.isLoading=false
           this.toastr.error('Error Updating Item.');
           console.log(error);
         }
@@ -246,7 +256,6 @@ export class ItemsPageComponent implements OnInit {
         subItem.name.toLowerCase().includes(searchTerm)
       );
     } else {
-      this.toastr.warning('No items match your filter criteria.');
       this.filteredSubItems = [...this.subItems];
     }
   }
@@ -271,7 +280,9 @@ export class ItemsPageComponent implements OnInit {
     this.showSubItems=false;
   }
   getAllSubItems() {
+    this.isLoading=true
     this.subItemService.getAllSubItems().subscribe((response:any) => {
+      this.isLoading=false
       console.log(response,'this is subitems in items component' )
        this.subItems=response.items
         console.log(this.subItems,'this is a list of subitems assyning');
@@ -305,6 +316,9 @@ export class ItemsPageComponent implements OnInit {
       this.filterErrorShow()
       return matchesName
     });
+    if(this.filterItemArray.length==0){
+      this.toastr.warning('No items match your filter criteria.');
+    }
     console.log(this.filterItemArray, 'filterItemArray Items ######');
     
   }
@@ -314,4 +328,6 @@ export class ItemsPageComponent implements OnInit {
   resetFilteredSubItems() {
     this.filteredSubItems = [...this.subItems];
   }
+ 
+  
 }

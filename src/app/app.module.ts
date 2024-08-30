@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,17 +14,14 @@ import { ToastrModule } from 'ngx-toastr';
 
 
 
+
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
     AppComponent,
     LogInComponent,
     SettingComponent,
-   
-   
-   
   
-    
-    
   ],
   imports: [
     CommonModule,
@@ -35,11 +32,13 @@ import { ToastrModule } from 'ngx-toastr';
     HttpClientModule,
    FormsModule,
    ReactiveFormsModule,
+   CommonModule,
    ToastrModule.forRoot({
     timeOut: 3000,
     positionClass: 'toast-top-right',
     preventDuplicates: true,
   }),
+
    
   
   ],

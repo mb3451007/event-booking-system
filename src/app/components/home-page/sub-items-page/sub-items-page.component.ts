@@ -20,13 +20,13 @@ export class SubItemsPageComponent {
   showUpdateModal: boolean = false;
   subitemId:any
   addSubItemForm:FormGroup
- 
+  isLoading:boolean=false
 
   constructor(private subItemService:SubItemsService, private fb:FormBuilder, private activatedRoute:ActivatedRoute, private toastr: ToastrService) {
     this.addSubItemForm = this.fb.group({
       name : ['', Validators.required],
       price : ['', Validators.required],
-      isAvailable : ['', Validators.required],
+      isAvailable : [true],
     })
   }
  
@@ -66,6 +66,7 @@ export class SubItemsPageComponent {
   
   
     addSubItem() {
+      this.isLoading=true
       const newItem = { 
         name: this.addSubItemForm.value.name,
          price: this.addSubItemForm.value.price,
@@ -74,12 +75,15 @@ export class SubItemsPageComponent {
       console.log(this.addSubItemForm.value,'this is formValue to send data')
       this.subItemService.addSubItem(newItem).subscribe({
         next: (response:any)=>{
+          this.isLoading=false
+          this.addSubItemForm.reset()
           this.getAllSubItems();
           this.getPaginatedSubItems(this.pageNumber)
           this.toastr.success('SubItem added successfully!');
           console.log(response);
         }, 
         error: (error:any)=>{
+          this.isLoading=false
          console.log(error);
          this.toastr.error('Error Adding Item!');
         }
@@ -95,9 +99,11 @@ export class SubItemsPageComponent {
     }
   
     getPaginatedSubItems(page: number) {
+      this.isLoading=true
       this.pageNumber=page
     localStorage.setItem('pageNumber',this.pageNumber.toString())
       this.subItemService.getPaginatedSubItems(this.pageNumber).subscribe(response => {
+        this.isLoading=false
         this.subItems=response.items
         console.log(this.subItems, 'these are peginated items');
         
@@ -107,8 +113,9 @@ export class SubItemsPageComponent {
   
     deleteSubItem(itemId: number) {
        console.log(itemId)
+       this.isLoading=true
       this.subItemService.deleteSubItem(itemId).subscribe(response => {
-
+        this.isLoading=false
         console.log(response);
         this.getAllSubItems();
         this.getPaginatedSubItems(this.pageNumber)
@@ -117,12 +124,15 @@ export class SubItemsPageComponent {
     }
   
     updateSubItem() {
+      this.isLoading=true
       console.log(this.subItem.id);
       console.log(this.subItem);
       
       this.subItemService.updateSubItem(this.subItem._id, this.subItem).subscribe( {
         next : (response:any)=>{
+          this.isLoading=false
           console.log(response);
+          this.addSubItemForm.reset()
           this.closeUpdateModal();
           this.getAllSubItems()
           this.getPaginatedSubItems(this.pageNumber)
@@ -130,6 +140,7 @@ export class SubItemsPageComponent {
 
         },
         error : (response:any)=>{
+          this.isLoading=false
           this.toastr.error('Error Updating SubItem!');
           console.log(response);
         }

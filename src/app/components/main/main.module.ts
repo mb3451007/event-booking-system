@@ -21,6 +21,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {NgFor, AsyncPipe} from '@angular/common';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { LoaderComponent } from '../home-page/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     TransactionPageComponent,
     ItemsPageComponent,
     SubItemsPageComponent,
+    LoaderComponent
    
 
 

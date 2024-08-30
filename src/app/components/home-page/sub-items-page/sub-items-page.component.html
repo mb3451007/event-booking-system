@@ -1,3 +1,4 @@
+<app-loader [isLoading]="isLoading"></app-loader>
 <div class="container">
   <div class="row">
     <div class="col-12">
@@ -75,7 +76,7 @@
   tabindex="-1"
   role="dialog"
   [ngClass]="{ show: showModal }"
-  style="display: {{ showModal ? 'block' : 'none' }}"
+  [ngStyle]="{'display': showModal ? 'block' : 'none' }"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -106,7 +107,7 @@
           <div class="form-group inputFormGroup">
             <label for="price">price</label>
             <input
-              type="text"
+              type="number"
               id="price"
               formControlName="price"
               class="form-control"
@@ -159,7 +160,7 @@
   tabindex="-1"
   role="dialog"
   [ngClass]="{ show: showUpdateModal }"
-  style="display: {{ showUpdateModal ? 'block' : 'none' }}"
+  [ngStyle]="{'display': showUpdateModal ? 'block' : 'none' }"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
