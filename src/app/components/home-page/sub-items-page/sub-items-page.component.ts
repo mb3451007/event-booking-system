@@ -15,13 +15,14 @@ export class SubItemsPageComponent {
   availableItems = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
   AddItmePlus='assets/plus-circle-svgrepo-com.svg'
   subItem:any
-  pageNumber:number =1
   subItems:any =[]
   showUpdateModal: boolean = false;
   subitemId:any
   addSubItemForm:FormGroup
   isLoading:boolean=false
-
+  pageCountArray:any[]=[]
+  pageNumber:number =1
+  totalPages:number =1
   constructor(private subItemService:SubItemsService, private fb:FormBuilder, private activatedRoute:ActivatedRoute, private toastr: ToastrService) {
     this.addSubItemForm = this.fb.group({
       name : ['', Validators.required],
@@ -43,6 +44,7 @@ export class SubItemsPageComponent {
       price: this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
     };
+    this.pagesCount()
   }
    
     openModal() {
@@ -105,7 +107,10 @@ export class SubItemsPageComponent {
       this.subItemService.getPaginatedSubItems(this.pageNumber).subscribe(response => {
         this.isLoading=false
         this.subItems=response.items
-        console.log(this.subItems, 'these are peginated items');
+        this.totalPages= response.totalPages
+        this.pagesCount();
+        console.log(this.totalPages, 'these are peginated sub items total pages');
+        console.log(response, 'these are peginated sub items');
         
         console.log(response);
       });
@@ -146,5 +151,26 @@ export class SubItemsPageComponent {
         }
        
       });
+    }
+    previousPage() {
+      if (this.pageNumber > 1) {
+        this.pageNumber--;
+        this.getPaginatedSubItems(this.pageNumber); 
+      }
+    }
+    
+    
+    nextPage() {
+      if (this.pageNumber < this.totalPages) {
+        this.pageNumber++;
+        this.getPaginatedSubItems(this.pageNumber); 
+      }
+    }
+    pagesCount(){
+      this.pageCountArray = [];
+      for(let i=1; i<=this.totalPages; i++){
+        this.pageCountArray.push(i)
+      }
+      console.log(this.pageCountArray, 'these are the page numbers Array');
     }
 }

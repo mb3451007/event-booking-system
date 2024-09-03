@@ -156,6 +156,9 @@ export class ItemsPageComponent implements OnInit {
   }
   closeUpdateModal() {
     this.showUpdateModal = false;
+    this.addItemForm.reset()
+    this.selectedSubItems = [];
+    this.selectedPackages=[]
   }
 
   onSubmit() {
@@ -185,6 +188,7 @@ export class ItemsPageComponent implements OnInit {
         this.getAllPackages()
         this.addItemForm.markAsPristine();
         this.selectedSubItems = [];
+        this.selectedPackages=[]
         console.log(response);
         this.closeModal();
       },
@@ -249,6 +253,8 @@ export class ItemsPageComponent implements OnInit {
           this.toastr.info('Item updated successfully!');
           this.addItemForm.markAsPristine();
           this.addItemForm.reset();
+          this.selectedSubItems = [];
+          this.selectedPackages=[]
           this.closeUpdateModal();
         },
         error: (error) =>{
