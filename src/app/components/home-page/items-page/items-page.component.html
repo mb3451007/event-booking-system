@@ -32,6 +32,7 @@
             <thead>
               <tr>
                 <th scope="col ">Name</th>
+                <th scope="col ">Packages</th>
                 <th scope="col ">Action</th>
                 <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
                 <!-- <th scope="col">Transactions  </th> -->
@@ -41,6 +42,11 @@
             <tbody>
               <tr *ngFor="let item of ListItems">
                 <td>{{ item.name }}</td>
+                <td>
+                  <span *ngFor="let packageId of item.packages; let isLast = last">
+                    {{ getPackageName(packageId) }}<span *ngIf="!isLast">, </span>
+                  </span>
+                </td>
                 <td class="slot">
                   <img src="assets/view-eye-svgrepo-com.svg" alt="Hanna Gover" />
                   <img src="assets/edit-4-svgrepo-com.svg" alt="Hanna Gover"(click)="openUpdateModal(item)" />
@@ -153,7 +159,51 @@ style="display: {{ showModal ? 'block' : 'none' }}"
 </div>
 
 
-          
+          <!-- end -->
+           
+            <!-- Peckages -->
+        <!-- Search Peckages -->
+<div class="form-group inputFormGroup">
+  <label for="packageSearch">Search Packages</label>
+  <input
+    type="text"
+    id="packageSearch"
+    class="form-control"
+    (focus)="onFocusActivePackages()"
+    formControlName="packageSearch" 
+    placeholder="Search Packages"
+  />
+</div>
+
+<!-- Packages List -->
+<ul
+  *ngIf="showPackages"
+  class="list-group subitem-list"
+>
+  <li
+    *ngFor="let package of filteredPackages"
+    class="list-group-item list-group-item-action subitem"
+    (click)="selectPackage(package)"
+  >
+    {{ package.name }}
+  </li>
+</ul>
+
+<!-- Display Selected Packages -->
+<div *ngIf="selectedPackages.length > 0" class="selected-subitems-container">
+  <h4 class="selected-subitems-header">Selected Packages</h4>
+  <ul class="selected-subitems-list">
+    <li *ngFor="let package of selectedPackages" class="selected-subitem">
+      {{ package.name }}
+      <button type="button" class="btn-remove" (click)="removePackage(package)">
+        Remove
+      </button>
+    </li>
+  </ul>
+</div>
+
+
+          <!-- end -->
 
           <div class="form-group form-check inputFormGroup">
             <input
@@ -241,6 +291,50 @@ style="display: {{ showModal ? 'block' : 'none' }}"
             </li>
           </ul>
         </div>
+
+        <!-- end subitem -->
+        
+        <!-- Search Packages Update -->
+        <div class="form-group inputFormGroup">
+          <label for="packageSearch">Search for Update Packages</label>
+          <input
+            type="text"
+            id="packageSearch"
+            class="form-control"
+            (focus)="onFocusActivePackages()"
+            formControlName="packageSearch" 
+            placeholder="Search Packages"
+          />
+        </div>
+        
+        <!-- Sub-Item List -->
+        <ul
+          *ngIf="showPackages"
+          class="list-group subitem-list"
+        >
+          <li
+            *ngFor="let package of filteredPackages"
+            class="list-group-item list-group-item-action subitem"
+            (click)="selectPackage(package)"
+          >
+            {{ package.name }}
+          </li>
+        </ul>
+        
+        <!-- Display Selected Sub-Items -->
+        <div *ngIf="selectedPackages.length > 0" class="selected-subitems-container">
+          <h4 class="selected-subitems-header">Selected Packages</h4>
+          <ul class="selected-subitems-list">
+            <li *ngFor="let package of selectedPackages" class="selected-subitem">
+              {{ package.name }}
+              <button type="button" class="btn-remove" (click)="removePackage(package)">
+                Remove
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- end subitem -->
         
         
                  

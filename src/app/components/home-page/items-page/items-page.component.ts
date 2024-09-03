@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { map, Observable, startWith } from 'rxjs';
 import { ItemsService } from 'src/app/items.service';
 import { SubItemsService } from 'src/app/sub-items.service';
+import { PackagesService } from '../packages.service';
 @Component({
   selector: 'app-items-page',
   templateUrl: './items-page.component.html',
@@ -16,8 +17,10 @@ import { SubItemsService } from 'src/app/sub-items.service';
 export class ItemsPageComponent implements OnInit {
   autoSearchTerm: string = '';
   autoitems: string[] = [];
+  autopackages: string[] = [];
   filteredItems: string[] = [];
   showSubItems:boolean=false
+  showPackages:boolean=false
   ListItems: any = [];
   ListAllItems: any = [];
   pListItems: any = [];
@@ -32,19 +35,25 @@ export class ItemsPageComponent implements OnInit {
   AddItmePlus = 'assets/plus-circle-svgrepo-com.svg';
   item: any;
   showSubItemsSearch: boolean = false;
+  showpackagesSearch: boolean = false;
   filterForm:FormGroup
   subItems :any = []
+  packages :any = []
   searchTerm: string = '';
   selectedSubItems: any[] = [];
+  selectedPackages: any[] = [];
   subItemsSearch: any ;
+  packageSearch: any ;
   filterError:boolean=false;
   
   filteredSubItems:any[] = [];
+  filteredPackages:any[] = [];
   pageNumber:number =1
   totalPages:number =1
   isLoading : boolean = false;
   constructor(
     private itemService: ItemsService,
+    private packageService: PackagesService,
     private subItemService: SubItemsService,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
@@ -54,21 +63,27 @@ export class ItemsPageComponent implements OnInit {
       name: ['', Validators.required],
       isAvailable: [true],
       subItems: this.selectedSubItems.map(item => item._id),
-      subItemsSearch: ['']
+      packages: this.selectedPackages.map(item => item._id),
+      subItemsSearch: [''],
+      packageSearch: [''],
     });
     this.filterForm = this.fb.group({
       filtername: ['', Validators.required],
       filterprice: ['', Validators.required],
     });
   }
-  onInput() {
- console.log('this search:',this.subItemsSearch)
-    this.filteredSubItems = [...this.subItems]; 
-    this.filteredItems = this.autoitems.filter(autoitems =>
-      autoitems.toLowerCase().includes(this.subItemsSearch.toLowerCase())
-    );
+//   onInput() {
+//  console.log('this search:',this.subItemsSearch)
+//     this.filteredSubItems = [...this.subItems]; 
+//     this.filteredPackages = [...this.packages]; 
+//     this.filteredItems = this.autoitems.filter(autoitems =>
+//       autoitems.toLowerCase().includes(this.subItemsSearch.toLowerCase())
+//     );
+//     this.filteredPackages = this.autopackages.filter(autoitems =>
+//       autoitems.toLowerCase().includes(this.packageSearch.toLowerCase())
+//     );
 
-  }
+//   }
   selectItem(autoitems: string) {
     this.autoSearchTerm = autoitems;
     this.filteredItems = [];
@@ -79,17 +94,23 @@ export class ItemsPageComponent implements OnInit {
     this.addItemForm.get('subItemsSearch')?.valueChanges.subscribe(() => {
       this.filterSubItems();
     });
+    this.addItemForm.get('packageSearch')?.valueChanges.subscribe(() => {
+      this.filterPackages();
+    });
     this.filteredSubItems = this.subItems;
+    this.filteredPackages = this.packages;
     this.itemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     this.getAllItems();
     this.getPaginatedItems(this.pageNumber);
     this.getAllSubItems()
+    this.getAllPackages()
     this.pagesCount()
 
     this.item = {
       name: this.addItemForm.value.name,
       isAvailable: this.addItemForm.value.isAvailable,
       subItems:this.selectedSubItems.map(item => item._id),
+      packages:this.selectedPackages.map(item => item._id),
     };
   }
 
@@ -98,6 +119,7 @@ export class ItemsPageComponent implements OnInit {
   openModal() {
     this.showModal = true;
     this.resetFilteredSubItems()
+    this.resetFilteredPackages();
   }
 
   openUpdateModal(item: any) {
@@ -105,15 +127,23 @@ export class ItemsPageComponent implements OnInit {
     this.selectedSubItems = this.subItems.filter((subItem:any) =>
       item.subItems.includes(subItem._id)
     );
+    this.selectedPackages = this.packages.filter((packages:any) =>
+      item.packages.includes(packages._id)
+    );
   
     this.filteredSubItems = this.subItems.filter((subItem:any) => 
       !this.selectedSubItems.some(selectedItem => selectedItem._id === subItem._id)
     );
+    this.filteredPackages = this.packages.filter((packages:any) => 
+      !this.selectedPackages.some(selectedPackage => selectedPackage._id === packages._id)
+    );
   console.log(this.filteredSubItems,'this is filtered subItems')
+  console.log(this.filterPackages(),'this is filtered packages')
     this.addItemForm.patchValue({
       name: this.item.name,
       isAvailable: this.item.isAvailable,
-      subItems: this.selectedSubItems.map(subItem => subItem._id)
+      subItems: this.selectedSubItems.map(subItem => subItem._id),
+      packages: this.selectedPackages.map(packages => packages._id)
     });
   
     this.showUpdateModal = true;
@@ -138,9 +168,10 @@ export class ItemsPageComponent implements OnInit {
       const newItem = {
         name: this.addItemForm.value.name,
         isAvailable: this.addItemForm.value.isAvailable,
-        subItems: this.selectedSubItems.map(item => item._id)
+        subItems: this.selectedSubItems.map(item => item._id),
+        packages: this.selectedPackages.map(packages => packages._id)
       };
-      console.log(this.addItemForm.value, 'this is formValue to send data');
+      console.log(this.addItemForm.value, 'this is formValue to send data..........');
       this.itemService.addItem(newItem).subscribe({
       next:(response:any)=>{
         this.isLoading=false;
@@ -149,8 +180,9 @@ export class ItemsPageComponent implements OnInit {
         this.getPaginatedItems(this.pageNumber);
         this.addItemForm.reset();
         this.resetFilteredSubItems();
-        // this.filteredSubItems = this.subItems;
+        this.resetFilteredPackages();
         this.getAllSubItems()
+        this.getAllPackages()
         this.addItemForm.markAsPristine();
         this.selectedSubItems = [];
         console.log(response);
@@ -203,9 +235,11 @@ export class ItemsPageComponent implements OnInit {
     if (this.addItemForm.dirty) {
       const updatedItem ={
         ...this.item,
-        subItems: this.selectedSubItems.map(item => item._id)
+        subItems: this.selectedSubItems.map(item => item._id),
+        packages: this.selectedPackages.map(packages => packages._id)
 
       }
+      console.log(updatedItem,'thisssss to update')
       this.itemService.updateItem(this.item._id, updatedItem).subscribe({
         next: (response:any) =>{
           this.isLoading=false
@@ -230,25 +264,47 @@ export class ItemsPageComponent implements OnInit {
   onSelectSubItem(event: Event): void {
     const target = event.target as HTMLSelectElement;
     const value = Number(target.value);
-    
     const subItem = this.filteredSubItems.find(item => item._id === value);
-    
     if (subItem) {
       this.selectedSubItems.push(subItem);
       this.filteredSubItems = this.filteredSubItems.filter(item => item._id !== subItem._id);
-      
       this.addItemForm.patchValue({ subItems: this.selectedSubItems.map(item => item._id) });
     }
   }
-  
+  onSelectPackage(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const value = Number(target.value);
+    const selectedPackage = this.filteredPackages.find(pkg => pkg._id === value);
+    if (selectedPackage) {
+      this.selectedPackages.push(selectedPackage);
+      this.filteredPackages = this.filteredPackages.filter(pkg => pkg._id !== selectedPackage._id);
+      this.addItemForm.patchValue({ packages: this.selectedPackages.map(pkg => pkg._id) });
+    }
+  }
   removeSubItem(subItem: any) {
     this.selectedSubItems = this.selectedSubItems.filter(item => item._id !== subItem._id);
     this.subItems.push(subItem);
     this.filteredSubItems.push(subItem);
-
     this.addItemForm.patchValue({ subItems: this.selectedSubItems.map(item => item._id) });
   }
+  removePackage(pkg: any) {
+    this.selectedPackages = this.selectedPackages.filter(selected => selected._id !== pkg._id);
+    this.packages.push(pkg);
+    this.filteredPackages.push(pkg);
+    this.addItemForm.patchValue({ packages: this.selectedPackages.map(pkg => pkg._id) });
+  }
 
+  filterPackages() {
+    const searchPackageTerm = this.addItemForm.get('packageSearch')?.value?.toLowerCase() || '';
+    if (searchPackageTerm) {
+      this.filteredPackages = this.packages.filter((pkg:any) =>
+        pkg.name.toLowerCase().includes(searchPackageTerm)
+      );
+    } else {
+      this.filteredPackages = [...this.packages];
+    }
+  }
+  
   filterSubItems() {
     const searchTerm = this.addItemForm.get('subItemsSearch')?.value.toLowerCase();
     if (searchTerm) {
@@ -262,6 +318,9 @@ export class ItemsPageComponent implements OnInit {
   toggleSubItemsSearch() {
     this.showSubItemsSearch = !this.showSubItemsSearch;
   }
+  togglepackagesSearch() {
+    this.showpackagesSearch = !this.showpackagesSearch;
+  }
 
   selectSubItem(subItem: any) {
     this.selectedSubItems.push(subItem);
@@ -271,8 +330,20 @@ export class ItemsPageComponent implements OnInit {
     this.addItemForm.get('subItemsSearch')?.setValue(''); // Clear search term
     this.showSubItems=false;
   }
+ 
+  selectPackage(pkg: any) {
+    this.selectedPackages.push(pkg);
+    this.packages = this.packages.filter((item:any) => item._id !== pkg._id);
+    this.filteredPackages = this.filteredPackages.filter(item => item._id !== pkg._id);
+    this.addItemForm.patchValue({ packages: this.selectedPackages.map(item => item._id) });
+    this.addItemForm.get('packageSearch')?.setValue(''); // Clear search term
+    this.showPackages = false;
+  }
   onFocusActive(){
     this.showSubItems=true
+  }
+  onFocusActivePackages(){
+    this.showPackages=true
   }
  
  
@@ -286,6 +357,15 @@ export class ItemsPageComponent implements OnInit {
       console.log(response,'this is subitems in items component' )
        this.subItems=response.items
         console.log(this.subItems,'this is a list of subitems assyning');
+    });
+  }
+  getAllPackages() {
+    this.isLoading=true
+    this.packageService.getAllPeckage().subscribe((response:any) => {
+      this.isLoading=false
+      console.log(response,'this is packages in items component' )
+       this.packages=response.items
+        console.log(this.packages,'this is a list of packages assyning');
     });
   }
   previousPage() {
@@ -328,6 +408,12 @@ export class ItemsPageComponent implements OnInit {
   resetFilteredSubItems() {
     this.filteredSubItems = [...this.subItems];
   }
- 
-  
+
+  resetFilteredPackages() {
+    this.filteredPackages = [...this.packages];
+  }
+  getPackageName(id: string): string {
+    const packages = this.packages.find((pkg:any) => pkg._id === id); // Assuming allPackages contains all available packages
+    return packages ? packages.name : 'Unknown Package';
+  }
 }

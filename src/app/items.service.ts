@@ -33,7 +33,7 @@ export class ItemsService {
   
     // Update Item
     updateItem(itemId: number, item:any): Observable<any> {
-      console.log(item,'this is the data to update item')
+      console.log(item,'this is the data to update item also peckages')
       return this.http.patch(`${this.apiUrl}/item/update-item/${itemId}`, item);
     }
     
