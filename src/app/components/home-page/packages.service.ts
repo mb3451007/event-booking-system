@@ -37,5 +37,7 @@ export class PackagesService {
       console.log(item,'this is the data to update item')
       return this.http.patch(`${this.apiUrl}/package/update-package/${packageId}`, item);
     }
-    
+    getPackageById(packageId: number): Observable<any> {
+      return this.http.get<any>(`${this.apiUrl}/package/get-packageById/${packageId}`);
+    }
 }

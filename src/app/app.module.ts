@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingComponent } from './components/home-page/setting/setting.component';
 import { ToastrModule } from 'ngx-toastr';
 import { PeckagesComponent } from './components/home-page/peckages/peckages.component';
+import { PackageDetailsComponent } from './components/home-page/package-details/package-details.component';
 
 
 
@@ -23,6 +24,7 @@ import { PeckagesComponent } from './components/home-page/peckages/peckages.comp
     LogInComponent,
     SettingComponent,
     PeckagesComponent,
+    PackageDetailsComponent,
   
   ],
   imports: [

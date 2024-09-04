@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 // import { ToastrService } from 'ngx-toastr';
 
@@ -17,9 +17,7 @@ import { PackagesService } from '../packages.service';
   styleUrls: ['./peckages.component.scss']
 })
 export class PeckagesComponent {
-  autoSearchTerm: string = '';
-  autoitems: string[] = [];
-  filteredItems: string[] = [];
+  
   showSubItems:boolean=false
   ListItems: any = [];
   ListAllItems: any = [];
@@ -34,65 +32,43 @@ export class PeckagesComponent {
   pageCountArray:any[]=[]
   AddItmePlus = 'assets/plus-circle-svgrepo-com.svg';
   item: any;
-  showSubItemsSearch: boolean = false;
+  
   filterForm:FormGroup
-  subItems :any = []
-  searchTerm: string = '';
-  selectedSubItems: any[] = [];
-  subItemsSearch: any ;
+
   filterError:boolean=false;
   
-  filteredSubItems:any[] = [];
+  
   pageNumber:number =1
   totalPages:number =1
   isLoading : boolean = false;
+  selectedPackage: any = null;
   constructor(
     private peckageService: PackagesService,
     private subItemService: SubItemsService,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router:Router
   ) {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
-      isAvailable: [true],
-      subItems: this.selectedSubItems.map(item => item._id),
-      subItemsSearch: ['']
     });
     this.filterForm = this.fb.group({
       filtername: ['', Validators.required],
-      filterprice: ['', Validators.required],
     });
   }
-  onInput() {
- console.log('this search:',this.subItemsSearch)
-    this.filteredSubItems = [...this.subItems]; 
-    this.filteredItems = this.autoitems.filter(autoitems =>
-      autoitems.toLowerCase().includes(this.subItemsSearch.toLowerCase())
-    );
 
-  }
-  selectItem(autoitems: string) {
-    this.autoSearchTerm = autoitems;
-    this.filteredItems = [];
-  }
+ 
   ngOnInit(): void {
     const localStoragePage=localStorage.getItem('pageNumber')
     this.pageNumber=localStoragePage? parseInt(localStoragePage):1;
-    this.addItemForm.get('subItemsSearch')?.valueChanges.subscribe(() => {
-      this.filterSubItems();
-    });
-    this.filteredSubItems = this.subItems;
     this.itemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     this.getAllItems();
     this.getPaginatedItems(this.pageNumber);
-    this.getAllSubItems()
     this.pagesCount()
 
     this.item = {
       name: this.addItemForm.value.name,
-      isAvailable: this.addItemForm.value.isAvailable,
-      subItems:this.selectedSubItems.map(item => item._id),
     };
   }
 
@@ -100,25 +76,13 @@ export class PeckagesComponent {
 
   openModal() {
     this.showModal = true;
-    this.resetFilteredSubItems()
   }
 
   openUpdateModal(item: any) {
     this.item = { ...item };
-    this.selectedSubItems = this.subItems.filter((subItem:any) =>
-      item.subItems.includes(subItem._id)
-    );
-  
-    this.filteredSubItems = this.subItems.filter((subItem:any) => 
-      !this.selectedSubItems.some(selectedItem => selectedItem._id === subItem._id)
-    );
-  console.log(this.filteredSubItems,'this is filtered subItems')
     this.addItemForm.patchValue({
       name: this.item.name,
-      isAvailable: this.item.isAvailable,
-      subItems: this.selectedSubItems.map(subItem => subItem._id)
     });
-  
     this.showUpdateModal = true;
   }
   
@@ -140,10 +104,7 @@ export class PeckagesComponent {
     if (this.addItemForm.valid) {
       const newItem = {
         name: this.addItemForm.value.name,
-        isAvailable: this.addItemForm.value.isAvailable,
-        subItems: this.selectedSubItems.map(item => item._id)
       };
-      console.log(this.addItemForm.value, 'this is formValue to send data');
       this.peckageService.addPeckage(newItem).subscribe({
       next:(response:any)=>{
         this.isLoading=false;
@@ -151,11 +112,7 @@ export class PeckagesComponent {
         this.getAllItems();
         this.getPaginatedItems(this.pageNumber);
         this.addItemForm.reset();
-        this.resetFilteredSubItems();
-        // this.filteredSubItems = this.subItems;
-        this.getAllSubItems()
         this.addItemForm.markAsPristine();
-        this.selectedSubItems = [];
         console.log(response);
         this.closeModal();
       },
@@ -186,7 +143,6 @@ export class PeckagesComponent {
       this.ListItems = response.items;
       this.totalPages= response.totalPages
       this.pagesCount();
-      console.log(this.pageNumber, 'this is  PageNumber');
       console.log(response, 'these are paginated items');
     });
   }
@@ -206,8 +162,6 @@ export class PeckagesComponent {
     if (this.addItemForm.dirty) {
       const updatedItem ={
         ...this.item,
-        subItems: this.selectedSubItems.map(item => item._id)
-
       }
       this.peckageService.updatePeckage(this.item._id, updatedItem).subscribe({
         next: (response:any) =>{
@@ -230,67 +184,6 @@ export class PeckagesComponent {
     }
   }
 
-  onSelectSubItem(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    const value = Number(target.value);
-    
-    const subItem = this.filteredSubItems.find(item => item._id === value);
-    
-    if (subItem) {
-      this.selectedSubItems.push(subItem);
-      this.filteredSubItems = this.filteredSubItems.filter(item => item._id !== subItem._id);
-      
-      this.addItemForm.patchValue({ subItems: this.selectedSubItems.map(item => item._id) });
-    }
-  }
-  
-  removeSubItem(subItem: any) {
-    this.selectedSubItems = this.selectedSubItems.filter(item => item._id !== subItem._id);
-    this.subItems.push(subItem);
-    this.filteredSubItems.push(subItem);
-
-    this.addItemForm.patchValue({ subItems: this.selectedSubItems.map(item => item._id) });
-  }
-
-  filterSubItems() {
-    const searchTerm = this.addItemForm.get('subItemsSearch')?.value.toLowerCase();
-    if (searchTerm) {
-      this.filteredSubItems = this.subItems.filter((subItem:any) =>
-        subItem.name.toLowerCase().includes(searchTerm)
-      );
-    } else {
-      this.filteredSubItems = [...this.subItems];
-    }
-  }
-  toggleSubItemsSearch() {
-    this.showSubItemsSearch = !this.showSubItemsSearch;
-  }
-
-  selectSubItem(subItem: any) {
-    this.selectedSubItems.push(subItem);
-    this.subItems = this.subItems.filter((item:any) => item._id !== subItem._id);
-    this.filteredSubItems = this.filteredSubItems.filter(item => item._id !== subItem._id);
-    this.addItemForm.patchValue({ subItems: this.selectedSubItems.map(item => item._id) });
-    this.addItemForm.get('subItemsSearch')?.setValue(''); // Clear search term
-    this.showSubItems=false;
-  }
-  onFocusActive(){
-    this.showSubItems=true
-  }
- 
- 
-  onBlurActive(){
-    this.showSubItems=false;
-  }
-  getAllSubItems() {
-    this.isLoading=true
-    this.subItemService.getAllSubItems().subscribe((response:any) => {
-      this.isLoading=false
-      console.log(response,'this is subitems in items component' )
-       this.subItems=response.items
-        console.log(this.subItems,'this is a list of subitems assyning');
-    });
-  }
   previousPage() {
     if (this.pageNumber > 1) {
       this.pageNumber--;
@@ -328,9 +221,11 @@ export class PeckagesComponent {
   filterErrorShow(){
     this.filterError=true;
   }
-  resetFilteredSubItems() {
-    this.filteredSubItems = [...this.subItems];
-  }
- 
   
+ 
+  viewItem(itemId: number){
+    console.log(itemId,'this is item id for details')
+    this.router.navigate(['package-detail/' , itemId]);
+    
+  }
 }

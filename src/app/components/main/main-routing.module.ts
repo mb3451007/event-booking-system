@@ -15,6 +15,7 @@ import { SubItemsPageComponent } from '../home-page/sub-items-page/sub-items-pag
 import { authGuard } from 'src/app/auth.guard';
 import { SettingComponent } from '../home-page/setting/setting.component';
 import { PeckagesComponent } from '../home-page/peckages/peckages.component';
+import { PackageDetailsComponent } from '../home-page/package-details/package-details.component';
 
 const routes: Routes = [
   {path: '', component:HomePageComponent,canActivate:[authGuard],
@@ -37,6 +38,8 @@ const routes: Routes = [
     {path:'subitems',component:SubItemsPageComponent},
     {path:'setting',component:SettingComponent},
     {path:'peckages',component:PeckagesComponent},
+    { path: 'package-detail/:itemId', component: PackageDetailsComponent }
+
 
   ]},
 ];

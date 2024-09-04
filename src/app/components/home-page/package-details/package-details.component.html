@@ -1,0 +1,22 @@
+<div class="package-details-container">
+  <div class="header">
+    <h1 class="package-title">Package Name:{{ packageDetails.package.name }}</h1>
+  </div>
+
+  <div class="item-details">
+    <h2 class="item-title">Item Name:{{ packageDetails.item.name }}</h2>
+    
+    <div class="sub-items-section" *ngIf="packageDetails.subItems && packageDetails.subItems.length > 0">
+      <h3 class="sub-items-title">Sub-Items</h3>
+      <ul class="sub-items-list">
+        <li *ngFor="let subItem of packageDetails.subItems" class="sub-item">
+          {{ subItem.name }}
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <div *ngIf="!packageDetails" class="loading-message">
+    Loading package details...
+  </div>
+</div>

@@ -22,6 +22,7 @@ export class ItemsPageComponent implements OnInit {
   showSubItems:boolean=false
   showPackages:boolean=false
   ListItems: any = [];
+  ListPackages: any = [];
   ListAllItems: any = [];
   pListItems: any = [];
   showModal: boolean = false;
@@ -72,18 +73,6 @@ export class ItemsPageComponent implements OnInit {
       filterprice: ['', Validators.required],
     });
   }
-//   onInput() {
-//  console.log('this search:',this.subItemsSearch)
-//     this.filteredSubItems = [...this.subItems]; 
-//     this.filteredPackages = [...this.packages]; 
-//     this.filteredItems = this.autoitems.filter(autoitems =>
-//       autoitems.toLowerCase().includes(this.subItemsSearch.toLowerCase())
-//     );
-//     this.filteredPackages = this.autopackages.filter(autoitems =>
-//       autoitems.toLowerCase().includes(this.packageSearch.toLowerCase())
-//     );
-
-//   }
   selectItem(autoitems: string) {
     this.autoSearchTerm = autoitems;
     this.filteredItems = [];
@@ -137,8 +126,6 @@ export class ItemsPageComponent implements OnInit {
     this.filteredPackages = this.packages.filter((packages:any) => 
       !this.selectedPackages.some(selectedPackage => selectedPackage._id === packages._id)
     );
-  console.log(this.filteredSubItems,'this is filtered subItems')
-  console.log(this.filterPackages(),'this is filtered packages')
     this.addItemForm.patchValue({
       name: this.item.name,
       isAvailable: this.item.isAvailable,
@@ -174,7 +161,6 @@ export class ItemsPageComponent implements OnInit {
         subItems: this.selectedSubItems.map(item => item._id),
         packages: this.selectedPackages.map(packages => packages._id)
       };
-      console.log(this.addItemForm.value, 'this is formValue to send data..........');
       this.itemService.addItem(newItem).subscribe({
       next:(response:any)=>{
         this.isLoading=false;
@@ -217,8 +203,10 @@ export class ItemsPageComponent implements OnInit {
     this.itemService.getPaginatedItems(this.pageNumber).subscribe((response:any) => {
       this.isLoading=false
       this.ListItems = response.items;
+      this.ListPackages = this.ListItems.map((item:any) => item.packages).flat();
       this.totalPages= response.totalPages
       this.pagesCount();
+      console.log(this.ListPackages, 'this is the packages list in  ListItems');
       console.log(this.pageNumber, 'this is  PageNumber');
       console.log(response, 'these are paginated items');
     });
@@ -233,6 +221,7 @@ export class ItemsPageComponent implements OnInit {
       this.toastr.error('Item deleted successfully!');
     });
   }
+  viewItem(itemId:any){}
 
   updateItem() {
     this.isLoading=true
@@ -243,7 +232,6 @@ export class ItemsPageComponent implements OnInit {
         packages: this.selectedPackages.map(packages => packages._id)
 
       }
-      console.log(updatedItem,'thisssss to update')
       this.itemService.updateItem(this.item._id, updatedItem).subscribe({
         next: (response:any) =>{
           this.isLoading=false
@@ -360,18 +348,14 @@ export class ItemsPageComponent implements OnInit {
     this.isLoading=true
     this.subItemService.getAllSubItems().subscribe((response:any) => {
       this.isLoading=false
-      console.log(response,'this is subitems in items component' )
        this.subItems=response.items
-        console.log(this.subItems,'this is a list of subitems assyning');
     });
   }
   getAllPackages() {
     this.isLoading=true
     this.packageService.getAllPeckage().subscribe((response:any) => {
       this.isLoading=false
-      console.log(response,'this is packages in items component' )
        this.packages=response.items
-        console.log(this.packages,'this is a list of packages assyning');
     });
   }
   previousPage() {
@@ -393,7 +377,6 @@ export class ItemsPageComponent implements OnInit {
     for(let i=1; i<=this.totalPages; i++){
       this.pageCountArray.push(i)
     }
-    console.log(this.pageCountArray, 'these are the page numbers Array');
   }
   filterIem(){
     const filterName= this.filterForm.value.filtername.toLowerCase() || '';
@@ -405,7 +388,6 @@ export class ItemsPageComponent implements OnInit {
     if(this.filterItemArray.length==0){
       this.toastr.warning('No items match your filter criteria.');
     }
-    console.log(this.filterItemArray, 'filterItemArray Items ######');
     
   }
   filterErrorShow(){
