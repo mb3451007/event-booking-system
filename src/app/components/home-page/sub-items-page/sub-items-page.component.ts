@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ItemsService } from 'src/app/items.service';
 import { SubItemsService } from 'src/app/sub-items.service';
 
 @Component({
@@ -12,7 +13,6 @@ import { SubItemsService } from 'src/app/sub-items.service';
 export class SubItemsPageComponent {
   showModal: boolean = false;
   formData = { name: '', price: '',itemName: '', isAvailable: false };
-  availableItems = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
   AddItmePlus='assets/plus-circle-svgrepo-com.svg'
   subItem:any
   subItems:any =[]
@@ -23,11 +23,17 @@ export class SubItemsPageComponent {
   pageCountArray:any[]=[]
   pageNumber:number =1
   totalPages:number =1
-  constructor(private subItemService:SubItemsService, private fb:FormBuilder, private activatedRoute:ActivatedRoute, private toastr: ToastrService) {
+  ListAllItems:any[]=[]
+  selectedItem :any
+  constructor(private subItemService:SubItemsService, private fb:FormBuilder, private activatedRoute:ActivatedRoute, private toastr: ToastrService,
+  private itemService :ItemsService
+  
+  ) {
     this.addSubItemForm = this.fb.group({
       name : ['', Validators.required],
       price : ['', Validators.required],
       isAvailable : [true],
+      items:[null, Validators.required]
     })
   }
  
@@ -36,13 +42,14 @@ export class SubItemsPageComponent {
     this.pageNumber=localStoragePage? parseInt(localStoragePage):1;
     this.subitemId=this.activatedRoute.snapshot.paramMap.get('itemId');
     console.log(this.subitemId,'this is Item Id ........')
-    // this.getAllItems();
+    this.getAllItems();
     this.getPaginatedSubItems(this.pageNumber)
     
     this.subItem = {
       name:this.addSubItemForm.value.name ,
       price: this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
+      items:this.addSubItemForm.value.isAvailable
     };
     this.pagesCount()
   }
@@ -51,8 +58,17 @@ export class SubItemsPageComponent {
       this.showModal = true;
     }
     openUpdateModal(subItem: any) {
+      const updateSubItem={
+        
+      }
       this.subItem = { ...subItem }; 
       this.showUpdateModal = true;
+      this.addSubItemForm.patchValue({
+        name: subItem.name,
+        price: subItem.price,
+        isAvailable: subItem.isAvailable,
+        items: subItem.item._id 
+      });
     }
   
     closeModal() {
@@ -72,7 +88,8 @@ export class SubItemsPageComponent {
       const newItem = { 
         name: this.addSubItemForm.value.name,
          price: this.addSubItemForm.value.price,
-          isAvailable: this.addSubItemForm.value.isAvailable
+          isAvailable: this.addSubItemForm.value.isAvailable,
+          items :this.addSubItemForm.value.items
          };
       console.log(this.addSubItemForm.value,'this is formValue to send data')
       this.subItemService.addSubItem(newItem).subscribe({
@@ -106,11 +123,11 @@ export class SubItemsPageComponent {
     localStorage.setItem('pageNumber',this.pageNumber.toString())
       this.subItemService.getPaginatedSubItems(this.pageNumber).subscribe(response => {
         this.isLoading=false
-        this.subItems=response.items
+        this.subItems=response
         this.totalPages= response.totalPages
         this.pagesCount();
         console.log(this.totalPages, 'these are peginated sub items total pages');
-        console.log(response, 'these are peginated sub items');
+        console.log(this.subItems, 'these are peginated sub items');
         
         console.log(response);
       });
@@ -173,4 +190,21 @@ export class SubItemsPageComponent {
       }
       console.log(this.pageCountArray, 'these are the page numbers Array');
     }
+    getAllItems() {
+      this.itemService.getAllItems().subscribe((response: any) => {
+        this.ListAllItems=response.items
+        console.log(this.ListAllItems, 'this is a list of  All items');
+      });
+    }
+    selectItem(event: Event) {
+      const selectedId = (event.target as HTMLSelectElement).value;
+      const selectedItem = this.ListAllItems.find((pkg:any) => pkg._id === selectedId);
+    console.log(selectedItem,'selecthhh')
+      if (selectedItem) {
+        this.selectedItem=selectedItem
+        this.addSubItemForm.patchValue({ items: selectedItem._id });
+      }
+    }
+  
+   
 }

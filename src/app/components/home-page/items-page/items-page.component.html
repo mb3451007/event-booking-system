@@ -13,20 +13,7 @@
             class="AddItem"
           />
         </div>
-        <form [formGroup]="filterForm" class="filter-form" >
-          <input type="text" formControlName="filtername" placeholder="Type Name for Filter">
-          <input type="number" formControlName="filterprice" placeholder="Type Price for Filter">
-          <button class="btn btn-primary" (click)="filterIem()">Filter</button>
-        </form>
-
-        <div *ngIf="filterItemArray.length === 0 && filterError">
-          <p class="text-danger">No items match your filter criteria.</p>
-        </div>
-        
-        <div *ngFor="let name of filterItemArray">
-          <h2>{{name.name}}</h2>
-        </div>
-        
+              
         <div class="table-responsive">
           <table class="table align-middle">
             <thead>
@@ -44,8 +31,8 @@
                 <td>{{ item.name }}</td>
                 <td>
                   <div class="">
-                    <p *ngFor="let package of item.packages" class="text-decoration-none name-line d-flex">
-                     {{package.name}} <br>
+                    <p class="text-decoration-none name-line d-flex">
+                     {{ item.package.name }} <br>
                     </p>
                   </div>
                 </td>
@@ -116,96 +103,28 @@ style="display: {{ showModal ? 'block' : 'none' }}"
               Name is required.
             </div>
           </div>          
-      
+ 
 
 
-            <!-- autocomplete -->
-        <!-- Search Sub-Items -->
-<div class="form-group inputFormGroup">
-  <label for="subItemsSearch">Search Sub-Items</label>
-  <input
-    type="text"
-    id="subItemsSearch"
-    class="form-control"
-    (focus)="onFocusActive()"
-    formControlName="subItemsSearch" 
-    placeholder="Search Sub-Items"
-  />
-</div>
 
-<!-- Sub-Item List -->
-<ul
-  *ngIf="showSubItems"
-  class="list-group subitem-list"
->
-  <li
-    *ngFor="let subItem of filteredSubItems"
-    class="list-group-item list-group-item-action subitem"
-    (click)="selectSubItem(subItem)"
-  >
-    {{ subItem.name }}
-  </li>
-</ul>
+        
+          <div class="form-group inputFormGroup">
+            <label for="packageDropdown">Select Package</label>
+            <select
+              id="packageDropdown"
+              class="form-control"
+              formControlName="selectedPackage"
+              (change)="selectPackage($event)"
+            >
+              <option *ngFor="let package of packages" [value]="package._id">
+                {{ package.name }}
+              </option>
+            </select>
+          </div>
+          
+          
+          
 
-<!-- Display Selected Sub-Items -->
-<div *ngIf="selectedSubItems.length > 0" class="selected-subitems-container">
-  <h4 class="selected-subitems-header">Selected Sub Items</h4>
-  <ul class="selected-subitems-list">
-    <li *ngFor="let subItem of selectedSubItems" class="selected-subitem">
-      {{ subItem.name }}
-      <button type="button" class="btn-remove" (click)="removeSubItem(subItem)">
-        Remove
-      </button>
-    </li>
-  </ul>
-</div>
-
-
-          <!-- end -->
-           
-            <!-- Peckages -->
-        <!-- Search Peckages -->
-<div class="form-group inputFormGroup">
-  <label for="packageSearch">Search Packages</label>
-  <input
-    type="text"
-    id="packageSearch"
-    class="form-control"
-    (focus)="onFocusActivePackages()"
-    formControlName="packageSearch" 
-    placeholder="Search Packages"
-  />
-</div>
-
-<!-- Packages List -->
-<ul
-  *ngIf="showPackages"
-  class="list-group subitem-list"
->
-  <li
-    *ngFor="let package of filteredPackages"
-    class="list-group-item list-group-item-action subitem"
-    (click)="selectPackage(package)"
-  >
-    {{ package.name }}
-  </li>
-</ul>
-
-<!-- Display Selected Packages -->
-<div *ngIf="selectedPackages.length > 0" class="selected-subitems-container">
-  <h4 class="selected-subitems-header">Selected Packages</h4>
-  <ul class="selected-subitems-list">
-    <li *ngFor="let package of selectedPackages" class="selected-subitem">
-      {{ package.name }}
-      <button type="button" class="btn-remove" (click)="removePackage(package)">
-        Remove
-      </button>
-    </li>
-  </ul>
-</div>
-
-
-          <!-- end -->
 
           <div class="form-group form-check inputFormGroup">
             <input
@@ -254,45 +173,6 @@ style="display: {{ showModal ? 'block' : 'none' }}"
           </div>
          
            <!-- autocomplete -->
-        <!-- Search Sub-Items -->
-        <div class="form-group inputFormGroup">
-          <label for="subItemsSearch">Search for Update Sub-Items</label>
-          <input
-            type="text"
-            id="subItemsSearch"
-            class="form-control"
-            (focus)="onFocusActive()"
-            formControlName="subItemsSearch" 
-            placeholder="Search Sub-Items"
-          />
-        </div>
-        
-        <!-- Sub-Item List -->
-        <ul
-          *ngIf="showSubItems"
-          class="list-group subitem-list"
-        >
-          <li
-            *ngFor="let subItem of filteredSubItems"
-            class="list-group-item list-group-item-action subitem"
-            (click)="selectSubItem(subItem)"
-          >
-            {{ subItem.name }}
-          </li>
-        </ul>
-        
-        <!-- Display Selected Sub-Items -->
-        <div *ngIf="selectedSubItems.length > 0" class="selected-subitems-container">
-          <h4 class="selected-subitems-header">Selected Sub Items</h4>
-          <ul class="selected-subitems-list">
-            <li *ngFor="let subItem of selectedSubItems" class="selected-subitem">
-              {{ subItem.name }}
-              <button type="button" class="btn-remove" (click)="removeSubItem(subItem)">
-                Remove
-              </button>
-            </li>
-          </ul>
-        </div>
 
         <!-- end subitem -->
         
@@ -324,12 +204,12 @@ style="display: {{ showModal ? 'block' : 'none' }}"
         </ul>
         
         <!-- Display Selected Sub-Items -->
-        <div *ngIf="selectedPackages.length > 0" class="selected-subitems-container">
+        <div *ngIf="selectedPackage !=null" class="selected-subitems-container">
           <h4 class="selected-subitems-header">Selected Packages</h4>
           <ul class="selected-subitems-list">
-            <li *ngFor="let package of selectedPackages" class="selected-subitem">
-              {{ package.name }}
-              <button type="button" class="btn-remove" (click)="removePackage(package)">
+            <li  class="selected-subitem">
+              {{ selectedPackage.name }}
+              <button type="button" class="btn-remove" (click)="removePackage()">
                 Remove
               </button>
             </li>

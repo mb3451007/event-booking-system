@@ -28,15 +28,16 @@
             </thead>
 
             <tbody>
-              <tr *ngFor="let item of subItems">
-                <td>{{ item.name }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.subItem }}</td>
+              <tr *ngFor="let subItem of subItems.subItems">
+                <td>{{ subItem.name }}</td>
+                <td>{{ subItem.price }}</td>
+                  <td>{{ subItem.item.name }}</td>
+                
                 <td class="slot">
                   <!-- <img [src]="item.viewItem" alt="Hanna Gover" /> -->
                   <img src="assets/view-eye-svgrepo-com.svg" alt="Hanna Gover" />
-                  <img src="assets/edit-4-svgrepo-com.svg" alt="Hanna Gover"(click)="openUpdateModal(item)" />
-                  <img src="assets/delete-svgrepo-com.svg" alt="Hanna Gover" (click)="deleteSubItem(item._id)"/>
+                  <img src="assets/edit-4-svgrepo-com.svg" alt="Hanna Gover"(click)="openUpdateModal(subItem)" />
+                  <img src="assets/delete-svgrepo-com.svg" alt="Hanna Gover" (click)="deleteSubItem(subItem._id)"/>
                 </td>
               </tr>
             </tbody>
@@ -60,26 +61,6 @@
 
   <!-- add new sub item -->
 
-  <!-- <div class="table-container bg-white rounded shadow p-4 mt-5">
-  <table class="table mt-4">
-   <thead>
-     <tr>
-       <th>Name</th>
-       <th>Price</th>
-       <th>Item</th>   
-       <th>Is available</th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr *ngFor="let item of items">
-       <td>{{ item.name }}</td>
-       <td>{{ item.price }}</td>
-       <td>{{ item.itemName }}</td>
-       <td>{{ item.isAvailable ? 'Yes' : 'No' }}</td>
-     </tr>
-   </tbody>
- </table>
-  </div> -->
 </div>
 
 <!-- add Item -->
@@ -128,22 +109,31 @@
               required
             />
           </div>
+
+
           <div class="form-group inputFormGroup">
-            <label for="itemName">Item</label>
+            <label for="itemName">Select Item</label>
             <select
               id="itemName"
-              formControlName="itemName"
+              formControlName="item"
               class="form-control"
-              [(ngModel)]="formData.itemName"
+              (change)="selectItem($event)"
               name="itemName"
               required
             >
               <option value="" disabled>Select Item</option>
-              <option *ngFor="let item of availableItems" [value]="item">
-                {{ item }}
+              <option *ngFor="let item of ListAllItems" [value]="item._id">
+                {{ item .name}}
               </option>
             </select>
           </div>
+
+          <!--  -->
+        
+          <!--  -->
+
+
+
           <div class="form-group form-check inputFormGroup">
             <input
               type="checkbox"
@@ -195,6 +185,22 @@
           <div class="form-group inputFormGroup">
             <label for="price">price</label>
             <input type="text" id="price" formControlName="price" class="form-control" [(ngModel)]="subItem.price" name="price" required />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="itemName">Item</label>
+            <select
+              id="itemName"
+              formControlName="item"
+              class="form-control"
+              [(ngModel)]="formData.itemName"
+              name="itemName"
+              required
+            >
+              <option value="" disabled>Select Item</option>
+              <option *ngFor="let item of ListAllItems" [value]="item">
+                {{ item .name}}
+              </option>
+            </select>
           </div>
           <div class="form-group form-check inputFormGroup">
             <input type="checkbox" id="isAvailable" formControlName="isAvailable" class="form-check-input" [(ngModel)]="subItem.isAvailable" name="isAvailable" />

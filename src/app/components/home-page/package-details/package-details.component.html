@@ -1,22 +1,38 @@
-<div class="package-details-container">
+<div class="package-details-container" *ngIf="packageDetails; else loading">
+  <!-- Header Section -->
   <div class="header">
-    <h1 class="package-title">Package Name:{{ packageDetails.package.name }}</h1>
+    <h1 class="package-title">Package Name: {{ packageDetails.package?.name }}</h1>
   </div>
 
-  <div class="item-details">
-    <h2 class="item-title">Item Name:{{ packageDetails.item.name }}</h2>
-    
-    <div class="sub-items-section" *ngIf="packageDetails.subItems && packageDetails.subItems.length > 0">
-      <h3 class="sub-items-title">Sub-Items</h3>
-      <ul class="sub-items-list">
-        <li *ngFor="let subItem of packageDetails.subItems" class="sub-item">
-          {{ subItem.name }}
-        </li>
-      </ul>
-    </div>
-  </div>
-  
-  <div *ngIf="!packageDetails" class="loading-message">
-    Loading package details...
+  <!-- Items with Sub-Items Section -->
+  <div class="items-section" *ngIf="packageDetails.itemsWithSubItems?.length > 0">
+    <h2 class="items-title">Items</h2>
+    <ul class="items-list">
+      <li *ngFor="let itemWithSubItem of packageDetails.itemsWithSubItems" class="item">
+        <!-- Displaying Item Name -->
+        <h3 class="item-name">Item: {{ itemWithSubItem.item?.name }}</h3>
+
+        <!-- Sub-Items Section -->
+        <div class="sub-items-section" *ngIf="itemWithSubItem.subItems?.length > 0">
+          <h4 class="sub-items-title">Sub-Items:</h4>
+          <ul class="sub-items-list">
+            <li *ngFor="let subItem of itemWithSubItem.subItems" class="sub-item">
+              {{ subItem.name }}
+            </li>
+          </ul>
+        </div>
+        <!-- No Sub-Items Message -->
+        <div *ngIf="itemWithSubItem.subItems?.length === 0" class="no-sub-items">
+          <p>No sub-items available for this item.</p>
+        </div>
+      </li>
+    </ul>
   </div>
 </div>
+
+<!-- Loading Message Template -->
+<ng-template #loading>
+  <div class="loading-message">
+    Loading package details...
+  </div>
+</ng-template>
