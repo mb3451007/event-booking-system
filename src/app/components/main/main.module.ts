@@ -18,14 +18,16 @@ import { TransactionPageComponent } from '../home-page/transaction-page/transact
 import { ItemsPageComponent } from '../home-page/items-page/items-page.component';
 import { SubItemsPageComponent } from '../home-page/sub-items-page/sub-items-page.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import {NgFor, AsyncPipe} from '@angular/common';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { NgFor, AsyncPipe } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { LoaderComponent } from '../home-page/loader/loader.component';
+import { ConfirmationModalComponent } from '../home-page/confirmation-modal/confirmation-modal.component';
+import { PeckagesComponent } from '../home-page/peckages/peckages.component';
+import { PackageDetailsComponent } from '../home-page/package-details/package-details.component';
 
 @NgModule({
   declarations: [
-    
     HomePageComponent,
     HeaderComponent,
     FooterComponent,
@@ -38,10 +40,10 @@ import { LoaderComponent } from '../home-page/loader/loader.component';
     TransactionPageComponent,
     ItemsPageComponent,
     SubItemsPageComponent,
-    LoaderComponent
-   
-
-
+    LoaderComponent,
+    PeckagesComponent,
+    PackageDetailsComponent,
+    ConfirmationModalComponent,
   ],
   imports: [
     CommonModule,
@@ -54,9 +56,8 @@ import { LoaderComponent } from '../home-page/loader/loader.component';
     MatAutocompleteModule,
     MatFormFieldModule,
     MatInputModule,
-    NgFor, 
+    NgFor,
     AsyncPipe,
-   
-  ]
+  ],
 })
-export class MainModule { }
+export class MainModule {}

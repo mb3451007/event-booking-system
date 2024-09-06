@@ -10,43 +10,27 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SettingComponent } from './components/home-page/setting/setting.component';
 import { ToastrModule } from 'ngx-toastr';
-import { PeckagesComponent } from './components/home-page/peckages/peckages.component';
-import { PackageDetailsComponent } from './components/home-page/package-details/package-details.component';
-
-
-
-
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [
-    AppComponent,
-    LogInComponent,
-    SettingComponent,
-    PeckagesComponent,
-    PackageDetailsComponent,
-  
-  ],
+  declarations: [AppComponent, LogInComponent, SettingComponent],
   imports: [
     CommonModule,
     BrowserModule,
     AppRoutingModule,
     MainModule,
-    BrowserAnimationsModule,  
+    BrowserAnimationsModule,
     HttpClientModule,
-   FormsModule,
-   ReactiveFormsModule,
-   CommonModule,
-   ToastrModule.forRoot({
-    timeOut: 3000,
-    positionClass: 'toast-top-right',
-    preventDuplicates: true,
-  }),
-
-   
-  
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+    }),
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

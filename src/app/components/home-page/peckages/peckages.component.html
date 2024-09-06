@@ -12,8 +12,8 @@
             (click)="openModal()"
             class="AddItem"
           />
-        </div>   
-        
+        </div>
+
         <div class="table-responsive">
           <table class="table align-middle">
             <thead>
@@ -29,31 +29,65 @@
               <tr *ngFor="let item of ListAllItems">
                 <td>{{ item.name }}</td>
                 <td class="slot">
-                  <img src="assets/view-eye-svgrepo-com.svg" alt="Hanna Gover" (click)="viewItem(item._id)" />
-                  <img src="assets/edit-4-svgrepo-com.svg" alt="Hanna Gover"(click)="openUpdateModal(item)" />
-                  <img src="assets/delete-svgrepo-com.svg" alt="Hanna Gover" (click)="deleteItem(item._id)"/>
+                  <img
+                    src="assets/view-eye-svgrepo-com.svg"
+                    alt="Hanna Gover"
+                    (click)="viewItem(item._id)"
+                  />
+                  <img
+                    src="assets/edit-4-svgrepo-com.svg"
+                    alt="Hanna Gover"
+                    (click)="openUpdateModal(item)"
+                  />
+                  <img
+                    src="assets/delete-svgrepo-com.svg"
+                    alt="Hanna Gover"
+                    (click)="deleteItem(item._id)"
+                  />
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <!-- peckages.component.html -->
+        <app-confirmation-modal
+          *ngIf="showConfirmation"
+          (confirmed)="handleConfirmation($event)"
+        ></app-confirmation-modal>
+
         <div class="pagination-buttons mt-3 d-flex justify-content-between">
-          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === 1" (click)="previousPage()">Previous</button>
-          
+          <button
+            class="btn btn-primary h-25 mt-3"
+            [disabled]="pageNumber === 1"
+            (click)="previousPage()"
+          >
+            Previous
+          </button>
+
           <div class="pagination">
-            <div *ngFor="let page of pageCountArray" (click)="getPaginatedItems(page)" 
-                 [class.active]="page === pageNumber" class="page-number-button buttom-hover">
+            <div
+              *ngFor="let page of pageCountArray"
+              (click)="getPaginatedItems(page)"
+              [class.active]="page === pageNumber"
+              class="page-number-button buttom-hover"
+            >
               {{ page }}
             </div>
           </div>
-          
-          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === totalPages" (click)="nextPage()">Next</button>
+
+          <button
+            class="btn btn-primary h-25 mt-3"
+            [disabled]="pageNumber === totalPages"
+            (click)="nextPage()"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 
 <!-- add model -->
 <div
@@ -61,7 +95,7 @@
   tabindex="-1"
   role="dialog"
   [ngClass]="{ show: showModal }"
-style="display: {{ showModal ? 'block' : 'none' }}"
+  style="display: {{ showModal ? 'block' : 'none' }}"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -78,8 +112,11 @@ style="display: {{ showModal ? 'block' : 'none' }}"
       <div class="modal-body">
         <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
           <div class="form-group inputFormGroup">
-            <div *ngIf="!addItemForm.valid && addItemForm.touched" class="alert alert-danger">
-             <h5 class="text-danger"> Please fill all required fields.</h5>
+            <div
+              *ngIf="!addItemForm.valid && addItemForm.touched"
+              class="alert alert-danger"
+            >
+              <h5 class="text-danger">Please fill all required fields.</h5>
             </div>
             <label for="name">Name</label>
             <input
@@ -91,11 +128,19 @@ style="display: {{ showModal ? 'block' : 'none' }}"
               name="name"
               required
             />
-            <div *ngIf="addItemForm.controls['name'].invalid && addItemForm.controls['name'].touched" class="text-danger">
+            <div
+              *ngIf="
+                addItemForm.controls['name'].invalid &&
+                addItemForm.controls['name'].touched
+              "
+              class="text-danger"
+            >
               Name is required.
             </div>
-          </div>          
-          <button type="submit" class="btn btn-primary"  (click)="addItem()">Submit</button>
+          </div>
+          <button type="submit" class="btn btn-primary" (click)="addItem()">
+            Submit
+          </button>
         </form>
       </div>
     </div>
@@ -125,10 +170,21 @@ style="display: {{ showModal ? 'block' : 'none' }}"
         <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
           <div class="form-group inputFormGroup">
             <label for="name">Name</label>
-            <input type="text" id="name" formControlName="name" class="form-control" [(ngModel)]="item.name" name="name" required />
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+              [(ngModel)]="item.name"
+              name="name"
+              required
+            />
           </div>
-          <button type="submit" class="btn btn-primary"  (click)="updateItem()">Submit</button>
+          <button type="submit" class="btn btn-primary" (click)="updateItem()">
+            Submit
+          </button>
         </form>
       </div>
     </div>
+  </div>
 </div>

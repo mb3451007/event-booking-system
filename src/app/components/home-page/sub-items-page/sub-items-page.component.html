@@ -20,7 +20,7 @@
               <tr>
                 <th scope="col ">Name</th>
                 <th scope="col ">Price</th>
-                <th scope="col ">Items</th>
+                <th scope="col ">Item</th>
                 <th scope="col ">Action</th>
                 <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
                 <!-- <th scope="col">Transactions  </th> -->
@@ -31,36 +31,67 @@
               <tr *ngFor="let subItem of subItems.subItems">
                 <td>{{ subItem.name }}</td>
                 <td>{{ subItem.price }}</td>
-                  <td>{{ subItem.item.name }}</td>
-                
+                <td>{{ subItem.item.name }}</td>
+
                 <td class="slot">
                   <!-- <img [src]="item.viewItem" alt="Hanna Gover" /> -->
-                  <img src="assets/view-eye-svgrepo-com.svg" alt="Hanna Gover" />
-                  <img src="assets/edit-4-svgrepo-com.svg" alt="Hanna Gover"(click)="openUpdateModal(subItem)" />
-                  <img src="assets/delete-svgrepo-com.svg" alt="Hanna Gover" (click)="deleteSubItem(subItem._id)"/>
+                  <img
+                    src="assets/view-eye-svgrepo-com.svg"
+                    alt="Hanna Gover"
+                  />
+                  <img
+                    src="assets/edit-4-svgrepo-com.svg"
+                    alt="Hanna Gover"
+                    (click)="openUpdateModal(subItem)"
+                  />
+                  <img
+                    src="assets/delete-svgrepo-com.svg"
+                    alt="Hanna Gover"
+                    (click)="deleteSubItem(subItem._id)"
+                  />
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <app-confirmation-modal
+          *ngIf="showConfirmation"
+          (confirmed)="handleConfirmation($event)"
+        ></app-confirmation-modal>
         <div class="pagination-buttons mt-3 d-flex justify-content-between">
-          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === 1" (click)="previousPage()">Previous</button>
-          
+          <button
+            class="btn btn-primary h-25 mt-3"
+            [disabled]="pageNumber === 1"
+            (click)="previousPage()"
+          >
+            Previous
+          </button>
+
           <div class="pagination">
-            <div *ngFor="let page of pageCountArray" (click)="getPaginatedSubItems(page)" 
-                 [class.active]="page === pageNumber" class="page-number-button buttom-hover">
+            <div
+              *ngFor="let page of pageCountArray"
+              (click)="getPaginatedSubItems(page)"
+              [class.active]="page === pageNumber"
+              class="page-number-button buttom-hover"
+            >
               {{ page }}
             </div>
           </div>
-          
-          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === totalPages" (click)="nextPage()">Next</button>
+
+          <button
+            class="btn btn-primary h-25 mt-3"
+            [disabled]="pageNumber === totalPages"
+            (click)="nextPage()"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- add new sub item -->
-
 </div>
 
 <!-- add Item -->
@@ -69,7 +100,7 @@
   tabindex="-1"
   role="dialog"
   [ngClass]="{ show: showModal }"
-  [ngStyle]="{'display': showModal ? 'block' : 'none' }"
+  [ngStyle]="{ display: showModal ? 'block' : 'none' }"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -110,7 +141,6 @@
             />
           </div>
 
-
           <div class="form-group inputFormGroup">
             <label for="itemName">Select Item</label>
             <select
@@ -123,16 +153,14 @@
             >
               <option value="" disabled>Select Item</option>
               <option *ngFor="let item of ListAllItems" [value]="item._id">
-                {{ item .name}}
+                {{ item.name }}
               </option>
             </select>
           </div>
 
           <!--  -->
-        
+
           <!--  -->
-
-
 
           <div class="form-group form-check inputFormGroup">
             <input
@@ -147,13 +175,19 @@
               >Is Available</label
             >
           </div>
-          <button type="submit" class="btn btn-primary" [disabled]="!addSubItemForm.valid" (click)="addSubItem()" >Submit</button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!addSubItemForm.valid"
+            (click)="addSubItem()"
+          >
+            Submit
+          </button>
         </form>
       </div>
     </div>
   </div>
 </div>
-
 
 <!-- add sUb Item -->
 <!-- Update model -->
@@ -162,12 +196,12 @@
   tabindex="-1"
   role="dialog"
   [ngClass]="{ show: showUpdateModal }"
-  [ngStyle]="{'display': showUpdateModal ? 'block' : 'none' }"
+  [ngStyle]="{ display: showUpdateModal ? 'block' : 'none' }"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Update Item</h3>
+        <h3 class="title">Update Sub Item</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
@@ -180,35 +214,65 @@
         <form [formGroup]="addSubItemForm" (ngSubmit)="onSubmit()">
           <div class="form-group inputFormGroup">
             <label for="name">Name</label>
-            <input type="text" id="name" formControlName="name" class="form-control" [(ngModel)]="subItem.name" name="name" required />
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+              [(ngModel)]="subItem.name"
+              name="name"
+              required
+            />
           </div>
           <div class="form-group inputFormGroup">
             <label for="price">price</label>
-            <input type="text" id="price" formControlName="price" class="form-control" [(ngModel)]="subItem.price" name="price" required />
+            <input
+              type="text"
+              id="price"
+              formControlName="price"
+              class="form-control"
+              [(ngModel)]="subItem.price"
+              name="price"
+              required
+            />
           </div>
+
           <div class="form-group inputFormGroup">
             <label for="itemName">Item</label>
             <select
               id="itemName"
               formControlName="item"
               class="form-control"
-              [(ngModel)]="formData.itemName"
               name="itemName"
               required
             >
               <option value="" disabled>Select Item</option>
-              <option *ngFor="let item of ListAllItems" [value]="item">
-                {{ item .name}}
+              <option *ngFor="let item of subItems" [value]="item">
+                {{ item.name }}
               </option>
             </select>
           </div>
+
           <div class="form-group form-check inputFormGroup">
-            <input type="checkbox" id="isAvailable" formControlName="isAvailable" class="form-check-input" [(ngModel)]="subItem.isAvailable" name="isAvailable" />
+            <input
+              type="checkbox"
+              id="isAvailable"
+              formControlName="isAvailable"
+              class="form-check-input"
+              [(ngModel)]="subItem.isAvailable"
+              name="isAvailable"
+            />
             <label class="form-check-label" for="isAvailable"
               >Is Available</label
             >
           </div>
-          <button type="submit" class="btn btn-primary" (click)="updateSubItem()">Submit</button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            (click)="updateSubItem()"
+          >
+            Submit
+          </button>
         </form>
       </div>
     </div>

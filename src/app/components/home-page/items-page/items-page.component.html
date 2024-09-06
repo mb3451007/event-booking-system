@@ -13,7 +13,7 @@
             class="AddItem"
           />
         </div>
-              
+
         <div class="table-responsive">
           <table class="table align-middle">
             <thead>
@@ -32,36 +32,69 @@
                 <td>
                   <div class="">
                     <p class="text-decoration-none name-line d-flex">
-                     {{ item.package.name }} <br>
+                      {{ item.package.name }} <br />
                     </p>
                   </div>
                 </td>
                 <td class="slot">
-                  <img src="assets/view-eye-svgrepo-com.svg" alt="Hanna Gover" (click)="viewItem(item._id)" />
-                  <img src="assets/edit-4-svgrepo-com.svg" alt="Hanna Gover"(click)="openUpdateModal(item)" />
-                  <img src="assets/delete-svgrepo-com.svg" alt="Hanna Gover" (click)="deleteItem(item._id)"/>
+                  <img
+                    src="assets/view-eye-svgrepo-com.svg"
+                    alt="Hanna Gover"
+                    (click)="viewItem(item._id)"
+                  />
+                  <img
+                    src="assets/edit-4-svgrepo-com.svg"
+                    alt="Hanna Gover"
+                    (click)="openUpdateModal(item)"
+                  />
+                  <img
+                    src="assets/delete-svgrepo-com.svg"
+                    alt="Hanna Gover"
+                    (click)="deleteItem(item._id)"
+                  />
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <app-confirmation-modal
+          *ngIf="showConfirmation"
+          (confirmed)="handleConfirmation($event)"
+        ></app-confirmation-modal>
+
         <div class="pagination-buttons mt-3 d-flex justify-content-between">
-          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === 1" (click)="previousPage()">Previous</button>
-          
+          <button
+            class="btn btn-primary h-25 mt-3"
+            [disabled]="pageNumber === 1"
+            (click)="previousPage()"
+          >
+            Previous
+          </button>
+
           <div class="pagination">
-            <div *ngFor="let page of pageCountArray" (click)="getPaginatedItems(page)" 
-                 [class.active]="page === pageNumber" class="page-number-button buttom-hover">
+            <div
+              *ngFor="let page of pageCountArray"
+              (click)="getPaginatedItems(page)"
+              [class.active]="page === pageNumber"
+              class="page-number-button buttom-hover"
+            >
               {{ page }}
             </div>
           </div>
-          
-          <button class="btn btn-primary h-25 mt-3" [disabled]="pageNumber === totalPages" (click)="nextPage()">Next</button>
+
+          <button
+            class="btn btn-primary h-25 mt-3"
+            [disabled]="pageNumber === totalPages"
+            (click)="nextPage()"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 
 <!-- add model -->
 <div
@@ -69,7 +102,7 @@
   tabindex="-1"
   role="dialog"
   [ngClass]="{ show: showModal }"
-style="display: {{ showModal ? 'block' : 'none' }}"
+  style="display: {{ showModal ? 'block' : 'none' }}"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -86,8 +119,11 @@ style="display: {{ showModal ? 'block' : 'none' }}"
       <div class="modal-body">
         <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
           <div class="form-group inputFormGroup">
-            <div *ngIf="!addItemForm.valid && addItemForm.touched" class="alert alert-danger">
-             <h5 class="text-danger"> Please fill all required fields.</h5>
+            <div
+              *ngIf="!addItemForm.valid && addItemForm.touched"
+              class="alert alert-danger"
+            >
+              <h5 class="text-danger">Please fill all required fields.</h5>
             </div>
             <label for="name">Name</label>
             <input
@@ -99,32 +135,32 @@ style="display: {{ showModal ? 'block' : 'none' }}"
               name="name"
               required
             />
-            <div *ngIf="addItemForm.controls['name'].invalid && addItemForm.controls['name'].touched" class="text-danger">
+            <div
+              *ngIf="
+                addItemForm.controls['name'].invalid &&
+                addItemForm.controls['name'].touched
+              "
+              class="text-danger"
+            >
               Name is required.
             </div>
-          </div>          
- 
+          </div>
 
-
-
-        
           <div class="form-group inputFormGroup">
-            <label for="packageDropdown">Select Package</label>
+            <label for="itemName">Item</label>
             <select
-              id="packageDropdown"
-              class="form-control"
+              id="itemName"
               formControlName="selectedPackage"
-              (change)="selectPackage($event)"
+              class="form-control"
+              name="itemName"
+              required
             >
-              <option *ngFor="let package of packages" [value]="package._id">
-                {{ package.name }}
+              <option value="" disabled>Select Item</option>
+              <option *ngFor="let item of packages" [value]="item">
+                {{ item.name }}
               </option>
             </select>
           </div>
-          
-          
-          
-
 
           <div class="form-group form-check inputFormGroup">
             <input
@@ -139,7 +175,14 @@ style="display: {{ showModal ? 'block' : 'none' }}"
               >Is Available</label
             >
           </div>
-          <button type="submit" class="btn btn-primary"  [disabled]="!addItemForm.valid" (click)="addItem()">Submit</button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!addItemForm.valid"
+            (click)="addItem()"
+          >
+            Submit
+          </button>
         </form>
       </div>
     </div>
@@ -169,66 +212,90 @@ style="display: {{ showModal ? 'block' : 'none' }}"
         <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
           <div class="form-group inputFormGroup">
             <label for="name">Name</label>
-            <input type="text" id="name" formControlName="name" class="form-control" [(ngModel)]="item.name" name="name" required />
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+              [(ngModel)]="item.name"
+              name="name"
+              required
+            />
           </div>
-         
-           <!-- autocomplete -->
 
-        <!-- end subitem -->
-        
-        <!-- Search Packages Update -->
-        <div class="form-group inputFormGroup">
-          <label for="packageSearch">Search for Update Packages</label>
-          <input
-            type="text"
-            id="packageSearch"
-            class="form-control"
-            (focus)="onFocusActivePackages()"
-            formControlName="packageSearch" 
-            placeholder="Search Packages"
-          />
-        </div>
-        
-        <!-- Sub-Item List -->
-        <ul
-          *ngIf="showPackages"
-          class="list-group subitem-list"
-        >
-          <li
-            *ngFor="let package of filteredPackages"
-            class="list-group-item list-group-item-action subitem"
-            (click)="selectPackage(package)"
-          >
-            {{ package.name }}
-          </li>
-        </ul>
-        
-        <!-- Display Selected Sub-Items -->
-        <div *ngIf="selectedPackage !=null" class="selected-subitems-container">
-          <h4 class="selected-subitems-header">Selected Packages</h4>
-          <ul class="selected-subitems-list">
-            <li  class="selected-subitem">
-              {{ selectedPackage.name }}
-              <button type="button" class="btn-remove" (click)="removePackage()">
-                Remove
-              </button>
+          <!-- autocomplete -->
+
+          <!-- end subitem -->
+
+          <!-- Search Packages Update -->
+          <div class="form-group inputFormGroup">
+            <label for="packageSearch">Search for Update Packages</label>
+            <input
+              type="text"
+              id="packageSearch"
+              class="form-control"
+              (focus)="onFocusActivePackages()"
+              formControlName="packageSearch"
+              placeholder="Search Packages"
+            />
+          </div>
+
+          <!-- Sub-Item List -->
+          <ul *ngIf="showPackages" class="list-group subitem-list">
+            <li
+              *ngFor="let package of filteredPackages"
+              class="list-group-item list-group-item-action subitem"
+              (click)="selectPackage(package)"
+            >
+              {{ package.name }}
             </li>
           </ul>
-        </div>
 
-        <!-- end subitem -->
-        
-        
-                 
+          <!-- Display Selected Sub-Items -->
+          <div
+            *ngIf="selectedPackage != null"
+            class="selected-subitems-container"
+          >
+            <h4 class="selected-subitems-header">Selected Packages</h4>
+            <ul class="selected-subitems-list">
+              <li class="selected-subitem">
+                {{ selectedPackage.name }}
+                <button
+                  type="button"
+                  class="btn-remove"
+                  (click)="removePackage()"
+                >
+                  Remove
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- end subitem -->
 
           <div class="form-group form-check inputFormGroup">
-            <input type="checkbox" id="isAvailable" formControlName="isAvailable" class="form-check-input" [(ngModel)]="item.isAvailable" name="isAvailable" />
+            <input
+              type="checkbox"
+              id="isAvailable"
+              formControlName="isAvailable"
+              class="form-check-input"
+              [(ngModel)]="item.isAvailable"
+              name="isAvailable"
+            />
             <label class="form-check-label" for="isAvailable"
               >Is Available</label
             >
           </div>
-          <button type="submit" class="btn btn-primary" [disabled]="!addItemForm.dirty" (click)="updateItem()">Submit</button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!addItemForm.dirty"
+            (click)="updateItem()"
+          >
+            Submit
+          </button>
         </form>
       </div>
     </div>
+  </div>
 </div>

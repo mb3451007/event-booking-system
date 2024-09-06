@@ -1,0 +1,94 @@
+/* Modal overlay */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top */
+  animation: fadeIn 0.3s ease; /* Fade-in effect */
+}
+
+/* Modal content */
+.modal-content {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Soft shadow */
+  animation: slideUp 0.4s ease; /* Slide-up effect */
+  text-align: center;
+}
+
+/* Modal title */
+.modal-content h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* Modal description text */
+.modal-content p {
+  font-size: 1em;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+/* Modal buttons */
+.modal-content button {
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Confirm button (Yes) */
+.modal-content button:first-child {
+  background-color: #007bff; /* Primary color */
+  color: white;
+  margin-right: 10px;
+}
+
+.modal-content button:first-child:hover {
+  background-color: #0056b3; /* Darker shade of the primary color */
+}
+
+/* Cancel button (No) */
+.modal-content button:last-child {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.modal-content button:last-child:hover {
+  background-color: #007bff; /* Blue color */
+  color: white; /* Text color changes to white for contrast */
+}
+
+/* Animation for modal fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Animation for modal slide-up */
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
