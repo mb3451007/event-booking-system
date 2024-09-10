@@ -15,7 +15,7 @@ export class SubItemsPageComponent {
   formData = { name: '', price: '', itemName: '', isAvailable: false };
   AddItmePlus = 'assets/plus-circle-svgrepo-com.svg';
   subItem: any;
-  subItems: any = [];
+  subItems: any;
   showUpdateModal: boolean = false;
   subitemId: any;
   addSubItemForm: FormGroup;
@@ -38,8 +38,9 @@ export class SubItemsPageComponent {
       name: ['', Validators.required],
       price: ['', Validators.required],
       isAvailable: [true],
-      items: [null, Validators.required],
+      item: ['', Validators.required],
     });
+
   }
 
   ngOnInit(): void {
@@ -54,26 +55,34 @@ export class SubItemsPageComponent {
       name: this.addSubItemForm.value.name,
       price: this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
-      items: this.addSubItemForm.value.isAvailable,
+      item: this.addSubItemForm.value.item,
     };
+
+
     this.pagesCount();
   }
+
+
+
+
 
   openModal() {
     this.showModal = true;
     this.addSubItemForm.reset();
   }
   openUpdateModal(subItem: any) {
-    const updateSubItem = {};
     this.subItem = { ...subItem };
     this.showUpdateModal = true;
     this.addSubItemForm.patchValue({
-      name: subItem.name,
-      price: subItem.price,
-      isAvailable: subItem.isAvailable,
-      items: subItem.item._id,
+      name: this.subItem.name,
+      price: this.subItem.price,
+      isAvailable: this.subItem.isAvailable,
+      item: this.subItem.item.id  // Ensure this is the ID
     });
+
+    console.log(subItem)
   }
+
 
   closeModal() {
     this.showModal = false;
@@ -92,9 +101,9 @@ export class SubItemsPageComponent {
       name: this.addSubItemForm.value.name,
       price: this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
-      items: this.addSubItemForm.value.items,
+      item: this.addSubItemForm.value.item,
     };
-    console.log(this.addSubItemForm.value, 'this is formValue to send data');
+    console.log(newItem, 'this is formValue to send data');
     this.subItemService.addSubItem(newItem).subscribe({
       next: (response: any) => {
         this.isLoading = false;
@@ -166,15 +175,17 @@ export class SubItemsPageComponent {
 
   updateSubItem() {
     this.isLoading = true;
-    console.log(this.subItem.id);
-    console.log(this.subItem);
-
+    const updatedItem = {
+      name: this.addSubItemForm.value.name,
+      price:this.addSubItemForm.value.price,
+      isAvailable: this.addSubItemForm.value.isAvailable,
+      item: this.addSubItemForm.value.item, // Ensure this is an ID
+    };
     this.subItemService
-      .updateSubItem(this.subItem._id, this.subItem)
+      .updateSubItem(this.subItem._id, updatedItem)
       .subscribe({
         next: (response: any) => {
           this.isLoading = false;
-          console.log(response);
           this.addSubItemForm.reset();
           this.closeUpdateModal();
           this.getAllSubItems();

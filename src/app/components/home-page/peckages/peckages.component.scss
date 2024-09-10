@@ -3,7 +3,7 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-  
+
   .headingTitle {
     display: flex;
     justify-content: space-between;
@@ -18,14 +18,14 @@
   }
   .AddItem {
     width: 30px;
-  
+
     height: 30px;
   }
   .newItem {
     font-size: 20px;
     font-weight: 500;
   }
-  
+
   .headerNewItem {
     position: relative;
   }
@@ -59,7 +59,7 @@
     position: relative;
     display: inline-block;
   }
-  
+
   .list-group {
     max-height: 200px;
     overflow-y: auto;
@@ -74,18 +74,18 @@
     border: 1px solid #ddd;
     border-radius: 5px;
   }
-  
+
   .subitem {
     padding: 10px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
   }
-  
+
   .subitem:hover {
     background-color: #007bff;
     color: white;
   }
-  
+
   .selected-subitems-container {
     margin-top: 20px;
     padding: 10px;
@@ -93,18 +93,18 @@
     border-radius: 5px;
     // box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
-  
+
   .selected-subitems-header {
     font-size: 1.5em;
     color: #333;
     margin-bottom: 10px;
   }
-  
+
   .selected-subitems-list {
     padding: 0;
     list-style: none;
   }
-  
+
   .selected-subitem {
     display: flex;
     justify-content: space-between;
@@ -115,11 +115,11 @@
     margin-bottom: 8px;
     transition: background-color 0.3s;
   }
-  
+
   .selected-subitem:hover {
     background-color: #d6d8db;
   }
-  
+
   .btn-remove {
     background-color: #dc3545;
     color: white;
@@ -129,7 +129,7 @@
     cursor: pointer;
     transition: background-color 0.3s;
   }
-  
+
   .btn-remove:hover {
     background-color: #c82333;
   }
@@ -138,14 +138,14 @@
     align-items: center;
     gap: 10px; /* Space between elements */
   }
-  
+
   .filter-form input {
     flex: 1; /* Makes the input fields take equal space */
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
   }
-  
+
   .filter-form button {
     padding: 8px 16px;
     border-radius: 4px;
@@ -154,7 +154,7 @@
     border: none;
     cursor: pointer;
   }
-  
+
   .filter-form button:hover {
     background-color: #0056b3;
   }
@@ -167,7 +167,7 @@
     align-items: center;
     margin-top: 20px;
   }
-  
+
   .page-number-button {
     display: inline-block;
     padding: 10px 15px;
@@ -179,73 +179,72 @@
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
-  
+
   .page-number-button:hover {
     background-color: #007bff;
     color: #fff;
   }
-  
+
   .page-number-button.active {
     background-color: #007bff;
     color: #fff;
   }
-  
+
   /* Add hover effect and transition to buttons */
   .btn-primary {
     background-color: #007bff;
     border-color: #007bff;
     transition: background-color 0.3s ease, transform 0.3s ease;
   }
-  
+
   .btn-primary:hover {
     background-color: #0056b3;
     transform: scale(1.05);
   }
-  
+
   /* Add hover effect and transition to modal close button */
   .closeBtn {
     cursor: pointer;
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
-  
+
   .closeBtn:hover {
     transform: rotate(90deg);
     opacity: 0.8;
   }
-  
+
   /* Add hover effect and transition to table row actions */
   .slot img {
     cursor: pointer;
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
-  
+
   .slot img:hover {
     transform: scale(1.1);
     opacity: 0.8;
   }
-  
+
   /* Add hover effect and transition to Add Item button */
   .AddItem {
     cursor: pointer;
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
-  
+
   .AddItem:hover {
     transform: scale(1.1);
     opacity: 0.8;
   }
-  
+
   /* Add transitions to form input focus */
   .inputFormGroup input,
   .inputFormGroup select,
   .inputFormGroup .form-check-input {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
-  
+
   .inputFormGroup input:focus,
   .inputFormGroup select:focus,
   .inputFormGroup .form-check-input:focus {
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
-  

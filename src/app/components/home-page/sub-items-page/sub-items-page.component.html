@@ -1,4 +1,4 @@
-<app-loader [isLoading]="isLoading"></app-loader>
+<!-- <app-loader [isLoading]="isLoading"></app-loader> -->
 <div class="container">
   <div class="row">
     <div class="col-12">
@@ -28,17 +28,12 @@
             </thead>
 
             <tbody>
-              <tr *ngFor="let subItem of subItems.subItems">
+              <tr *ngFor="let subItem of subItems?.subItems">
                 <td>{{ subItem.name }}</td>
                 <td>{{ subItem.price }}</td>
-                <td>{{ subItem.item.name }}</td>
-
+                <td>{{ subItem.item?.name }}</td>
                 <td class="slot">
-                  <!-- <img [src]="item.viewItem" alt="Hanna Gover" /> -->
-                  <img
-                    src="assets/view-eye-svgrepo-com.svg"
-                    alt="Hanna Gover"
-                  />
+                  <img src="assets/view-eye-svgrepo-com.svg" alt="Hanna Gover" />
                   <img
                     src="assets/edit-4-svgrepo-com.svg"
                     alt="Hanna Gover"
@@ -51,6 +46,7 @@
                   />
                 </td>
               </tr>
+
             </tbody>
           </table>
         </div>
@@ -141,19 +137,24 @@
             />
           </div>
 
+
+
+
+
+
           <div class="form-group inputFormGroup">
-            <label for="itemName">Select Item</label>
+          <label for="item">Select Item</label>
             <select
-              id="itemName"
+              id="item"
               formControlName="item"
               class="form-control"
-              (change)="selectItem($event)"
-              name="itemName"
+              name="item"
+
               required
             >
               <option value="" disabled>Select Item</option>
-              <option *ngFor="let item of ListAllItems" [value]="item._id">
-                {{ item.name }}
+              <option *ngFor="let pkg of ListAllItems" [value]="pkg._id">
+                {{ pkg.name }}
               </option>
             </select>
           </div>
@@ -238,19 +239,19 @@
           </div>
 
           <div class="form-group inputFormGroup">
-            <label for="itemName">Item</label>
+            <label for="item">Items</label>
             <select
-              id="itemName"
-              formControlName="item"
-              class="form-control"
-              name="itemName"
-              required
-            >
-              <option value="" disabled>Select Item</option>
-              <option *ngFor="let item of subItems" [value]="item">
-                {{ item.name }}
-              </option>
-            </select>
+            id="item"
+            formControlName="item"
+            class="form-control"
+            required
+          >
+            <option value="" disabled>Select Item</option>
+            <option *ngFor="let item of ListAllItems" [value]="item._id">
+              {{ item.name }}
+            </option>
+          </select>
+
           </div>
 
           <div class="form-group form-check inputFormGroup">

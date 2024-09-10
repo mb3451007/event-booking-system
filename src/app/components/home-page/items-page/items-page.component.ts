@@ -40,9 +40,9 @@ export class ItemsPageComponent implements OnInit {
   item: any;
   showSubItemsSearch: boolean = false;
   showpackagesSearch: boolean = false;
-  filterForm: FormGroup;
 
-  packages: any = [];
+
+  packages: any;
 
   selectedPackage: any;
 
@@ -65,22 +65,14 @@ export class ItemsPageComponent implements OnInit {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
       isAvailable: [true],
-      selectedPackage: [null, Validators.required],
-    });
-    this.filterForm = this.fb.group({
-      filtername: ['', Validators.required],
-      filterprice: ['', Validators.required],
+      packages: ["", Validators.required],
     });
   }
 
   ngOnInit(): void {
     const localStoragePage = localStorage.getItem('pageNumber');
     this.pageNumber = localStoragePage ? parseInt(localStoragePage) : 1;
-    this.addItemForm.get('subItemsSearch')?.valueChanges.subscribe(() => {});
-    this.addItemForm.get('packageSearch')?.valueChanges.subscribe(() => {
-      this.filterPackages();
-    });
-    this.filteredPackages = this.packages;
+
     this.itemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     this.getAllItems();
     this.getPaginatedItems(this.pageNumber);
@@ -91,9 +83,10 @@ export class ItemsPageComponent implements OnInit {
     this.item = {
       name: this.addItemForm.value.name,
       isAvailable: this.addItemForm.value.isAvailable,
-      selectedPackages: this.selectedPackage,
+      packages: this.addItemForm.value.selectedPackage,
     };
   }
+
 
   openModal() {
     this.showModal = true;
@@ -101,28 +94,23 @@ export class ItemsPageComponent implements OnInit {
     this.resetFilteredPackages();
   }
 
+  selectedID=''
+
   openUpdateModal(item: any) {
     this.item = { ...item };
-    this.selectedPackage = this.packages.filter((pkg: any) =>
-      item.packages && Array.isArray(item.packages)
-        ? item.packages.includes(pkg._id)
-        : false
-    );
 
-    this.filteredPackages = this.packages.filter(
-      (pkg: any) =>
-        !this.selectedPackage.some(
-          (selectedPkg: any) => selectedPkg._id === pkg._id
-        )
-    );
     this.addItemForm.patchValue({
       name: this.item.name,
       isAvailable: this.item.isAvailable,
-      packages: this.selectedPackage.map((pkg: any) => pkg._id),
+      packages: this.item.package.id  // Ensure this is the ID
     });
+
+console.log(item)
 
     this.showUpdateModal = true;
   }
+
+
 
   closeModal() {
     this.showModal = false;
@@ -138,14 +126,15 @@ export class ItemsPageComponent implements OnInit {
   }
 
   addItem() {
-    console.log(this.addItemForm.value);
     this.isLoading = true;
     if (this.addItemForm.valid) {
       const newItem = {
         name: this.addItemForm.value.name,
         isAvailable: this.addItemForm.value.isAvailable,
-        packages: this.addItemForm.value.selectedPackage,
+        packages: this.addItemForm.value.packages,
       };
+      console.log('formVal', this.addItemForm.value)
+      console.log(newItem,'jjhjhj')
       this.itemService.addItem(newItem).subscribe({
         next: (response: any) => {
           this.isLoading = false;
@@ -191,10 +180,7 @@ export class ItemsPageComponent implements OnInit {
         ).flat();
         this.totalPages = response.totalPages;
         this.pagesCount();
-        console.log(
-          this.ListPackages,
-          'this is the packages list in  ListItems'
-        );
+
         console.log(this.pageNumber, 'this is  PageNumber');
         console.log(response.items, 'these are paginated items');
       });
@@ -230,10 +216,11 @@ export class ItemsPageComponent implements OnInit {
     this.isLoading = true;
     if (this.addItemForm.dirty) {
       const updatedItem = {
-        name: this.item.name,
-        isAvailable: this.item.isAvailable,
-        packages: this.selectedPackage.map((pkg: any) => pkg._id),
+        name: this.addItemForm.value.name,
+        isAvailable: this.addItemForm.value.isAvailable,
+        packages: this.addItemForm.value.packages, // Ensure this is an ID
       };
+      console.log(updatedItem,"----------------updated item----")
       this.itemService.updateItem(this.item._id, updatedItem).subscribe({
         next: (response: any) => {
           this.isLoading = false;
@@ -259,15 +246,6 @@ export class ItemsPageComponent implements OnInit {
     const selectedPackage = this.filteredPackages.find(
       (pkg) => pkg._id === value
     );
-    if (selectedPackage) {
-      this.selectedPackage.push(selectedPackage);
-      this.filteredPackages = this.filteredPackages.filter(
-        (pkg) => pkg._id !== selectedPackage._id
-      );
-      this.addItemForm.patchValue({
-        packages: this.selectedPackage.map((pkg: any) => pkg._id),
-      });
-    }
   }
 
   filterPackages() {
@@ -298,6 +276,7 @@ export class ItemsPageComponent implements OnInit {
     this.packageService.getAllPeckage().subscribe((response: any) => {
       this.isLoading = false;
       this.packages = response.items;
+      console.log(this.packages,'these are all packages')
     });
   }
   previousPage() {
