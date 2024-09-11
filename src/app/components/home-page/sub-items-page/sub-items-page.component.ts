@@ -86,10 +86,13 @@ export class SubItemsPageComponent {
 
 
   openModal() {
-    this.showModal = true;
     this.addSubItemForm.reset();
+    this.showModal = true;
+    
+   
   }
   openUpdateModal(subItem: any) {
+    this.addSubItemForm.reset();
     this.subItem = { ...subItem };
     this.showUpdateModal = true;
     this.addSubItemForm.patchValue({
@@ -105,9 +108,11 @@ export class SubItemsPageComponent {
 
   closeModal() {
     this.showModal = false;
+    this.addSubItemForm.reset();
   }
   closeUpdateModal() {
     this.showUpdateModal = false;
+    this.addSubItemForm.reset();
   }
 
   onSubmit() {

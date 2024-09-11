@@ -23,8 +23,10 @@ export class PackageDetailsComponent implements OnInit {
   }
 
   getPackageDetails(): void {
+    this.isLoading = true;
     this.packageService.getPackageById(this.packageId).subscribe(
       (response) => {
+        this.isLoading = false;
         if (response && response.data) {
           this.packageDetails = response.data;
           console.log('Package Details:', this.packageDetails);
