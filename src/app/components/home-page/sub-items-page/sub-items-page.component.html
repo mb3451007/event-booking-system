@@ -87,16 +87,21 @@
     </div>
   </div>
 
-  <!-- add new sub item -->
 </div>
-
+<div
+  class="modal-backdrop"
+  *ngIf="showModal || showUpdateModal"
+  (click)="handleBackdropClick($event)"
+></div>
 <!-- add Item -->
 <div
   class="modal"
   tabindex="-1"
   role="dialog"
-  [ngClass]="{ show: showModal }"
-  [ngStyle]="{ display: showModal ? 'block' : 'none' }"
+  [@modalAnimation]="showModal ? '*' : 'void'"
+  *ngIf="showModal"
+  (click)="handleBackdropClick($event)"
+ 
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -196,8 +201,9 @@
   class="modal"
   tabindex="-1"
   role="dialog"
-  [ngClass]="{ show: showUpdateModal }"
-  [ngStyle]="{ display: showUpdateModal ? 'block' : 'none' }"
+  [@modalAnimation]="showUpdateModal ? '*' : 'void'"
+  *ngIf="showUpdateModal"
+  (click)="handleBackdropClick($event)"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -228,7 +234,7 @@
           <div class="form-group inputFormGroup">
             <label for="price">price</label>
             <input
-              type="text"
+              type="number"
               id="price"
               formControlName="price"
               class="form-control"

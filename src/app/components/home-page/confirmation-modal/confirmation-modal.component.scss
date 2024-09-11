@@ -45,33 +45,36 @@
   font-size: 1em;
   border: none;
   border-radius: 5px;
+  // width: 353px;
+  width: 98%;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
+  margin-top: 5px;
 }
 
-/* Confirm button (Yes) */
-.modal-content button:first-child {
-  background-color: #007bff; /* Primary color */
-  color: white;
+
+.modal-content .confirm-button {
+
   margin-right: 10px;
 }
 
-.modal-content button:first-child:hover {
-  background-color: #0056b3; /* Darker shade of the primary color */
+.modal-content .confirm-button:hover {
+  background-color: #dc3545; 
+  color: white;
 }
 
-/* Cancel button (No) */
-.modal-content button:last-child {
+
+.modal-content .cancel-button {
   background-color: #f0f0f0;
   color: #333;
 }
 
-.modal-content button:last-child:hover {
-  background-color: #007bff; /* Blue color */
-  color: white; /* Text color changes to white for contrast */
+.modal-content .cancel-button:hover {
+  background-color: #28a745; 
+  color: white; 
 }
 
-/* Animation for modal fade-in */
+
 @keyframes fadeIn {
   from {
     opacity: 0;

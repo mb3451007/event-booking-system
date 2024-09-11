@@ -27,7 +27,7 @@
             </thead>
 
             <tbody>
-              <tr *ngFor="let item of ListItems">
+              <tr *ngFor="let item of ListItems ">
                 <td>{{ item.name }}</td>
                 <td>
                   <div class="">
@@ -95,14 +95,20 @@
     </div>
   </div>
 </div>
-
+<!-- Add Modal Backdrop -->
+<div
+  class="modal-backdrop"
+  *ngIf="showModal || showUpdateModal"
+  (click)="handleBackdropClick($event)"
+></div>
 <!-- add model -->
 <div
   class="modal"
   tabindex="-1"
   role="dialog"
-  [ngClass]="{ show: showModal }"
-  style="display: {{ showModal ? 'block' : 'none' }}"
+  [@modalAnimation]="showModal ? '*' : 'void'"
+  *ngIf="showModal"
+  (click)="handleBackdropClick($event)"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -178,8 +184,9 @@
   class="modal"
   tabindex="-1"
   role="dialog"
-  [ngClass]="{ show: showUpdateModal }"
-  style="display: {{ showUpdateModal ? 'block' : 'none' }}"
+  [@modalAnimation]="showUpdateModal ? '*' : 'void'"
+  *ngIf="showUpdateModal"
+  (click)="handleBackdropClick($event)"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">

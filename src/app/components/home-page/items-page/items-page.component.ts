@@ -1,23 +1,36 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import {FormBuilder,FormControl,FormGroup,Validators,} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-// import { ToastrService } from 'ngx-toastr';
-
 import { map, Observable, startWith } from 'rxjs';
 import { ItemsService } from 'src/app/items.service';
 import { SubItemsService } from 'src/app/sub-items.service';
 import { PackagesService } from '../packages.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 @Component({
   selector: 'app-items-page',
   templateUrl: './items-page.component.html',
   styleUrls: ['./items-page.component.scss'],
+  animations: [
+    trigger('modalAnimation', [
+      state('void', style({
+        opacity: 0,
+        transform: 'scale(0.7)'
+      })),
+      state('*', style({
+        opacity: 1,
+        transform: 'scale(1)'
+      })),
+      transition('void => *', [
+        animate('300ms ease-in')
+      ]),
+      transition('* => void', [
+        animate('300ms ease-out')
+      ]),
+      
+    ]),
+  ],
 })
 export class ItemsPageComponent implements OnInit {
   autoitems: string[] = [];
@@ -323,4 +336,11 @@ console.log(item)
     this.selectedPackage = null;
     this.addItemForm.patchValue({ selectedPackage: null });
   }
+  handleBackdropClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('modal')) {
+      this.closeModal();
+      this.closeUpdateModal();
+    }
+  }
+
 }

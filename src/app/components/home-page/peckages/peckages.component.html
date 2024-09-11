@@ -50,11 +50,7 @@
           </table>
         </div>
 
-        <!-- peckages.component.html -->
-        <app-confirmation-modal
-          *ngIf="showConfirmation"
-          (confirmed)="handleConfirmation($event)"
-        ></app-confirmation-modal>
+   
 
         <div class="pagination-buttons mt-3 d-flex justify-content-between">
           <button
@@ -88,19 +84,25 @@
     </div>
   </div>
 </div>
-
-<!-- add model -->
+<!-- Add Modal Backdrop -->
+<div
+  class="modal-backdrop"
+  *ngIf="showModal || showUpdateModal"
+  (click)="handleBackdropClick($event)"
+></div>
+<!-- Add Modal -->
 <div
   class="modal"
   tabindex="-1"
   role="dialog"
-  [ngClass]="{ show: showModal }"
-  style="display: {{ showModal ? 'block' : 'none' }}"
+  [@modalAnimation]="showModal ? '*' : 'void'"
+  *ngIf="showModal"
+  (click)="handleBackdropClick($event)"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">add Package</h3>
+        <h3 class="title">Add Package</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
@@ -146,13 +148,15 @@
     </div>
   </div>
 </div>
-<!-- Update model -->
+
+<!-- Update Modal -->
 <div
   class="modal"
   tabindex="-1"
   role="dialog"
-  [ngClass]="{ show: showUpdateModal }"
-  style="display: {{ showUpdateModal ? 'block' : 'none' }}"
+  [@modalAnimation]="showUpdateModal ? '*' : 'void'"
+  *ngIf="showUpdateModal"
+  (click)="handleBackdropClick($event)"
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -188,3 +192,9 @@
     </div>
   </div>
 </div>
+
+<!-- Confirmation Modal -->
+<app-confirmation-modal
+  *ngIf="showConfirmation"
+  (confirmed)="handleConfirmation($event)"
+></app-confirmation-modal>

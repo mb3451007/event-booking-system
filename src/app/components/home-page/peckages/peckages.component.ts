@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import {
   FormBuilder,
   FormControl,
@@ -19,6 +20,24 @@ import { PackagesService } from '../packages.service';
   selector: 'app-peckages',
   templateUrl: './peckages.component.html',
   styleUrls: ['./peckages.component.scss'],
+  animations: [
+    trigger('modalAnimation', [
+      state('void', style({
+        opacity: 0,
+        transform: 'scale(0.7)'
+      })),
+      state('*', style({
+        opacity: 1,
+        transform: 'scale(1)'
+      })),
+      transition('void => *', [
+        animate('300ms ease-in')
+      ]),
+      transition('* => void', [
+        animate('300ms ease-out')
+      ]),
+    ]),
+  ],
 })
 export class PeckagesComponent {
   showSubItems: boolean = false;
@@ -77,6 +96,9 @@ export class PeckagesComponent {
 
   openModal() {
     this.showModal = true;
+    setTimeout(() => {
+      document.querySelector('.modal.show')?.classList.add('show');
+    }, 10);
   }
 
   openUpdateModal(item: any) {
@@ -85,13 +107,22 @@ export class PeckagesComponent {
       name: this.item.name,
     });
     this.showUpdateModal = true;
+  setTimeout(() => {
+    document.querySelector('.modal.show')?.classList.add('show');
+  }, 10);
   }
 
   closeModal() {
-    this.showModal = false;
+    document.querySelector('.modal.show')?.classList.remove('show');
+    setTimeout(() => {
+      this.showModal = false;
+    }, 300); // Match the CSS transition duration
   }
   closeUpdateModal() {
-    this.showUpdateModal = false;
+    document.querySelector('.modal.show')?.classList.remove('show');
+    setTimeout(() => {
+      this.showUpdateModal = false;
+    }, 300); // Match the CSS transition duration
   }
 
   onSubmit() {
@@ -161,7 +192,6 @@ export class PeckagesComponent {
     this.itemToDelete = itemId;
     this.showConfirmation = true;
   }
-
   handleConfirmation(confirm: boolean) {
     if (confirm && this.itemToDelete !== null) {
       this.peckageService.deletePeckage(this.itemToDelete).subscribe(
@@ -246,5 +276,12 @@ export class PeckagesComponent {
   viewItem(itemId: number) {
     console.log(itemId, 'this is item id for details');
     this.router.navigate(['package-detail/', itemId]);
+  }
+
+  handleBackdropClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('modal')) {
+      this.closeModal();
+      this.closeUpdateModal();
+    }
   }
 }

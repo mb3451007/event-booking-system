@@ -1,3 +1,4 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -9,6 +10,24 @@ import { SubItemsService } from 'src/app/sub-items.service';
   selector: 'app-sub-items-page',
   templateUrl: './sub-items-page.component.html',
   styleUrls: ['./sub-items-page.component.scss'],
+  animations: [
+    trigger('modalAnimation', [
+      state('void', style({
+        opacity: 0,
+        transform: 'scale(0.7)'
+      })),
+      state('*', style({
+        opacity: 1,
+        transform: 'scale(1)'
+      })),
+      transition('void => *', [
+        animate('300ms ease-in')
+      ]),
+      transition('* => void', [
+        animate('300ms ease-out')
+      ]),
+    ]),
+  ],
 })
 export class SubItemsPageComponent {
   showModal: boolean = false;
@@ -234,6 +253,12 @@ export class SubItemsPageComponent {
     if (selectedItem) {
       this.selectedItem = selectedItem;
       this.addSubItemForm.patchValue({ items: selectedItem._id });
+    }
+  }
+  handleBackdropClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).classList.contains('modal')) {
+      this.closeModal();
+      this.closeUpdateModal();
     }
   }
 }
