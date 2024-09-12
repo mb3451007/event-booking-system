@@ -31,7 +31,7 @@ const loginData={
     this.LoginService.onLogin(loginData).subscribe({
       next:(response:any)=>{
         localStorage.setItem('token',response.token)
-        this.toastr.success('Logedin successfully!');
+        this.toastr.success('Loggedin successfully!');
         console.log(response, 'this is login response')
         this.router.navigate(['/dashboard']);
       },

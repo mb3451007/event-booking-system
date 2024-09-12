@@ -2,7 +2,7 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Montserrat';    
-     background: #F4F6F9; }
+     background: #F4F6F9; padding: 0px; overflow-x: hidden; }
 
      // src/styles.scss
      @import 'ngx-toastr/toastr';
