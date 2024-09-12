@@ -29,13 +29,7 @@
             <tbody>
               <tr *ngFor="let item of ListItems ">
                 <td>{{ item.name }}</td>
-                <td>
-                  <div class="">
-                    <p class="text-decoration-none name-line d-flex">
-                      {{ item.package.name }} <br />
-                    </p>
-                  </div>
-                </td>
+                <td> {{ item.package.name }}</td>
                 <td class="slot">
                   <img
                     src="assets/view-eye-svgrepo-com.svg"

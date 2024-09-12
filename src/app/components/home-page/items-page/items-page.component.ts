@@ -115,11 +115,8 @@ export class ItemsPageComponent implements OnInit {
     this.addItemForm.patchValue({
       name: this.item.name,
       isAvailable: this.item.isAvailable,
-      packages: this.item.package.id  // Ensure this is the ID
+      packages: this.item.package.id  
     });
-
-console.log(item)
-
     this.showUpdateModal = true;
   }
 

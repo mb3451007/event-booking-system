@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-// import { ToastrService } from 'ngx-toastr';
+
 
 import { map, Observable, startWith } from 'rxjs';
 import { ItemsService } from 'src/app/items.service';
@@ -95,13 +95,16 @@ export class PeckagesComponent {
   }
 
   openModal() {
+    this.addItemForm.reset();
     this.showModal = true;
     setTimeout(() => {
       document.querySelector('.modal.show')?.classList.add('show');
     }, 10);
+    
   }
 
   openUpdateModal(item: any) {
+    this.addItemForm.reset();
     this.item = { ...item };
     this.addItemForm.patchValue({
       name: this.item.name,
@@ -116,13 +119,14 @@ export class PeckagesComponent {
     document.querySelector('.modal.show')?.classList.remove('show');
     setTimeout(() => {
       this.showModal = false;
-    }, 300); // Match the CSS transition duration
+    }, 300); 
+    this.addItemForm.reset();
   }
   closeUpdateModal() {
     document.querySelector('.modal.show')?.classList.remove('show');
     setTimeout(() => {
       this.showUpdateModal = false;
-    }, 300); // Match the CSS transition duration
+    }, 300); 
   }
 
   onSubmit() {
@@ -160,7 +164,7 @@ export class PeckagesComponent {
   getAllItems() {
     this.peckageService.getAllPeckage().subscribe((response: any) => {
       this.ListAllItems = response.items;
-      console.log(this.ListAllItems, 'this is a list of  All items');
+      console.log(response, 'this is a list of  All packages');
     });
   }
 
@@ -175,19 +179,11 @@ export class PeckagesComponent {
         this.ListItems = response.items;
         this.totalPages = response.totalPages;
         this.pagesCount();
-        console.log(response, 'these are paginated items');
+        console.log(response, 'these are paginated packages');
       });
   }
 
-  // deleteItem(itemId: number) {
-  //   console.log(itemId);
-  //   this.peckageService.deletePeckage(itemId).subscribe((response) => {
-  //     console.log(response);
-  //     this.getAllItems();
-  //     this.getPaginatedItems(this.pageNumber);
-  //     this.toastr.error('Package deleted successfully!');
-  //   });
-  // }
+
   deleteItem(itemId: number) {
     this.itemToDelete = itemId;
     this.showConfirmation = true;
