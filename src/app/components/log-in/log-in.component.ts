@@ -31,9 +31,9 @@ const loginData={
     this.LoginService.onLogin(loginData).subscribe({
       next:(response:any)=>{
         localStorage.setItem('token',response.token)
-        this.toastr.success('Loggedin successfully!');
+        this.toastr.success('Logged in successfully!');
         console.log(response, 'this is login response')
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/bookings']);
       },
       error: (error)=>{
         console.log(error,'Error Loging in')

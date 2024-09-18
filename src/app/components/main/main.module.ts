@@ -25,6 +25,8 @@ import { LoaderComponent } from '../home-page/loader/loader.component';
 import { ConfirmationModalComponent } from '../home-page/confirmation-modal/confirmation-modal.component';
 import { PeckagesComponent } from '../home-page/peckages/peckages.component';
 import { PackageDetailsComponent } from '../home-page/package-details/package-details.component';
+import { SettingComponent } from '../home-page/setting/setting.component';
+
 
 @NgModule({
   declarations: [
@@ -44,6 +46,7 @@ import { PackageDetailsComponent } from '../home-page/package-details/package-de
     PeckagesComponent,
     PackageDetailsComponent,
     ConfirmationModalComponent,
+    SettingComponent
   ],
   imports: [
     CommonModule,

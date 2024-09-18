@@ -1,8 +1,11 @@
-<!-- flat-rate.component.html -->
+
+<app-loader [isLoading]="isLoading"></app-loader>
 <form >
     <div *ngFor="let flatRate of flatrRatesData; let i = index">
-      <!-- <label>Flat Rate {{i + 1}}:</label> -->
-      <label>Flat Rate {{i + 1}}:</label>
+      
+      <label *ngIf="i===0">Flat Rate:</label>
+      <label *ngIf="i===1">Min no of persons:</label>
+      <label *ngIf="i===2">Max no of persons:</label>
       <input
         type="number"
         [(ngModel)]="flatRate.value"

@@ -22,7 +22,7 @@ const routes: Routes = [
     children:[
     {
       path: '',
-      redirectTo: 'booking',
+      redirectTo: 'bookings',
       pathMatch: 'full',
     },
     {path: 'dashboard', component:DashBoardComponent},
@@ -31,13 +31,13 @@ const routes: Routes = [
     {path:'footer',component:FooterComponent},
     {path:'button',component:ButtonPageComponent},
     {path:'alert',component:AlertPageComponent},
-    {path:'booking',component:BookingPageComponent},
-    {path:'customer',component:CustomerPageComponent},
+    {path:'bookings',component:BookingPageComponent},
+    {path:'customers',component:CustomerPageComponent},
     {path:'Transactions',component:TransactionPageComponent},
     {path:'items',component:ItemsPageComponent},
     {path:'subitems',component:SubItemsPageComponent},
-    {path:'setting',component:SettingComponent},
-    {path:'peckages',component:PeckagesComponent},
+    {path:'settings',component:SettingComponent},
+    {path:'packages',component:PeckagesComponent},
     { path: 'package-detail/:itemId', component: PackageDetailsComponent }
 
 

@@ -8,12 +8,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LogInComponent } from './components/log-in/log-in.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SettingComponent } from './components/home-page/setting/setting.component';
 import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [AppComponent, LogInComponent, SettingComponent],
+  declarations: [AppComponent, LogInComponent],
   imports: [
     CommonModule,
     BrowserModule,
