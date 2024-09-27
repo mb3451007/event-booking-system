@@ -83,6 +83,7 @@ export class ItemsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
     const localStoragePage = localStorage.getItem('pageNumber');
     this.pageNumber = localStoragePage ? parseInt(localStoragePage) : 1;
 
