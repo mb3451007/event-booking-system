@@ -82,8 +82,6 @@ export class PeckagesComponent {
   }
 
   ngOnInit(): void {
-    const localStoragePage = localStorage.getItem('pageNumber');
-    this.pageNumber = localStoragePage ? parseInt(localStoragePage) : 1;
     this.itemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     this.getAllItems();
     this.getPaginatedItems(this.pageNumber);
@@ -171,7 +169,6 @@ export class PeckagesComponent {
   getPaginatedItems(page: number) {
     this.isLoading = true;
     this.pageNumber = page;
-    localStorage.setItem('pageNumber', this.pageNumber.toString());
     this.peckageService
       .getPaginatedPeckage(this.pageNumber)
       .subscribe((response: any) => {

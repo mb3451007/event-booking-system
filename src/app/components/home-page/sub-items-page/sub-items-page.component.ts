@@ -63,8 +63,6 @@ export class SubItemsPageComponent {
   }
 
   ngOnInit(): void {
-    const localStoragePage = localStorage.getItem('pageNumber');
-    this.pageNumber = localStoragePage ? parseInt(localStoragePage) : 1;
     this.subitemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     console.log(this.subitemId, 'this is Item Id ........');
     this.getAllItems();
@@ -155,7 +153,6 @@ export class SubItemsPageComponent {
   getPaginatedSubItems(page: number) {
     this.isLoading = true;
     this.pageNumber = page;
-    localStorage.setItem('pageNumber', this.pageNumber.toString());
     this.subItemService
       .getPaginatedSubItems(this.pageNumber)
       .subscribe((response) => {

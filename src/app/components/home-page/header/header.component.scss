@@ -1,75 +1,96 @@
-.main-header{
-    &__header-container{
-        background-color: #242A33;
-        
+.main-header {
+  &__header-container {
+    background-color: #242A33;
+  }
+  &__header-nav {
+    a {
+      color: white !important;
+      margin-top: 2px;
     }
-    &__header-nav{
-
-        a{
-            color: white !important;
-            margin-top: 2px;
-        }
-    }
-    &__avatar{
-        vertical-align: middle;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-    }
+  }
+  &__avatar {
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    transition: transform 0.3s ease; /* Added transition for smooth scaling */
+  }
+  
+  &__avatar:hover {
+    transform: scale(1.1); /* Slight scale-up effect on hover */
+  }
 }
+
 .dropdown-container {
-    position: relative;
-    cursor: pointer;
-    font-family: Arial, sans-serif;
-    margin-right: 5%
-  }
+  position: relative;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  margin-right: 5%;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Added transition */
+}
+
+.dropdown-header {
+  padding: 10px;
+  border: none;
+  color: white;
+  background: #242A33;
+  width: 100%;
+  border-radius: 4px;
+  text-align: left;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Added transition */
+}
+
+.dropdown-options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 170px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  opacity: 0; /* Initially hidden */
+  transform: translateY(-10px); /* Position dropdown slightly above */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+/* Show dropdown options when open */
+.dropdown-options.show {
+  display: block;
+  opacity: 1; /* Make it visible */
+  transform: translateY(0); /* Move it to its intended position */
+}
+
+.dropdown-options li {
+  padding: 10px;
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.dropdown-options li:hover {
+  background-color: #f0f0f0; /* Light gray on hover */
+}
+
+.underline {
+  border-bottom: 1px solid #eee;
+}
+.dropdown-header {
+  padding: 10px;
+  border: none;
+  color: white;
+  background: #242A33;
+  width: 100%;
+  border-radius: 4px;
+  text-align: left;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; /* Added transition for transform */
+}
+
+.dropdown-header:hover {
+
   
-  /* Header to display selected option */
-  .dropdown-header {
-    padding: 10px;
-    border: none;
-    color: white;
-    background: #242A33;
-    width: 100%;
-    border-radius: 4px;
-    text-align: left;
-  }
-  
-  /* List of options */
-  .dropdown-options {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    min-width: 170px;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  
-  /* Show dropdown options when open */
-  .dropdown-options.show {
-    display: block;
-  }
-  
-  /* Style for individual option */
-  .dropdown-options li {
-    padding: 10px;
-    // border-bottom: 1px solid #eee;
-  }
-  
-  .dropdown-options li:hover {
-    background-color: #f0f0f0;
-  }
-  
-  .dropdown-options li:last-child {
-    border-bottom: none;
-  }
-  
-  .underline {
-    border-bottom: 1px solid #eee;
-  }
+  transform: scale(1.05); 
+}
+
