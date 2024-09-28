@@ -33,21 +33,27 @@
                 <td>{{ subItem.price }}</td>
                 <td>{{ subItem.item?.name }}</td>
                 <td class="slot">
+                  <div class="tooltip-container">
                   <img src="assets/view-eye-svgrepo-com.svg" 
-                  title="View Subitem"
                   alt="Hanna Gover" />
+                  <span class="tooltip-text">View Subitem</span>
+                  </div>
+                  <div class="tooltip-container">
                   <img
                     src="assets/edit-4-svgrepo-com.svg"
                     alt="Hanna Gover"
-                    title="Edit Subitem"
                     (click)="openUpdateModal(subItem)"
                   />
+                  <span class="tooltip-text">Update Subitem</span>
+                  </div>
+                  <div class="tooltip-container">
                   <img
                     src="assets/delete-svgrepo-com.svg"
                     alt="Hanna Gover"
-                    title="Delete Subitem"
                     (click)="deleteSubItem(subItem._id)"
                   />
+                  <span class="tooltip-text">Delete Subitem</span>
+                  </div>
                 </td>
               </tr>
 

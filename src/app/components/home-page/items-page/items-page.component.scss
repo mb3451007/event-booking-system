@@ -281,3 +281,28 @@
   padding: 12px 15px; 
   vertical-align: middle; 
 }
+.tooltip-container{
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.tooltip-text{
+  visibility: hidden;
+  background-color: black;
+  color: white;
+  border-radius: 5%;
+  padding: 5px;
+  width: 100px;
+  z-index: 1;
+  position: absolute;
+  bottom: 100%;
+  left :50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s; 
+}
+.tooltip-container:hover .tooltip-text{
+ visibility: visible;
+ opacity: 1;
+}

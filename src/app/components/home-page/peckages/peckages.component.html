@@ -29,25 +29,30 @@
               <tr *ngFor="let item of ListItems">
                 <td>{{ item.name }}</td>
                 <td class="slot">
-                  <img
-                    src="assets/view-eye-svgrepo-com.svg"
-                    alt="Hanna Gover"
-                    title="View Package"
-                    
-                    (click)="viewItem(item._id)"
-                  />
+                  <div class="tooltip-container" (click)="viewItem(item._id)">
+                    <img
+                      src="assets/view-eye-svgrepo-com.svg"
+                      alt="Hanna Gover"
+                      class="tooltip-image"
+                    />
+                    <span class="tooltip-text">View Package</span>
+                  </div>
+                  <div class="tooltip-container">
                   <img
                     src="assets/edit-4-svgrepo-com.svg"
                     alt="Hanna Gover"
-                    title="Edit Package"
                     (click)="openUpdateModal(item)"
                   />
+                  <span class="tooltip-text">Update Package</span>
+                </div>
+                <div class="tooltip-container">
                   <img
                     src="assets/delete-svgrepo-com.svg"
                     alt="Hanna Gover"
-                    title="Delete Package"
                     (click)="deleteItem(item._id)"
                   />
+                  <span class="tooltip-text">Delete Package</span>
+                </div>
                 </td>
               </tr>
             </tbody>

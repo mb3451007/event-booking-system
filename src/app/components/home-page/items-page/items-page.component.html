@@ -31,24 +31,30 @@
                 <td>{{ item.name }}</td>
                 <td> {{ item.package.name }}</td>
                 <td class="slot">
+                  <div class="tooltip-container">
                   <img
                     src="assets/view-eye-svgrepo-com.svg"
                     alt="Hanna Gover"
-                    title="View Item"
                     (click)="viewItem(item._id)"
                   />
+                  <span class="tooltip-text">View Item</span>
+                  </div>
+                  <div class="tooltip-container">
                   <img
                     src="assets/edit-4-svgrepo-com.svg"
                     alt="Hanna Gover"
-                    title="Edit Item"
                     (click)="openUpdateModal(item)"
                   />
+                  <span class="tooltip-text">Update Item</span>
+                </div>
+                <div class="tooltip-container">
                   <img
                     src="assets/delete-svgrepo-com.svg"
                     alt="Hanna Gover"
-                    title="Delete Item"
                     (click)="deleteItem(item._id)"
                   />
+                  <span class="tooltip-text">Delete Item</span>
+                  </div>
                 </td>
               </tr>
             </tbody>
