@@ -16,6 +16,7 @@ import { authGuard } from 'src/app/auth.guard';
 import { SettingComponent } from '../home-page/setting/setting.component';
 import { PeckagesComponent } from '../home-page/peckages/peckages.component';
 import { PackageDetailsComponent } from '../home-page/package-details/package-details.component';
+import { ForgetPasswordComponent } from '../home-page/forget-password/forget-password.component';
 
 const routes: Routes = [
   {path: '', component:HomePageComponent,canActivate:[authGuard],
@@ -38,6 +39,7 @@ const routes: Routes = [
     {path:'subitems',component:SubItemsPageComponent},
     {path:'settings',component:SettingComponent},
     {path:'packages',component:PeckagesComponent},
+    {path:'resetPassword',component:ForgetPasswordComponent},
     { path: 'package-detail/:itemId', component: PackageDetailsComponent }
 
 

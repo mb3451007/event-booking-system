@@ -31,6 +31,7 @@ const loginData={
     this.LoginService.onLogin(loginData).subscribe({
       next:(response:any)=>{
         localStorage.setItem('token',response.token)
+        localStorage.setItem('userId',response.user._id)
         this.toastr.success('Logged in successfully!');
         console.log(response, 'this is login response')
         this.router.navigate(['/bookings']);
