@@ -6,8 +6,9 @@ import { ToastrService } from 'ngx-toastr';
 import { map, Observable, startWith } from 'rxjs';
 import { ItemsService } from 'src/app/items.service';
 import { SubItemsService } from 'src/app/sub-items.service';
-import { PackagesService } from '../packages.service';
+
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { PackagesService } from 'src/app/packages.service';
 @Component({
   selector: 'app-items-page',
   templateUrl: './items-page.component.html',

@@ -14,7 +14,8 @@ import { ToastrService } from 'ngx-toastr';
 import { map, Observable, startWith } from 'rxjs';
 import { ItemsService } from 'src/app/items.service';
 import { SubItemsService } from 'src/app/sub-items.service';
-import { PackagesService } from '../packages.service';
+import { PackagesService } from 'src/app/packages.service';
+
 
 @Component({
   selector: 'app-peckages',
