@@ -26,6 +26,7 @@ import { ConfirmationModalComponent } from '../home-page/confirmation-modal/conf
 import { PeckagesComponent } from '../home-page/peckages/peckages.component';
 import { PackageDetailsComponent } from '../home-page/package-details/package-details.component';
 import { SettingComponent } from '../home-page/setting/setting.component';
+import { QuillModule } from 'ngx-quill';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { SettingComponent } from '../home-page/setting/setting.component';
     SettingComponent
   ],
   imports: [
+    QuillModule.forRoot(), 
     CommonModule,
     BrowserModule,
     AppRoutingModule,

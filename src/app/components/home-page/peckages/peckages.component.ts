@@ -56,8 +56,6 @@ export class PeckagesComponent {
   AddItmePlus = 'assets/plus-circle-svgrepo-com.svg';
   item: any;
 
-  filterForm: FormGroup;
-
   filterError: boolean = false;
 
   pageNumber: number = 1;
@@ -66,6 +64,8 @@ export class PeckagesComponent {
   selectedPackage: any = null;
   showConfirmation: boolean = false;
   itemToDelete: number | null = null;
+
+ 
   constructor(
     private peckageService: PackagesService,
     private subItemService: SubItemsService,
@@ -76,9 +76,7 @@ export class PeckagesComponent {
   ) {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
-    });
-    this.filterForm = this.fb.group({
-      filtername: ['', Validators.required],
+      description: ['', Validators.required],
     });
   }
 
@@ -137,7 +135,9 @@ export class PeckagesComponent {
     if (this.addItemForm.valid) {
       const newItem = {
         name: this.addItemForm.value.name,
+        description: this.addItemForm.value.description,
       };
+      console.log(newItem, 'data to add in package')
       this.peckageService.addPeckage(newItem).subscribe({
         next: (response: any) => {
           this.isLoading = false;
@@ -251,18 +251,7 @@ export class PeckagesComponent {
     }
     console.log(this.pageCountArray, 'these are the page numbers Array');
   }
-  filterIem() {
-    const filterName = this.filterForm.value.filtername.toLowerCase() || '';
-    this.filterItemArray = this.ListAllItems.filter((item: any) => {
-      const matchesName = item.name.toLowerCase().includes(filterName);
-      this.filterErrorShow();
-      return matchesName;
-    });
-    if (this.filterItemArray.length == 0) {
-      this.toastr.warning('No Package match your filter criteria.');
-    }
-    console.log(this.filterItemArray, 'filterItemArray Items ######');
-  }
+
   filterErrorShow() {
     this.filterError = true;
   }
@@ -278,4 +267,5 @@ export class PeckagesComponent {
       this.closeUpdateModal();
     }
   }
+ 
 }
