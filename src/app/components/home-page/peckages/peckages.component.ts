@@ -76,6 +76,7 @@ export class PeckagesComponent {
   ) {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
+      price: ['', Validators.required],
       description: ['', Validators.required],
     });
   }
@@ -88,6 +89,7 @@ export class PeckagesComponent {
 
     this.item = {
       name: this.addItemForm.value.name,
+      price: this.addItemForm.value.price,
     };
   }
 
@@ -105,6 +107,7 @@ export class PeckagesComponent {
     this.item = { ...item };
     this.addItemForm.patchValue({
       name: this.item.name,
+      price: this.item.price,
     });
     this.showUpdateModal = true;
   setTimeout(() => {
@@ -135,6 +138,7 @@ export class PeckagesComponent {
     if (this.addItemForm.valid) {
       const newItem = {
         name: this.addItemForm.value.name,
+        price: this.addItemForm.value.price,
         description: this.addItemForm.value.description,
       };
       console.log(newItem, 'data to add in package')

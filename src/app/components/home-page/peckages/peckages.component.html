@@ -19,6 +19,7 @@
             <thead>
               <tr>
                 <th scope="col ">Name</th>
+                <th scope="col ">Price</th>
                 <th scope="col ">Action</th>
                 <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
                 <!-- <th scope="col">Transactions  </th> -->
@@ -28,6 +29,7 @@
             <tbody>
               <tr *ngFor="let item of ListItems">
                 <td>{{ item.name }}</td>
+                <td>{{ item.price }}</td>
                 <td class="slot">
                   <div class="tooltip-container" (click)="viewItem(item._id)">
                     <img
@@ -148,6 +150,17 @@
             >
               Name is required.
             </div>
+
+            <label for="name">Price</label>
+            <input
+              type="number"
+              id="price"
+              formControlName="price"
+              class="form-control"
+              [(ngModel)]="formData.price"
+              name="name"
+              required
+            />
             <label for="description" class="mt-2">Description</label>
   <quill-editor formControlName="description"></quill-editor>
           </div>      
@@ -194,6 +207,16 @@
               class="form-control"
               [(ngModel)]="item.name"
               name="name"
+              required
+            />
+            <label for="name">Price</label>
+            <input
+              type="number"
+              id="price"
+              formControlName="price"
+              class="form-control"
+              [(ngModel)]="item.price"
+              name="price"
               required
             />
           </div>
