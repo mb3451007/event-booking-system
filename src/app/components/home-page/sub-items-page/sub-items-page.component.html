@@ -21,7 +21,6 @@
                 <th scope="col ">Name</th>
                 <th scope="col ">Price</th>
                 <th scope="col ">Item</th>
-                <th scope="col ">Is Optional</th>
                 <th scope="col ">Action</th>
                 <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
                 <!-- <th scope="col">Transactions  </th> -->
@@ -33,7 +32,6 @@
                 <td>{{ subItem.name }}</td>
                 <td>{{ subItem.price }}</td>
                 <td>{{ subItem.item?.name }}</td>
-                <td>{{subItem.isOptional===true? 'Yes': 'No'}}</td>
                 <td class="slot">
                   <div class="tooltip-container">
                   <img src="assets/view-eye-svgrepo-com.svg" 
@@ -193,19 +191,6 @@
               >Is Available</label
             >
           </div>
-          <div class="form-group form-check inputFormGroup">
-            <input
-              type="checkbox"
-              id="isOptional"
-              formControlName="isOptional"
-              class="form-check-input"
-              [(ngModel)]="formData.isOptional"
-              name="isAvailaisOptionalble"
-            />
-            <label class="form-check-label" for="isOptional"
-              >Is Optional</label
-            >
-          </div>
           <button
             type="submit"
             class="btn btn-primary"
@@ -296,20 +281,6 @@
             />
             <label class="form-check-label" for="isAvailable"
               >Is Available</label
-            >
-          </div>
-
-          <div class="form-group form-check inputFormGroup">
-            <input
-              type="checkbox"
-              id="isOptional"
-              formControlName="isOptional"
-              class="form-check-input"
-              [(ngModel)]="subItem.isOptional"
-              name="isOptional"
-            />
-            <label class="form-check-label" for="isOptional"
-              >Is Optional</label
             >
           </div>
           <button

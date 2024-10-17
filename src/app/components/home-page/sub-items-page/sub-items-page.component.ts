@@ -31,7 +31,7 @@ import { SubItemsService } from 'src/app/sub-items.service';
 })
 export class SubItemsPageComponent {
   showModal: boolean = false;
-  formData = { name: '', price: '', itemName: '', isAvailable: true , isOptional: false};
+  formData = { name: '', price: '', itemName: '', isAvailable: true };
   AddItmePlus = 'assets/plus-circle-svgrepo-com.svg';
   subItem: any;
   subItems: any;
@@ -57,7 +57,6 @@ export class SubItemsPageComponent {
       name: ['', Validators.required],
       price: ['', Validators.required],
       isAvailable: [],
-      isOptional: [],
       item: ['', Validators.required],
     });
 
@@ -73,7 +72,6 @@ export class SubItemsPageComponent {
       name: this.addSubItemForm.value.name,
       price: this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
-      isOptional: this.addSubItemForm.value.isOptional,
       item: this.addSubItemForm.value.item,
     };
 
@@ -99,7 +97,6 @@ export class SubItemsPageComponent {
       name: this.subItem.name,
       price: this.subItem.price,
       isAvailable: this.subItem.isAvailable,
-      isOptional: this.subItem.isOptional,
       item: this.subItem.item.id  // Ensure this is the ID
     });
 
@@ -126,7 +123,6 @@ export class SubItemsPageComponent {
       name: this.addSubItemForm.value.name,
       price: this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
-      isOptional: this.addSubItemForm.value.isOptional,
       item: this.addSubItemForm.value.item,
     };
     console.log(newItem, 'this is formValue to send data');
@@ -204,7 +200,6 @@ export class SubItemsPageComponent {
       name: this.addSubItemForm.value.name,
       price:this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
-      isOptional: this.addSubItemForm.value.isOptional,
       item: this.addSubItemForm.value.item, // Ensure this is an ID
     };
     this.subItemService

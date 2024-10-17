@@ -5,14 +5,12 @@ import { AppComponent } from './app.component';
 import { MainModule } from './components/main/main.module';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LogInComponent } from './components/log-in/log-in.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
-import { ForgetPasswordComponent } from './components/home-page/forget-password/forget-password.component';
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [AppComponent, LogInComponent, ForgetPasswordComponent],
+  declarations: [AppComponent],
   imports: [
     CommonModule,
     BrowserModule,

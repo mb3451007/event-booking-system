@@ -11,11 +11,16 @@
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
         <div class="page-section">
-          <h1 class="page-title">{{ packageDetails.package?.name }}</h1>
+          <h1 class="page-title">{{ packageDetails.package?.name }} - <span class="package-price">€{{ packageDetails.package?.price }} per person</span></h1>
         </div>
       </div>
     </div>
-
+ <!-- Package Description -->
+ <div class="row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="package-description" [innerHTML]="packageDetails.package?.description"></div>
+  </div>
+</div>
     <!-- Start loop over itemsWithSubItems -->
     <div class="row">
       <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mb40" *ngFor="let itemWithSubItem of packageDetails.itemsWithSubItems">
@@ -27,9 +32,10 @@
                 <div class="dish-content">
                   <h5 class="dish-title">{{ subItem.name }}</h5>
                   <div class="dish-price">
-                    <p>{{ subItem.price }}</p>
+                    <p>€{{ subItem.price }} per person</p>
                   </div>
                 </div>
+                
               </div>
               <div *ngIf="itemWithSubItem.subItems?.length === 0" class="no-sub-items">
                 <p class="text-warning text-center">No sub-items available for this item.</p>
@@ -42,6 +48,12 @@
         <p class="text-warning text-center">No Item available for this Package.</p>
       </div>
     </div>
-  
+      <!-- Final Notes -->
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="final-notes" [innerHTML]="packageDetails.package?.finalNotes"></div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+

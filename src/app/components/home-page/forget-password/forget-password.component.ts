@@ -12,7 +12,7 @@ export class ForgetPasswordComponent implements OnInit{
   passwordForm: FormGroup;
   passwordMismatch: boolean = false;
   userId: string | null = null;
-
+  isLoading:boolean=false
   constructor(private fb: FormBuilder, private toastr: ToastrService, private loginService:LoginService) {
     this.passwordForm = this.fb.group({
       newPassword: ['', Validators.required],
@@ -30,6 +30,7 @@ export class ForgetPasswordComponent implements OnInit{
   }
 
   resetPassword() {
+    this.isLoading = true;
     const newPassword = this.passwordForm.value.newPassword;
     const confirmPassword = this.passwordForm.value.confirmPassword;
     if (newPassword !== confirmPassword) {
@@ -43,12 +44,13 @@ export class ForgetPasswordComponent implements OnInit{
       this.loginService.resetPassword(this.userId, newPassword, confirmPassword)
         .subscribe({
           next: (res) => {
-            console.log(res,"response of reset password")
             this.toastr.success('Password updated successfully!');
+            this.isLoading = false;
             this.passwordForm.reset();
           },
           error: (err) => {
             this.toastr.error('Failed to update password.');
+            this.isLoading = false;
           }
         });
     }

@@ -27,6 +27,8 @@ import { PeckagesComponent } from '../home-page/peckages/peckages.component';
 import { PackageDetailsComponent } from '../home-page/package-details/package-details.component';
 import { SettingComponent } from '../home-page/setting/setting.component';
 import { QuillModule } from 'ngx-quill';
+import { LogInComponent } from '../log-in/log-in.component';
+import { ForgetPasswordComponent } from '../home-page/forget-password/forget-password.component';
 
 
 @NgModule({
@@ -47,7 +49,9 @@ import { QuillModule } from 'ngx-quill';
     PeckagesComponent,
     PackageDetailsComponent,
     ConfirmationModalComponent,
-    SettingComponent
+    SettingComponent,
+    LogInComponent,
+    ForgetPasswordComponent
   ],
   imports: [
     QuillModule.forRoot(), 

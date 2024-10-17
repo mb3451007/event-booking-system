@@ -1,9 +1,10 @@
+<app-loader [isLoading]="isLoading"></app-loader>
 <div class="login-container">
     <div class="login-box">
       <div class="login-header">
         <h1>Admin Dashboard</h1>
       </div>
-      <form [formGroup]="loginForm" (submit)="onLogin(); $event.preventDefault()">
+      <form [formGroup]="loginForm">
         <div class="form-group">
           <label for="username">Username</label>
           <input id="username" type="text" class="form-control" formControlName="username" placeholder="Enter Username">

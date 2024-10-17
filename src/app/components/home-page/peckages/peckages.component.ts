@@ -78,6 +78,7 @@ export class PeckagesComponent {
       name: ['', Validators.required],
       price: ['', Validators.required],
       description: ['', Validators.required],
+      finalNotes: ['', Validators.required],
     });
   }
 
@@ -140,6 +141,7 @@ export class PeckagesComponent {
         name: this.addItemForm.value.name,
         price: this.addItemForm.value.price,
         description: this.addItemForm.value.description,
+        finalNotes: this.addItemForm.value.finalNotes,
       };
       console.log(newItem, 'data to add in package')
       this.peckageService.addPeckage(newItem).subscribe({
