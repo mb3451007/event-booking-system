@@ -44,7 +44,7 @@ export class ItemsPageComponent implements OnInit {
   pListItems: any = [];
   showModal: boolean = false;
   showUpdateModal: boolean = false;
-  formData = { name: '', price: '', isAvailable: false };
+  formData = { name: '', price: '', isAvailable: true };
   items: Array<{ name: string; price: string; isAvailable: boolean }> = [];
   itemId: any;
   addItemForm: FormGroup;
