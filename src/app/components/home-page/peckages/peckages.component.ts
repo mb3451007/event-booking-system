@@ -91,6 +91,8 @@ export class PeckagesComponent {
     this.item = {
       name: this.addItemForm.value.name,
       price: this.addItemForm.value.price,
+      description: this.addItemForm.value.description,
+      finalNotes: this.addItemForm.value.finalNotes,
     };
   }
 
@@ -109,6 +111,8 @@ export class PeckagesComponent {
     this.addItemForm.patchValue({
       name: this.item.name,
       price: this.item.price,
+      description: this.item.description,
+      finalNotes: this.item.finalNotes,
     });
     this.showUpdateModal = true;
   setTimeout(() => {
@@ -216,6 +220,10 @@ export class PeckagesComponent {
     if (this.addItemForm.dirty) {
       const updatedItem = {
         ...this.item,
+        name:this.addItemForm.value.name,
+        price:this.addItemForm.value.price,
+        description:this.addItemForm.value.description,
+        finalNotes:this.addItemForm.value.finalNotes,
       };
       this.peckageService.updatePeckage(this.item._id, updatedItem).subscribe({
         next: (response: any) => {

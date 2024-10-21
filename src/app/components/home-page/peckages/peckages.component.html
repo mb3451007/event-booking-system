@@ -221,6 +221,10 @@
               name="price"
               required
             />
+            <label for="description" class="mt-2">Description</label>
+            <quill-editor formControlName="description"></quill-editor>
+            <label for="finalNotes" class="mt-2">Final Notes</label>
+            <quill-editor formControlName="finalNotes"></quill-editor>
           </div>
           <button type="submit" class="btn btn-primary"
           [disabled]="!addItemForm.dirty"
