@@ -1,4 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -30,6 +31,7 @@ import { SubItemsService } from 'src/app/sub-items.service';
   ],
 })
 export class SubItemsPageComponent {
+  selectedFile: File | null = null;
   showModal: boolean = false;
   formData = { name: '', price: '', itemName: '', isAvailable: true };
   AddItmePlus = 'assets/plus-circle-svgrepo-com.svg';
@@ -51,13 +53,15 @@ export class SubItemsPageComponent {
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
-    private itemService: ItemsService
+    private itemService: ItemsService,
+    private sanitizer: DomSanitizer,
   ) {
     this.addSubItemForm = this.fb.group({
       name: ['', Validators.required],
       price: ['', Validators.required],
       isAvailable: [],
       item: ['', Validators.required],
+      image: [''],
     });
 
   }
@@ -73,6 +77,7 @@ export class SubItemsPageComponent {
       price: this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
       item: this.addSubItemForm.value.item,
+      image: this.addSubItemForm.value.image,
     };
 
 
@@ -97,7 +102,8 @@ export class SubItemsPageComponent {
       name: this.subItem.name,
       price: this.subItem.price,
       isAvailable: this.subItem.isAvailable,
-      item: this.subItem.item.id  // Ensure this is the ID
+      item: this.subItem.item.id, // Ensure this is the ID
+      image: this.subItem.image
     });
 
     console.log(subItem)
@@ -124,7 +130,10 @@ export class SubItemsPageComponent {
       price: this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
       item: this.addSubItemForm.value.item,
+      image: this.addSubItemForm.value.image,
+      
     };
+    
     console.log(newItem, 'this is formValue to send data');
     this.subItemService.addSubItem(newItem).subscribe({
       next: (response: any) => {
@@ -201,6 +210,7 @@ export class SubItemsPageComponent {
       price:this.addSubItemForm.value.price,
       isAvailable: this.addSubItemForm.value.isAvailable,
       item: this.addSubItemForm.value.item, // Ensure this is an ID
+      image: this.addSubItemForm.value.image, // Ensure this is an ID
     };
     this.subItemService
       .updateSubItem(this.subItem._id, updatedItem)
@@ -261,6 +271,16 @@ export class SubItemsPageComponent {
     if ((event.target as HTMLElement).classList.contains('modal')) {
       this.closeModal();
       this.closeUpdateModal();
+    }
+  }
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+
+      // Create a preview URL
+      const objectUrl = URL.createObjectURL(file);
+      this.subItem.image = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
     }
   }
 }

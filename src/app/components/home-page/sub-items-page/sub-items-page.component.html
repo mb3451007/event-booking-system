@@ -190,7 +190,10 @@
             <label class="form-check-label" for="isAvailable"
               >Is Available</label
             >
-            <input type="file"/>
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="image">Select Image</label>
+            <input type="file" id="image" (change)="onFileSelected($event)" />
           </div>
           <button
             type="submit"
@@ -283,6 +286,11 @@
             <label class="form-check-label" for="isAvailable"
               >Is Available</label
             >
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="image">Update Image</label>
+            <input type="file" id="image" (change)="onFileSelected($event)" />
+            <img *ngIf="subItem.image" [src]="subItem.image" alt="Subitem Image" class="preview-image" />
           </div>
           <button
             type="submit"
