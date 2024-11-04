@@ -1,21 +1,25 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+} from '@angular/animations';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-
 
 import { map, Observable, startWith } from 'rxjs';
 import { ItemsService } from 'src/app/items.service';
 import { SubItemsService } from 'src/app/sub-items.service';
 import { PackagesService } from 'src/app/packages.service';
-
 
 @Component({
   selector: 'app-peckages',
@@ -23,20 +27,22 @@ import { PackagesService } from 'src/app/packages.service';
   styleUrls: ['./peckages.component.scss'],
   animations: [
     trigger('modalAnimation', [
-      state('void', style({
-        opacity: 0,
-        transform: 'scale(0.7)'
-      })),
-      state('*', style({
-        opacity: 1,
-        transform: 'scale(1)'
-      })),
-      transition('void => *', [
-        animate('300ms ease-in')
-      ]),
-      transition('* => void', [
-        animate('300ms ease-out')
-      ]),
+      state(
+        'void',
+        style({
+          opacity: 0,
+          transform: 'scale(0.7)',
+        })
+      ),
+      state(
+        '*',
+        style({
+          opacity: 1,
+          transform: 'scale(1)',
+        })
+      ),
+      transition('void => *', [animate('300ms ease-in')]),
+      transition('* => void', [animate('300ms ease-out')]),
     ]),
   ],
 })
@@ -65,7 +71,6 @@ export class PeckagesComponent {
   showConfirmation: boolean = false;
   itemToDelete: number | null = null;
 
- 
   constructor(
     private peckageService: PackagesService,
     private subItemService: SubItemsService,
@@ -83,8 +88,7 @@ export class PeckagesComponent {
       finalNotes: ['', Validators.required],
       discount: [false],
       discountPercentage: [''],
-      discountName: ['']
-   
+      discountName: [''],
     });
   }
 
@@ -95,15 +99,15 @@ export class PeckagesComponent {
     this.pagesCount();
 
     this.item = {
-      name:this.addItemForm.value.name,
-        price:this.addItemForm.value.price,
-        minPersons:this.addItemForm.value.minPersons,
-        maxPersons:this.addItemForm.value.maxPersons,
-        description:this.addItemForm.value.description,
-        finalNotes:this.addItemForm.value.finalNotes,
-        discount:this.addItemForm.value.discount,
-        discountPercentage:this.addItemForm.value.discountPercentage,
-        discountName:this.addItemForm.value.discountName,
+      name: this.addItemForm.value.name,
+      price: this.addItemForm.value.price,
+      minPersons: this.addItemForm.value.minPersons,
+      maxPersons: this.addItemForm.value.maxPersons,
+      description: this.addItemForm.value.description,
+      finalNotes: this.addItemForm.value.finalNotes,
+      discount: this.addItemForm.value.discount,
+      discountPercentage: this.addItemForm.value.discountPercentage,
+      discountName: this.addItemForm.value.discountName,
     };
   }
 
@@ -113,7 +117,6 @@ export class PeckagesComponent {
     setTimeout(() => {
       document.querySelector('.modal.show')?.classList.add('show');
     }, 10);
-    
   }
 
   openUpdateModal(item: any) {
@@ -121,33 +124,33 @@ export class PeckagesComponent {
     this.item = { ...item };
     this.addItemForm.patchValue({
       name: this.item.name,
-      price: this.item.price,    
-      minPersons:this.item.minPersons,
-      maxPersons:this.item.maxPersons,
+      price: this.item.price,
+      minPersons: this.item.minPersons,
+      maxPersons: this.item.maxPersons,
       description: this.item.description,
       finalNotes: this.item.finalNotes,
-      discount:this.item.discount,
-      discountPercentage:this.item.discountPercentage,
-      discountName:this.item.discountName,
+      discount: this.item.discount,
+      discountPercentage: this.item.discountPercentage,
+      discountName: this.item.discountName,
     });
     this.showUpdateModal = true;
-  setTimeout(() => {
-    document.querySelector('.modal.show')?.classList.add('show');
-  }, 10);
+    setTimeout(() => {
+      document.querySelector('.modal.show')?.classList.add('show');
+    }, 10);
   }
 
   closeModal() {
     document.querySelector('.modal.show')?.classList.remove('show');
     setTimeout(() => {
       this.showModal = false;
-    }, 300); 
+    }, 300);
     // this.addItemForm.reset();
   }
   closeUpdateModal() {
     document.querySelector('.modal.show')?.classList.remove('show');
     setTimeout(() => {
       this.showUpdateModal = false;
-    }, 300); 
+    }, 300);
   }
 
   onSubmit() {
@@ -158,17 +161,17 @@ export class PeckagesComponent {
     this.isLoading = true;
     if (this.addItemForm.valid) {
       const newItem = {
-        name:this.addItemForm.value.name,
-        price:this.addItemForm.value.price,
-        minPersons:this.addItemForm.value.minPersons,
-        maxPersons:this.addItemForm.value.maxPersons,
-        description:this.addItemForm.value.description,
-        finalNotes:this.addItemForm.value.finalNotes,
-        discount:this.addItemForm.value.discount,
-        discountPercentage:this.addItemForm.value.discountPercentage,
-        discountName:this.addItemForm.value.discountName,
+        name: this.addItemForm.value.name,
+        price: this.addItemForm.value.price,
+        minPersons: this.addItemForm.value.minPersons,
+        maxPersons: this.addItemForm.value.maxPersons,
+        description: this.addItemForm.value.description,
+        finalNotes: this.addItemForm.value.finalNotes,
+        discount: this.addItemForm.value.discount,
+        discountPercentage: this.addItemForm.value.discountPercentage,
+        discountName: this.addItemForm.value.discountName,
       };
-      console.log(newItem, 'data to add in package')
+      console.log(newItem, 'data to add in package');
       this.peckageService.addPeckage(newItem).subscribe({
         next: (response: any) => {
           this.isLoading = false;
@@ -212,7 +215,6 @@ export class PeckagesComponent {
       });
   }
 
-
   deleteItem(itemId: number) {
     this.itemToDelete = itemId;
     this.showConfirmation = true;
@@ -241,15 +243,15 @@ export class PeckagesComponent {
     if (this.addItemForm.dirty) {
       const updatedItem = {
         ...this.item,
-        name:this.addItemForm.value.name,
-        price:this.addItemForm.value.price,
-        minPersons:this.addItemForm.value.minPersons,
-        maxPersons:this.addItemForm.value.maxPersons,
-        description:this.addItemForm.value.description,
-        finalNotes:this.addItemForm.value.finalNotes,
-        discount:this.addItemForm.value.discount,
-        discountPercentage:this.addItemForm.value.discountPercentage,
-        discountName:this.addItemForm.value.discountName,
+        name: this.addItemForm.value.name,
+        price: this.addItemForm.value.price,
+        minPersons: this.addItemForm.value.minPersons,
+        maxPersons: this.addItemForm.value.maxPersons,
+        description: this.addItemForm.value.description,
+        finalNotes: this.addItemForm.value.finalNotes,
+        discount: this.addItemForm.value.discount,
+        discountPercentage: this.addItemForm.value.discountPercentage,
+        discountName: this.addItemForm.value.discountName,
       };
       this.peckageService.updatePeckage(this.item._id, updatedItem).subscribe({
         next: (response: any) => {
@@ -309,6 +311,24 @@ export class PeckagesComponent {
   }
   toggleDiscount() {
     const discountChecked = this.addItemForm.get('discount')?.value;
+  }
 
+  previewUpdatedChanges() {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        name: this.addItemForm.value.name,
+        price: this.addItemForm.value.price,
+        minPersons: this.addItemForm.value.minPersons,
+        maxPersons: this.addItemForm.value.maxPersons,
+        description: this.addItemForm.value.description,
+        finalNotes: this.addItemForm.value.finalNotes,
+        discount: this.addItemForm.value.discount,
+        discountPercentage: this.addItemForm.value.discountPercentage,
+        discountName: this.addItemForm.value.discountName,
+        isAvailable: true,
+      },
+    };
+    console.log('Navigating with extras:', navigationExtras);
+    this.router.navigate(['package-detail/', this.item._id], navigationExtras);
   }
 }

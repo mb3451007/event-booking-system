@@ -2,8 +2,6 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-     
-
       <div class="table-container bg-white rounded shadow p-4 mt-5">
         <div class="headingTitle">
           <h2 class="mb-3">Subitems</h2>
@@ -21,6 +19,7 @@
                 <th scope="col ">Name</th>
                 <th scope="col ">Price</th>
                 <th scope="col ">Item</th>
+                <th scope="col ">Image</th>
                 <th scope="col ">Action</th>
                 <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
                 <!-- <th scope="col">Transactions  </th> -->
@@ -32,31 +31,38 @@
                 <td>{{ subItem.name }}</td>
                 <td>{{ subItem.price }}</td>
                 <td>{{ subItem.item?.name }}</td>
+                <td>
+                  <a [href]="getMediaURl(subItem.imageUrl)" target="_blank">
+                    <img [src]="getMediaURl(subItem.imageUrl)" width="100px" />
+                  </a>
+                </td>
+
                 <td class="slot">
                   <div class="tooltip-container">
-                  <img src="assets/view-eye-svgrepo-com.svg" 
-                  alt="Hanna Gover" />
-                  <span class="tooltip-text">View Subitem</span>
+                    <img
+                      src="assets/view-eye-svgrepo-com.svg"
+                      alt="Hanna Gover"
+                    />
+                    <span class="tooltip-text">View Subitem</span>
                   </div>
                   <div class="tooltip-container">
-                  <img
-                    src="assets/edit-4-svgrepo-com.svg"
-                    alt="Hanna Gover"
-                    (click)="openUpdateModal(subItem)"
-                  />
-                  <span class="tooltip-text">Update Subitem</span>
+                    <img
+                      src="assets/edit-4-svgrepo-com.svg"
+                      alt="Hanna Gover"
+                      (click)="openUpdateModal(subItem)"
+                    />
+                    <span class="tooltip-text">Update Subitem</span>
                   </div>
                   <div class="tooltip-container">
-                  <img
-                    src="assets/delete-svgrepo-com.svg"
-                    alt="Hanna Gover"
-                    (click)="deleteSubItem(subItem._id)"
-                  />
-                  <span class="tooltip-text">Delete Subitem</span>
+                    <img
+                      src="assets/delete-svgrepo-com.svg"
+                      alt="Hanna Gover"
+                      (click)="deleteSubItem(subItem._id)"
+                    />
+                    <span class="tooltip-text">Delete Subitem</span>
                   </div>
                 </td>
               </tr>
-
             </tbody>
           </table>
         </div>
@@ -96,7 +102,6 @@
       </div>
     </div>
   </div>
-
 </div>
 <div
   class="modal-backdrop"
@@ -111,7 +116,6 @@
   [@modalAnimation]="showModal ? '*' : 'void'"
   *ngIf="showModal"
   (click)="handleBackdropClick($event)"
- 
 >
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -152,19 +156,13 @@
             />
           </div>
 
-
-
-
-
-
           <div class="form-group inputFormGroup">
-          <label for="item">Select Item</label>
+            <label for="item">Select Item</label>
             <select
               id="item"
               formControlName="item"
               class="form-control"
               name="item"
-
               required
             >
               <option value="" disabled>Select Item</option>
@@ -193,7 +191,17 @@
           </div>
           <div class="form-group inputFormGroup">
             <label for="image">Select Image</label>
-            <input type="file" id="image" (change)="onFileSelected($event)" />
+            <input
+              type="file"
+              id="image"
+              value="selectedImageURl"
+              (change)="onFileSelected($event)"
+            />
+            <img
+              *ngIf="selectedImageURl !== null"
+              [src]="getMediaURl(selectedImageURl)"
+              width="100px"
+            />
           </div>
           <button
             type="submit"
@@ -261,17 +269,16 @@
           <div class="form-group inputFormGroup">
             <label for="item">Items</label>
             <select
-            id="item"
-            formControlName="item"
-            class="form-control"
-            required
-          >
-            <option value="" disabled>Select Item</option>
-            <option *ngFor="let item of ListAllItems" [value]="item._id">
-              {{ item.name }}
-            </option>
-          </select>
-
+              id="item"
+              formControlName="item"
+              class="form-control"
+              required
+            >
+              <option value="" disabled>Select Item</option>
+              <option *ngFor="let item of ListAllItems" [value]="item._id">
+                {{ item.name }}
+              </option>
+            </select>
           </div>
 
           <div class="form-group form-check inputFormGroup">
@@ -289,8 +296,17 @@
           </div>
           <div class="form-group inputFormGroup">
             <label for="image">Update Image</label>
-            <input type="file" id="image" (change)="onFileSelected($event)" />
-            <img *ngIf="subItem.image" [src]="subItem.image" alt="Subitem Image" class="preview-image" />
+            <input
+              type="file"
+              id="image"
+              value="selectedImageURl"
+              (change)="onFileSelected($event)"
+            />
+            <img
+              *ngIf="selectedImageURl !== null"
+              [src]="getMediaURl(selectedImageURl)"
+              width="100px"
+            />
           </div>
           <button
             type="submit"

@@ -1,4 +1,10 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -13,20 +19,22 @@ import { SubItemsService } from 'src/app/sub-items.service';
   styleUrls: ['./sub-items-page.component.scss'],
   animations: [
     trigger('modalAnimation', [
-      state('void', style({
-        opacity: 0,
-        transform: 'scale(0.7)'
-      })),
-      state('*', style({
-        opacity: 1,
-        transform: 'scale(1)'
-      })),
-      transition('void => *', [
-        animate('300ms ease-in')
-      ]),
-      transition('* => void', [
-        animate('300ms ease-out')
-      ]),
+      state(
+        'void',
+        style({
+          opacity: 0,
+          transform: 'scale(0.7)',
+        })
+      ),
+      state(
+        '*',
+        style({
+          opacity: 1,
+          transform: 'scale(1)',
+        })
+      ),
+      transition('void => *', [animate('300ms ease-in')]),
+      transition('* => void', [animate('300ms ease-out')]),
     ]),
   ],
 })
@@ -48,13 +56,15 @@ export class SubItemsPageComponent {
   selectedItem: any;
   showConfirmation: boolean = false;
   itemToDelete: number | null = null;
+  selectedImageURl: any = null;
+
   constructor(
     private subItemService: SubItemsService,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
     private itemService: ItemsService,
-    private sanitizer: DomSanitizer,
+    private sanitizer: DomSanitizer
   ) {
     this.addSubItemForm = this.fb.group({
       name: ['', Validators.required],
@@ -63,7 +73,6 @@ export class SubItemsPageComponent {
       item: ['', Validators.required],
       image: [''],
     });
-
   }
 
   ngOnInit(): void {
@@ -80,35 +89,30 @@ export class SubItemsPageComponent {
       image: this.addSubItemForm.value.image,
     };
 
-
     this.pagesCount();
   }
 
-
-
-
-
   openModal() {
+    this.selectedImageURl = null;
     this.addSubItemForm.reset();
     this.showModal = true;
-    
-   
   }
   openUpdateModal(subItem: any) {
     this.addSubItemForm.reset();
     this.subItem = { ...subItem };
+    console.log(subItem);
+    this.selectedImageURl = subItem.imageUrl;
+    console.log(this.selectedImageURl);
     this.showUpdateModal = true;
     this.addSubItemForm.patchValue({
       name: this.subItem.name,
       price: this.subItem.price,
       isAvailable: this.subItem.isAvailable,
       item: this.subItem.item.id, // Ensure this is the ID
-      image: this.subItem.image
     });
 
-    console.log(subItem)
+    console.log(subItem);
   }
-
 
   closeModal() {
     this.showModal = false;
@@ -123,30 +127,62 @@ export class SubItemsPageComponent {
     this.closeModal();
   }
 
+  // addSubItem() {
+  //   this.isLoading = true;
+  //   const newItem = {
+  //     name: this.addSubItemForm.value.name,
+  //     price: this.addSubItemForm.value.price,
+  //     isAvailable: this.addSubItemForm.value.isAvailable,
+  //     item: this.addSubItemForm.value.item,
+  //     image: this.addSubItemForm.value.image,
+  //   };
+
+  //   console.log(newItem, 'this is formValue to send data');
+  //   this.subItemService.addSubItem(newItem).subscribe({
+  //     next: (response: any) => {
+  //       this.isLoading = false;
+  //       this.addSubItemForm.reset();
+  //       this.getAllSubItems();
+  //       this.getPaginatedSubItems(this.pageNumber);
+  //       this.toastr.success('SubItem added successfully!');
+  //       console.log(response);
+  //     },
+  //     error: (error: any) => {
+  //       this.isLoading = false;
+  //       console.log(error);
+  //       this.toastr.error('Error Adding Item!');
+  //     },
+  //   });
+  // }
+
   addSubItem() {
     this.isLoading = true;
-    const newItem = {
-      name: this.addSubItemForm.value.name,
-      price: this.addSubItemForm.value.price,
-      isAvailable: this.addSubItemForm.value.isAvailable,
-      item: this.addSubItemForm.value.item,
-      image: this.addSubItemForm.value.image,
-      
-    };
-    
-    console.log(newItem, 'this is formValue to send data');
-    this.subItemService.addSubItem(newItem).subscribe({
+    const formData = new FormData();
+
+    // Append form fields
+    formData.append('name', this.addSubItemForm.value.name);
+    formData.append('price', this.addSubItemForm.value.price);
+    formData.append('isAvailable', this.addSubItemForm.value.isAvailable);
+    formData.append('item', this.addSubItemForm.value.item);
+
+    // Append the file if available
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    }
+
+    // Call the service to upload the data
+    this.subItemService.addSubItem(formData).subscribe({
       next: (response: any) => {
         this.isLoading = false;
         this.addSubItemForm.reset();
+
         this.getAllSubItems();
         this.getPaginatedSubItems(this.pageNumber);
+        this.selectedImageURl = null;
         this.toastr.success('SubItem added successfully!');
-        console.log(response);
       },
       error: (error: any) => {
         this.isLoading = false;
-        console.log(error);
         this.toastr.error('Error Adding Item!');
       },
     });
@@ -205,31 +241,41 @@ export class SubItemsPageComponent {
 
   updateSubItem() {
     this.isLoading = true;
-    const updatedItem = {
-      name: this.addSubItemForm.value.name,
-      price:this.addSubItemForm.value.price,
-      isAvailable: this.addSubItemForm.value.isAvailable,
-      item: this.addSubItemForm.value.item, // Ensure this is an ID
-      image: this.addSubItemForm.value.image, // Ensure this is an ID
-    };
-    this.subItemService
-      .updateSubItem(this.subItem._id, updatedItem)
-      .subscribe({
-        next: (response: any) => {
-          this.isLoading = false;
-          this.addSubItemForm.reset();
-          this.closeUpdateModal();
-          this.getAllSubItems();
-          this.getPaginatedSubItems(this.pageNumber);
-          this.toastr.info('SubItem updated successfully!');
-        },
-        error: (response: any) => {
-          this.isLoading = false;
-          this.toastr.error('Error Updating SubItem!');
-          console.log(response);
-        },
-      });
+    const formData = new FormData();
+
+    // Append the fields to be updated
+    formData.append('name', this.addSubItemForm.value.name);
+    formData.append('price', this.addSubItemForm.value.price);
+    formData.append('isAvailable', this.addSubItemForm.value.isAvailable);
+    formData.append('item', this.addSubItemForm.value.item); // Ensure this is an ID
+
+    // Append the new file if selected, otherwise send the existing image ID or URL
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile);
+    } else {
+      // If no new file is selected, you might want to send the existing image ID or URL
+      formData.append('existingImage', this.subItem.imageUrl); // Adjust as per your backend requirement
+    }
+
+    // Call the service to update the data
+    this.subItemService.updateSubItem(this.subItem._id, formData).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        this.addSubItemForm.reset();
+        this.closeUpdateModal();
+        this.getAllSubItems();
+        this.getPaginatedSubItems(this.pageNumber);
+        this.selectedImageURl = null;
+        this.toastr.info('SubItem updated successfully!');
+      },
+      error: (response: any) => {
+        this.isLoading = false;
+        this.toastr.error('Error Updating SubItem!');
+        console.log(response);
+      },
+    });
   }
+
   previousPage() {
     if (this.pageNumber > 1) {
       this.pageNumber--;
@@ -277,10 +323,15 @@ export class SubItemsPageComponent {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-
-      // Create a preview URL
-      const objectUrl = URL.createObjectURL(file);
-      this.subItem.image = this.sanitizer.bypassSecurityTrustUrl(objectUrl);
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.selectedImageURl = reader.result;
+      };
+      reader.readAsDataURL(file);
     }
+  }
+
+  getMediaURl(url: string) {
+    return this.subItemService.getMedia(url);
   }
 }
