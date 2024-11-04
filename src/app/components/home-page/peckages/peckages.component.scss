@@ -311,3 +311,14 @@
   visibility: visible; 
   opacity: 1;
 }
+.form-switch .form-check-input {
+  width: 2em;
+  height: 1em;
+  background-color: #ddd;
+  border-radius: 1em;
+  transition: background-color 0.3s;
+}
+
+.form-switch .form-check-input:checked {
+  background-color: #007bff;
+}

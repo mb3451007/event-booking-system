@@ -161,11 +161,53 @@
               name="name"
               required
             />
+            <label for="minPersons">Min No. of Persons</label>
+            <input
+              type="number"
+              id="minPersons"
+              formControlName="minPersons"
+              class="form-control"
+              required
+            />
+            <label for="maxPersons">Max No. of Persons</label>
+            <input
+              type="number"
+              id="maxPersons"
+              formControlName="maxPersons"
+              class="form-control"
+              required
+            />
+        
             <label for="description" class="mt-2">Description</label>
   <quill-editor formControlName="description"></quill-editor>
             <label for="finalNotes" class="mt-2">Final Notes</label>
   <quill-editor formControlName="finalNotes"></quill-editor>
-          </div>      
+          </div> 
+          <h3 class="fw-bold">Discount</h3>              
+          <label for="discountName">Discount Name</label>
+          <input
+            type="text"
+            id="discountName"
+            formControlName="discountName"
+            class="form-control"
+          />
+            <label for="discountPercentage">Discount Percentage</label>
+            <input
+              type="number"
+              id="discountPercentage"
+              formControlName="discountPercentage"
+              class="form-control"
+            />
+            <div class="form-check form-switch mt-3">
+              <label for="discount" class="form-check-label">Active</label>
+              <input
+                type="checkbox"
+                id="discount"
+                formControlName="discount"
+                class="form-check-input"
+                (change)="toggleDiscount()"
+              />
+            </div>
           <button type="submit" class="btn btn-primary" 
           [disabled]="addItemForm.invalid"
           (click)="addItem()">
@@ -221,10 +263,56 @@
               name="price"
               required
             />
+            <label for="minPersons">Min No. of Persons</label>
+            <input
+              type="number"
+              id="minPersons"
+              formControlName="minPersons"
+              class="form-control"
+              required
+            />
+            <label for="maxPersons">Max No. of Persons</label>
+            <input
+              type="number"
+              id="maxPersons"
+              formControlName="maxPersons"
+              class="form-control"
+              required
+            />
+        
             <label for="description" class="mt-2">Description</label>
             <quill-editor formControlName="description"></quill-editor>
             <label for="finalNotes" class="mt-2">Final Notes</label>
+            
             <quill-editor formControlName="finalNotes"></quill-editor>
+            <h3>Discount</h3>
+
+            <label for="discountName">Discount Name</label>
+            <input
+              type="text"
+              id="discountName"
+              formControlName="discountName"
+              class="form-control"
+            />
+              <label for="discountPercentage">Discount Percentage</label>
+              <input
+                type="number"
+                id="discountPercentage"
+                formControlName="discountPercentage"
+                class="form-control"
+              />
+
+              <div class="form-check form-switch mt-3">
+              <label for="discount" class="form-check-label">Active</label>
+              <input
+                type="checkbox"
+                id="discount"
+                formControlName="discount"
+                class="form-check-input"
+                (change)="toggleDiscount()"
+              />
+              </div>
+           
           </div>
           <button type="submit" class="btn btn-primary"
           [disabled]="!addItemForm.dirty"

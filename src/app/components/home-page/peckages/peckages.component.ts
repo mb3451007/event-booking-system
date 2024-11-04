@@ -77,8 +77,14 @@ export class PeckagesComponent {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
       price: ['', Validators.required],
+      minPersons: ['', Validators.required],
+      maxPersons: ['', Validators.required],
       description: ['', Validators.required],
       finalNotes: ['', Validators.required],
+      discount: [false],
+      discountPercentage: [''],
+      discountName: ['']
+   
     });
   }
 
@@ -89,10 +95,15 @@ export class PeckagesComponent {
     this.pagesCount();
 
     this.item = {
-      name: this.addItemForm.value.name,
-      price: this.addItemForm.value.price,
-      description: this.addItemForm.value.description,
-      finalNotes: this.addItemForm.value.finalNotes,
+      name:this.addItemForm.value.name,
+        price:this.addItemForm.value.price,
+        minPersons:this.addItemForm.value.minPersons,
+        maxPersons:this.addItemForm.value.maxPersons,
+        description:this.addItemForm.value.description,
+        finalNotes:this.addItemForm.value.finalNotes,
+        discount:this.addItemForm.value.discount,
+        discountPercentage:this.addItemForm.value.discountPercentage,
+        discountName:this.addItemForm.value.discountName,
     };
   }
 
@@ -110,9 +121,14 @@ export class PeckagesComponent {
     this.item = { ...item };
     this.addItemForm.patchValue({
       name: this.item.name,
-      price: this.item.price,
+      price: this.item.price,    
+      minPersons:this.item.minPersons,
+      maxPersons:this.item.maxPersons,
       description: this.item.description,
       finalNotes: this.item.finalNotes,
+      discount:this.item.discount,
+      discountPercentage:this.item.discountPercentage,
+      discountName:this.item.discountName,
     });
     this.showUpdateModal = true;
   setTimeout(() => {
@@ -125,7 +141,7 @@ export class PeckagesComponent {
     setTimeout(() => {
       this.showModal = false;
     }, 300); 
-    this.addItemForm.reset();
+    // this.addItemForm.reset();
   }
   closeUpdateModal() {
     document.querySelector('.modal.show')?.classList.remove('show');
@@ -142,10 +158,15 @@ export class PeckagesComponent {
     this.isLoading = true;
     if (this.addItemForm.valid) {
       const newItem = {
-        name: this.addItemForm.value.name,
-        price: this.addItemForm.value.price,
-        description: this.addItemForm.value.description,
-        finalNotes: this.addItemForm.value.finalNotes,
+        name:this.addItemForm.value.name,
+        price:this.addItemForm.value.price,
+        minPersons:this.addItemForm.value.minPersons,
+        maxPersons:this.addItemForm.value.maxPersons,
+        description:this.addItemForm.value.description,
+        finalNotes:this.addItemForm.value.finalNotes,
+        discount:this.addItemForm.value.discount,
+        discountPercentage:this.addItemForm.value.discountPercentage,
+        discountName:this.addItemForm.value.discountName,
       };
       console.log(newItem, 'data to add in package')
       this.peckageService.addPeckage(newItem).subscribe({
@@ -222,8 +243,13 @@ export class PeckagesComponent {
         ...this.item,
         name:this.addItemForm.value.name,
         price:this.addItemForm.value.price,
+        minPersons:this.addItemForm.value.minPersons,
+        maxPersons:this.addItemForm.value.maxPersons,
         description:this.addItemForm.value.description,
         finalNotes:this.addItemForm.value.finalNotes,
+        discount:this.addItemForm.value.discount,
+        discountPercentage:this.addItemForm.value.discountPercentage,
+        discountName:this.addItemForm.value.discountName,
       };
       this.peckageService.updatePeckage(this.item._id, updatedItem).subscribe({
         next: (response: any) => {
@@ -281,5 +307,8 @@ export class PeckagesComponent {
       this.closeUpdateModal();
     }
   }
- 
+  toggleDiscount() {
+    const discountChecked = this.addItemForm.get('discount')?.value;
+
+  }
 }
