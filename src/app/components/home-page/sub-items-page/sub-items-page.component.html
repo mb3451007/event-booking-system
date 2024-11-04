@@ -32,9 +32,16 @@
                 <td>{{ subItem.price }}</td>
                 <td>{{ subItem.item?.name }}</td>
                 <td>
-                  <a [href]="getMediaURl(subItem.imageUrl)" target="_blank">
+                  <a
+                    *ngIf="getMediaURl(subItem.imageUrl) !== ''"
+                    [href]="getMediaURl(subItem.imageUrl)"
+                    target="_blank"
+                  >
                     <img [src]="getMediaURl(subItem.imageUrl)" width="100px" />
                   </a>
+                  <p *ngIf="getMediaURl(subItem.imageUrl) === ''">
+                    No file uploaded
+                  </p>
                 </td>
 
                 <td class="slot">
@@ -198,8 +205,8 @@
               (change)="onFileSelected($event)"
             />
             <img
-              *ngIf="selectedImageURl !== null"
-              [src]="getMediaURl(selectedImageURl)"
+              *ngIf="selectedLocalFile !== null"
+              [src]="selectedLocalFile"
               width="100px"
             />
           </div>
@@ -303,7 +310,12 @@
               (change)="onFileSelected($event)"
             />
             <img
-              *ngIf="selectedImageURl !== null"
+              *ngIf="selectedLocalFile !== null"
+              [src]="selectedLocalFile"
+              width="100px"
+            />
+            <img
+              *ngIf="selectedLocalFile === null"
               [src]="getMediaURl(selectedImageURl)"
               width="100px"
             />

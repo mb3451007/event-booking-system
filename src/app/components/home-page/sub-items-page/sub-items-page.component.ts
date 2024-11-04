@@ -57,6 +57,7 @@ export class SubItemsPageComponent {
   showConfirmation: boolean = false;
   itemToDelete: number | null = null;
   selectedImageURl: any = null;
+  selectedLocalFile: any = null;
 
   constructor(
     private subItemService: SubItemsService,
@@ -93,7 +94,7 @@ export class SubItemsPageComponent {
   }
 
   openModal() {
-    this.selectedImageURl = null;
+    this.selectedLocalFile = null;
     this.addSubItemForm.reset();
     this.showModal = true;
   }
@@ -102,6 +103,7 @@ export class SubItemsPageComponent {
     this.subItem = { ...subItem };
     console.log(subItem);
     this.selectedImageURl = subItem.imageUrl;
+    this.selectedLocalFile = null;
     console.log(this.selectedImageURl);
     this.showUpdateModal = true;
     this.addSubItemForm.patchValue({
@@ -325,13 +327,14 @@ export class SubItemsPageComponent {
       this.selectedFile = file;
       const reader = new FileReader();
       reader.onload = () => {
-        this.selectedImageURl = reader.result;
+        this.selectedLocalFile = reader.result;
       };
       reader.readAsDataURL(file);
     }
   }
 
   getMediaURl(url: string) {
-    return this.subItemService.getMedia(url);
+    const mediaUrl = this.subItemService.getMedia(url);
+    return mediaUrl.includes('undefined') ? '' : mediaUrl;
   }
 }
