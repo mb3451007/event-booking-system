@@ -20,6 +20,8 @@
               <tr>
                 <th scope="col ">Name</th>
                 <th scope="col ">Price</th>
+                <th scope="col ">Min no. of Persons</th>
+                <th scope="col ">Max no. of Persons</th>
                 <th scope="col ">Action</th>
                 <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
                 <!-- <th scope="col">Transactions  </th> -->
@@ -30,6 +32,8 @@
               <tr *ngFor="let item of ListItems">
                 <td>{{ item.name }}</td>
                 <td>{{ item.price }}</td>
+                <td>{{ item.minPersons}}</td>
+                <td>{{ item.maxPersons }}</td>
                 <td class="slot">
                   <div class="tooltip-container" (click)="viewItem(item._id)">
                     <img
@@ -285,7 +289,7 @@
             <label for="finalNotes" class="mt-2">Final Notes</label>
             
             <quill-editor formControlName="finalNotes"></quill-editor>
-            <h3>Discount</h3>
+            <h3 class="fw-bold items-center">Discount</h3>
 
             <label for="discountName">Discount Name</label>
             <input
