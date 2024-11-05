@@ -331,6 +331,7 @@ export class SubItemsPageComponent {
       };
       reader.readAsDataURL(file);
     }
+    this.addSubItemForm.markAsDirty();
   }
 
   getMediaURl(url: string) {
