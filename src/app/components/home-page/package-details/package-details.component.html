@@ -1,10 +1,17 @@
 <app-loader [isLoading]="isLoading"></app-loader>
 
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link
+  href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+  rel="stylesheet"
+  id="bootstrap-css"
+/>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link
+  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  rel="stylesheet"
+/>
 
 <!-- menu -->
 <div class="content">
@@ -12,49 +19,83 @@
     <div class="row">
       <div class="col-xs-12 text-center">
         <div class="page-section">
-          <h1 class="page-title">{{ packageDetails.package?.name }} - <span class="package-price">€{{ packageDetails.package?.price }} per person</span></h1>
+          <h1 class="page-title">
+            {{ packageDetails.package?.name }} -
+            <span class="package-price"
+              >€{{ packageDetails.package?.price }} per person</span
+            >
+          </h1>
         </div>
       </div>
     </div>
-    
+
     <!-- Package Description -->
     <div class="row">
       <div class="col-xs-12">
-        <div class="package-description" [innerHTML]="packageDetails.package?.description"></div>
+        <div
+          class="package-description"
+          [innerHTML]="packageDetails.package?.description"
+        ></div>
       </div>
     </div>
-    
+
     <!-- Loop over itemsWithSubItems -->
     <div class="row">
-      <div class="col-md-6 col-sm-12" *ngFor="let itemWithSubItem of packageDetails.itemsWithSubItems">
+      <div
+        class="col-md-6 col-sm-12"
+        *ngFor="let itemWithSubItem of packageDetails.itemsWithSubItems"
+      >
         <div class="menu-block">
           <h3 class="menu-title">{{ itemWithSubItem.item?.name }}</h3>
           <div class="menu-content">
             <div class="row">
-              <div class="col-xs-12" *ngFor="let subItem of itemWithSubItem.subItems">
+              <div
+                class="col-xs-12 my-2"
+                *ngFor="let subItem of itemWithSubItem.subItems"
+              >
                 <div class="dish-content row">
-                  <h5 class="dish-title col-md-8">{{ subItem.name }}</h5>
+                  <h5 class="dish-title col-md-6">{{ subItem.name }}</h5>
                   <div class="dish-price col-md-4">
                     <p>€{{ subItem.price }} per person</p>
                   </div>
+                  <div class="dish-price col-md-2">
+                    <img
+                      [src]="getMediaURl(subItem.imageUrl)"
+                      width="100px"
+                      height="80px"
+                    />
+                  </div>
                 </div>
               </div>
-              <div *ngIf="itemWithSubItem.subItems?.length === 0" class="col-xs-12 no-sub-items">
-                <p class="text-warning text-center">No sub-items available for this item.</p>
+              <div
+                *ngIf="itemWithSubItem.subItems?.length === 0"
+                class="col-xs-12 no-sub-items"
+              >
+                <p class="text-warning text-center">
+                  No sub-items available for this item.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
-        <p class="text-warning text-center">No Items available for this Package.</p>
+      <div
+        *ngIf="packageDetails.itemsWithSubItems?.length == 0"
+        class="col-xs-12 no-sub-items"
+      >
+        <p class="text-warning text-center">
+          No Items available for this Package.
+        </p>
       </div>
     </div>
-    
+
     <!-- Final Notes -->
     <div class="row">
       <div class="col-xs-12">
-        <div class="final-notes" [innerHTML]="packageDetails.package?.finalNotes"></div>
+        <div
+          class="final-notes"
+          [innerHTML]="packageDetails.package?.finalNotes"
+        ></div>
       </div>
     </div>
   </div>

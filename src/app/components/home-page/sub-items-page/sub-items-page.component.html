@@ -37,7 +37,11 @@
                     [href]="getMediaURl(subItem.imageUrl)"
                     target="_blank"
                   >
-                    <img [src]="getMediaURl(subItem.imageUrl)" width="100px" />
+                    <img
+                      [src]="getMediaURl(subItem.imageUrl)"
+                      width="100px"
+                      height="80px"
+                    />
                   </a>
                   <p *ngIf="getMediaURl(subItem.imageUrl) === ''">
                     No file uploaded
@@ -208,6 +212,7 @@
               *ngIf="selectedLocalFile !== null"
               [src]="selectedLocalFile"
               width="100px"
+              height="80px"
             />
           </div>
           <button
@@ -313,11 +318,13 @@
               *ngIf="selectedLocalFile !== null"
               [src]="selectedLocalFile"
               width="100px"
+              height="80px"
             />
             <img
               *ngIf="selectedLocalFile === null"
               [src]="getMediaURl(selectedImageURl)"
               width="100px"
+              height="80px"
             />
           </div>
           <button

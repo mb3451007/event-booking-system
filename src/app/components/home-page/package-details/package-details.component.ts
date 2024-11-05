@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PackagesService } from 'src/app/packages.service';
+import { SubItemsService } from 'src/app/sub-items.service';
 
 @Component({
   selector: 'app-package-details',
@@ -16,7 +17,8 @@ export class PackageDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private packageService: PackagesService,
-    private router: Router
+    private router: Router,
+    private subItemService: SubItemsService
   ) {}
 
   ngOnInit(): void {
@@ -55,5 +57,9 @@ export class PackageDetailsComponent implements OnInit {
         console.error('Error fetching package details:', error);
       }
     );
+  }
+  getMediaURl(url: string) {
+    const mediaUrl = this.subItemService.getMedia(url);
+    return mediaUrl.includes('undefined') ? '' : mediaUrl;
   }
 }
