@@ -60,6 +60,6 @@ export class PackageDetailsComponent implements OnInit {
   }
   getMediaURl(url: string) {
     const mediaUrl = this.subItemService.getMedia(url);
-    return mediaUrl.includes('undefined') ? '' : mediaUrl;
+    return mediaUrl.includes('null') ? '' : mediaUrl;
   }
 }

@@ -58,12 +58,21 @@
                   <div class="dish-price col-md-4">
                     <p>€{{ subItem.price }} per person</p>
                   </div>
-                  <div class="dish-price col-md-2">
+                  <div
+                    *ngIf="getMediaURl(subItem.imageUrl) !== ''"
+                    class="dish-price col-md-2"
+                  >
                     <img
                       [src]="getMediaURl(subItem.imageUrl)"
                       width="100px"
                       height="80px"
                     />
+                  </div>
+                  <div
+                    *ngIf="getMediaURl(subItem.imageUrl) === ''"
+                    class="col-md-2"
+                  >
+                    <p class="text-secondary fw-bold">No Image Uploaded</p>
                   </div>
                 </div>
               </div>
