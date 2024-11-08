@@ -1,0 +1,50 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+  
+  .container-fluid {
+    height: 100%;
+    padding: 0;
+  }
+  
+  #sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    // left: 0;
+    // overflow-y: auto;
+    background-color: #f8f9fa;
+  }
+  
+  .main-content {
+    margin-left: 16.2%; 
+    // height: 100vh;
+    // overflow-y: auto; 
+  }
+  
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #ffffff;
+  }
+  
+  .router-section {
+    flex-grow: 1;
+    padding: 20px;
+    // overflow-y: auto; 
+  }
+  
+  .footer {
+    background-color: #f1f1f1;
+    padding: 10px;
+  }
+  
