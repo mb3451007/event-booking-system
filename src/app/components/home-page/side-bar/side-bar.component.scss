@@ -6,7 +6,7 @@
   }
   &__sideBarLogo {
     background: #ffffff;
-    padding: 20px 0px 20px 19px;
+    // padding: 20px 0px 20px 19px;
     cursor: pointer;
     span {
       font-size: 20px;
@@ -57,4 +57,13 @@
     span{
       color: white;
     }
+}
+
+.main-sideBar__sideBarLogo img{
+  margin: 0;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
 }
