@@ -39,6 +39,9 @@ import { SubItemsService } from 'src/app/sub-items.service';
   ],
 })
 export class SubItemsPageComponent {
+  currentPage = 1;
+  pagination: number[] = [];
+
   selectedFile: File | null = null;
   showModal: boolean = false;
   formData = { name: '', price: '', itemName: '', isAvailable: true };
@@ -74,12 +77,15 @@ export class SubItemsPageComponent {
       item: ['', Validators.required],
       image: [''],
     });
+    this.updatePagination();
   }
 
   ngOnInit(): void {
     this.subitemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     console.log(this.subitemId, 'this is Item Id ........');
     this.getAllItems();
+    this.updatePagination();
+    this.onPageChange(1);
     this.getPaginatedSubItems(this.pageNumber);
 
     this.subItem = {
@@ -92,7 +98,7 @@ export class SubItemsPageComponent {
 
     this.pagesCount();
   }
-
+ 
   openModal() {
     this.selectedLocalFile = null;
     this.addSubItemForm.reset();
@@ -207,6 +213,10 @@ export class SubItemsPageComponent {
         this.subItems = response;
         this.totalPages = response.totalPages;
         this.pagesCount();
+        if(this.pageNumber>response.totalPages){
+          this.getPaginatedSubItems(this.pageNumber-1);
+        }
+        this.updatePagination();
         console.log(
           this.totalPages,
           'these are peginated sub items total pages'
@@ -237,7 +247,7 @@ export class SubItemsPageComponent {
         }
       );
     } else {
-      this.showConfirmation = false; // Close the modal
+      this.showConfirmation = false;
     }
   }
 
@@ -249,14 +259,13 @@ export class SubItemsPageComponent {
     formData.append('name', this.addSubItemForm.value.name);
     formData.append('price', this.addSubItemForm.value.price);
     formData.append('isAvailable', this.addSubItemForm.value.isAvailable);
-    formData.append('item', this.addSubItemForm.value.item); // Ensure this is an ID
+    formData.append('item', this.addSubItemForm.value.item); 
+    
 
-    // Append the new file if selected, otherwise send the existing image ID or URL
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
     } else {
-      // If no new file is selected, you might want to send the existing image ID or URL
-      formData.append('existingImage', this.subItem.imageUrl); // Adjust as per your backend requirement
+      formData.append('existingImage', this.subItem.imageUrl); 
     }
 
     // Call the service to update the data
@@ -338,4 +347,46 @@ export class SubItemsPageComponent {
     const mediaUrl = this.subItemService.getMedia(url);
     return mediaUrl.includes('null') ? '' : mediaUrl;
   }
+  onPageChange(page: number): void {
+    console.log('Page changed to:'+ page);
+    if (page < 1 || page > this.totalPages) return;
+
+    this.currentPage = page;
+    this.pageNumber = page;
+    this.updatePagination();
+    this.getPaginatedSubItems(this.pageNumber)
+  }
+
+  updatePagination(): void {
+    this.pagination = this.getPagination(this.currentPage, this.totalPages);
+  }
+
+  getPagination(currentPage: number, totalPages: number): number[] {
+    const visiblePages = 9;
+    const pagination: number[] = [];
+
+    if (totalPages <= visiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pagination.push(i);
+      }
+    } else {
+      pagination.push(1);
+
+      if (currentPage > 5) pagination.push(-1);
+
+      const startPage = Math.max(2, currentPage - 3);
+      const endPage = Math.min(totalPages - 1, currentPage + 3);
+
+      for (let i = startPage; i <= endPage; i++) {
+        pagination.push(i);
+      }
+
+      if (currentPage < totalPages - 4) pagination.push(-1);
+
+      pagination.push(totalPages);
+    }
+
+    return pagination;
+  }
 }
+
