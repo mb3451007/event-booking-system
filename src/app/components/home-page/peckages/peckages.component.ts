@@ -47,6 +47,8 @@ import { PackagesService } from 'src/app/packages.service';
   ],
 })
 export class PeckagesComponent {
+  currentPage = 1;
+  pagination: number[] = [];
   showSubItems: boolean = false;
   ListItems: any = [];
   ListAllItems: any = [];
@@ -96,6 +98,7 @@ export class PeckagesComponent {
     this.itemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     this.getAllItems();
     this.getPaginatedItems(this.pageNumber);
+    this,this.updatePagination()
     this.pagesCount();
 
     this.item = {
@@ -200,7 +203,6 @@ export class PeckagesComponent {
       console.log(response, 'this is a list of  All packages');
     });
   }
-
   getPaginatedItems(page: number) {
     this.isLoading = true;
     this.pageNumber = page;
@@ -210,8 +212,12 @@ export class PeckagesComponent {
         this.isLoading = false;
         this.ListItems = response.items;
         this.totalPages = response.totalPages;
+        this.updatePagination()
         this.pagesCount();
         console.log(response, 'these are paginated packages');
+        if(this.pageNumber>response.totalPages){
+          this.getPaginatedItems(this.pageNumber-1);
+        }
       });
   }
 
@@ -331,4 +337,46 @@ export class PeckagesComponent {
     console.log('Navigating with extras:', navigationExtras);
     this.router.navigate(['package-detail/', this.item._id], navigationExtras);
   }
+  onPageChange(page: number): void {
+    console.log('Page changed to:'+ page);
+    if (page < 1 || page > this.totalPages) return;
+
+    this.currentPage = page;
+    this.pageNumber = page;
+    this.updatePagination();
+    this.getPaginatedItems(this.pageNumber)
+  }
+
+  updatePagination(): void {
+    this.pagination = this.getPagination(this.currentPage, this.totalPages);
+  }
+
+  getPagination(currentPage: number, totalPages: number): number[] {
+    const visiblePages = 9;
+    const pagination: number[] = [];
+
+    if (totalPages <= visiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pagination.push(i);
+      }
+    } else {
+      pagination.push(1);
+
+      if (currentPage > 5) pagination.push(-1);
+
+      const startPage = Math.max(2, currentPage - 3);
+      const endPage = Math.min(totalPages - 1, currentPage + 3);
+
+      for (let i = startPage; i <= endPage; i++) {
+        pagination.push(i);
+      }
+
+      if (currentPage < totalPages - 4) pagination.push(-1);
+
+      pagination.push(totalPages);
+    }
+
+    return pagination;
+  }
+
 }

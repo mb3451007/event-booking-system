@@ -82,34 +82,37 @@
           *ngIf="showConfirmation"
           (confirmed)="handleConfirmation($event)"
         ></app-confirmation-modal>
-        <div class="pagination-buttons mt-3 d-flex justify-content-between">
+        <div class="pagination">
           <button
-            class="btn btn-primary h-25 mt-3"
-            [disabled]="pageNumber === 1"
+            class="page-btn"
+            (click)="onPageChange(currentPage - 1)"
             (click)="previousPage()"
-          >
-            Previous
+            [disabled]="currentPage === 1">
+           <i class="fa-solid fa-backward"></i>
           </button>
-
-          <div class="pagination">
-            <div
-              *ngFor="let page of pageCountArray"
-              (click)="getPaginatedSubItems(page)"
-              [class.active]="page === pageNumber"
-              class="page-number-button buttom-hover"
-            >
+        
+          <ng-container *ngFor="let page of pagination">
+            <button
+              class="page-btn"
+              *ngIf="page !== -1; else ellipsis"
+              [class.active]="page === currentPage"
+              (click)="onPageChange(page)">
               {{ page }}
-            </div>
-          </div>
-
+            </button>
+            <ng-template #ellipsis>
+              <span class="ellipsis">...</span>
+            </ng-template>
+          </ng-container>
+        
           <button
-            class="btn btn-primary h-25 mt-3"
-            [disabled]="pageNumber === totalPages"
+            class="page-btn"
+            (click)="onPageChange(currentPage + 1)"
             (click)="nextPage()"
-          >
-            Next
-          </button>
+            [disabled]="currentPage === totalPages">
+            <i class="fa-solid fa-forward"></i>         </button>
         </div>
+        
+        
       </div>
     </div>
   </div>
