@@ -1,13 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder,FormControl,FormGroup,Validators,} from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { map, Observable, startWith } from 'rxjs';
 import { ItemsService } from 'src/app/items.service';
 import { SubItemsService } from 'src/app/sub-items.service';
 
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { PackagesService } from 'src/app/packages.service';
 @Component({
   selector: 'app-items-page',
@@ -15,21 +26,22 @@ import { PackagesService } from 'src/app/packages.service';
   styleUrls: ['./items-page.component.scss'],
   animations: [
     trigger('modalAnimation', [
-      state('void', style({
-        opacity: 0,
-        transform: 'scale(0.7)'
-      })),
-      state('*', style({
-        opacity: 1,
-        transform: 'scale(1)'
-      })),
-      transition('void => *', [
-        animate('300ms ease-in')
-      ]),
-      transition('* => void', [
-        animate('300ms ease-out')
-      ]),
-      
+      state(
+        'void',
+        style({
+          opacity: 0,
+          transform: 'scale(0.7)',
+        })
+      ),
+      state(
+        '*',
+        style({
+          opacity: 1,
+          transform: 'scale(1)',
+        })
+      ),
+      transition('void => *', [animate('300ms ease-in')]),
+      transition('* => void', [animate('300ms ease-out')]),
     ]),
   ],
 })
@@ -55,7 +67,6 @@ export class ItemsPageComponent implements OnInit {
   showSubItemsSearch: boolean = false;
   showpackagesSearch: boolean = false;
 
-
   packages: any;
 
   selectedPackage: any;
@@ -79,12 +90,11 @@ export class ItemsPageComponent implements OnInit {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
       isAvailable: [true],
-      packages: ["", Validators.required],
+      packages: ['', Validators.required],
     });
   }
 
   ngOnInit(): void {
-    
     this.itemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     this.getAllItems();
     this.getPaginatedItems(this.pageNumber);
@@ -99,14 +109,14 @@ export class ItemsPageComponent implements OnInit {
     };
   }
 
-
   openModal() {
     this.showModal = true;
     this.addItemForm.reset();
+    this.formData.isAvailable = true;
     this.resetFilteredPackages();
   }
 
-  selectedID=''
+  selectedID = '';
 
   openUpdateModal(item: any) {
     this.item = { ...item };
@@ -114,12 +124,10 @@ export class ItemsPageComponent implements OnInit {
     this.addItemForm.patchValue({
       name: this.item.name,
       isAvailable: this.item.isAvailable,
-      packages: this.item.package.id  
+      packages: this.item.package.id,
     });
     this.showUpdateModal = true;
   }
-
-
 
   closeModal() {
     this.showModal = false;
@@ -142,8 +150,8 @@ export class ItemsPageComponent implements OnInit {
         isAvailable: this.addItemForm.value.isAvailable,
         packages: this.addItemForm.value.packages,
       };
-      console.log('formVal', this.addItemForm.value)
-      console.log(newItem,'jjhjhj')
+      console.log('formVal', this.addItemForm.value);
+      console.log(newItem, 'jjhjhj');
       this.itemService.addItem(newItem).subscribe({
         next: (response: any) => {
           this.isLoading = false;
@@ -228,7 +236,7 @@ export class ItemsPageComponent implements OnInit {
         isAvailable: this.addItemForm.value.isAvailable,
         packages: this.addItemForm.value.packages, // Ensure this is an ID
       };
-      console.log(updatedItem,"----------------updated item----")
+      console.log(updatedItem, '----------------updated item----');
       this.itemService.updateItem(this.item._id, updatedItem).subscribe({
         next: (response: any) => {
           this.isLoading = false;
@@ -284,7 +292,7 @@ export class ItemsPageComponent implements OnInit {
     this.packageService.getAllPeckage().subscribe((response: any) => {
       this.isLoading = false;
       this.packages = response.items;
-      console.log(this.packages,'these are all packages')
+      console.log(this.packages, 'these are all packages');
     });
   }
   previousPage() {
@@ -337,5 +345,4 @@ export class ItemsPageComponent implements OnInit {
       this.closeUpdateModal();
     }
   }
-
 }

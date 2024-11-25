@@ -49,13 +49,13 @@
                 </td>
 
                 <td class="slot">
-                  <div class="tooltip-container">
+                  <!-- <div class="tooltip-container d-none">
                     <img
                       src="assets/view-eye-svgrepo-com.svg"
                       alt="Hanna Gover"
                     />
                     <span class="tooltip-text">View Subitem</span>
-                  </div>
+                  </div> -->
                   <div class="tooltip-container">
                     <img
                       src="assets/edit-4-svgrepo-com.svg"
@@ -321,7 +321,10 @@
               height="80px"
             />
             <img
-              *ngIf="selectedLocalFile === null"
+              *ngIf="
+                getMediaURl(selectedImageURl) !== '' &&
+                selectedLocalFile === null
+              "
               [src]="getMediaURl(selectedImageURl)"
               width="100px"
               height="80px"
