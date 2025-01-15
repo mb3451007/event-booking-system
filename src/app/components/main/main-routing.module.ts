@@ -19,35 +19,38 @@ import { PackageDetailsComponent } from '../home-page/package-details/package-de
 import { ForgetPasswordComponent } from '../home-page/forget-password/forget-password.component';
 
 const routes: Routes = [
-  {path: '', component:HomePageComponent,canActivate:[authGuard],
-    children:[
-    {
-      path: '',
-      redirectTo: 'bookings',
-      pathMatch: 'full',
-    },
-    {path: 'dashboard', component:DashBoardComponent},
-    {path:'sidebar',component:SideBarComponent},
-    {path:'header',component:HeaderComponent},
-    {path:'footer',component:FooterComponent},
-    {path:'button',component:ButtonPageComponent},
-    {path:'alert',component:AlertPageComponent},
-    {path:'bookings',component:BookingPageComponent},
-    {path:'customers',component:CustomerPageComponent},
-    {path:'Transactions',component:TransactionPageComponent},
-    {path:'items',component:ItemsPageComponent},
-    {path:'subitems',component:SubItemsPageComponent},
-    {path:'settings',component:SettingComponent},
-    {path:'packages',component:PeckagesComponent},
-    {path:'resetPassword',component:ForgetPasswordComponent},
-    { path: 'package-detail/:itemId', component: PackageDetailsComponent }
+  {
+    path: '',
+    component: HomePageComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        redirectTo: 'bookings',
+        pathMatch: 'full',
+      },
+      { path: 'dashboard', component: DashBoardComponent },
 
-
-  ]},
+      { path: 'sidebar', component: SideBarComponent },
+      { path: 'header', component: HeaderComponent },
+      { path: 'footer', component: FooterComponent },
+      { path: 'button', component: ButtonPageComponent },
+      { path: 'alert', component: AlertPageComponent },
+      { path: 'bookings', component: BookingPageComponent },
+      { path: 'customers', component: CustomerPageComponent },
+      { path: 'Transactions', component: TransactionPageComponent },
+      { path: 'items', component: ItemsPageComponent },
+      { path: 'subitems', component: SubItemsPageComponent },
+      { path: 'settings', component: SettingComponent },
+      { path: 'packages', component: PeckagesComponent },
+      { path: 'resetPassword', component: ForgetPasswordComponent },
+      { path: 'package-detail/:itemId', component: PackageDetailsComponent },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
