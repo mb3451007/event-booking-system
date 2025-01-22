@@ -125,16 +125,16 @@ export class BookingPageComponent {
 
   openUpdateModal(item: any) {
     this.item = { ...item };
-    // Convert the stored datetime strings to Date objects
-    const fromDateObj = new Date(this.item.fromDate);
-    const toDateObj = new Date(this.item.toDate);
-  
-    // Extract date and time separately using Angular's DatePipe
-    const fromDate = this.datePipe.transform(fromDateObj, 'yyyy-MM-dd');
-    const fromTime = this.datePipe.transform(fromDateObj, 'HH:mm');
-    const toDate = this.datePipe.transform(toDateObj, 'yyyy-MM-dd');
-    const toTime = this.datePipe.transform(toDateObj, 'HH:mm');
-    
+
+   const fromDateObj = new Date(this.item.fromDate);
+   const toDateObj = new Date(this.item.toDate);
+ 
+
+   const fromDate = this.datePipe.transform(fromDateObj, 'yyyy-MM-dd');
+   const fromTime = this.datePipe.transform(fromDateObj, 'HH:mm');
+   const toDate = this.datePipe.transform(toDateObj, 'yyyy-MM-dd');
+   const toTime = this.datePipe.transform(toDateObj, 'HH:mm');
+ 
     this.addItemForm.patchValue({
       name: this.item.name,
       email: this.item.email,
@@ -161,39 +161,49 @@ export class BookingPageComponent {
   }
 
   checkAvailability() {
-    const fromDate = this.addItemForm.value.fromDate;
+    const fromDate = this.addItemForm.value.fromDate; 
+    const fromTime = this.addItemForm.value.fromTime; 
     const toDate = this.addItemForm.value.toDate;
+    const toTime = this.addItemForm.value.toTime;
   
+    // Reset messages and conflicts if fromDate is not provided
     if (!fromDate) {
       this.bookingsOnSelectedDate = [];
       this.availabilityMessage = '';
+      this.conflict = null;
       return;
     }
   
-    // Filter bookings for the selected 'fromDate'
+    // Format the selected fromDate for comparison
+    const formattedFromDate = new Date(fromDate).setHours(0, 0, 0, 0); // Normalize to midnight
+  
+    // Filter bookings for the selected date
     this.bookingsOnSelectedDate = this.bookings.filter((booking: any) => {
-      const existingFrom = new Date(booking.fromDate).toISOString().split('T')[0];
-      return existingFrom === fromDate;
+      const bookingFromDate = new Date(booking.fromDate).setHours(0, 0, 0, 0); // Normalize to midnight
+      return bookingFromDate === formattedFromDate;
     });
   
+    // If bookings exist on the selected date, display them
     if (this.bookingsOnSelectedDate.length > 0) {
       this.availabilityMessage = 'Some bookings already exist on this date.';
     } else {
       this.availabilityMessage = 'No bookings on this date.';
     }
   
-    if (toDate) {
-      const fromDateTime = new Date(fromDate).getTime();
-      const toDateTime = new Date(toDate).getTime();
+    // Check for time conflicts if both fromTime and toTime are provided
+    if (fromDate && fromTime && toDate && toTime) {
+      const fromDateTime = new Date(`${fromDate}T${fromTime}`).getTime();
+      const toDateTime = new Date(`${toDate}T${toTime}`).getTime();
   
+      // Find conflicts within existing bookings
       this.conflict = this.bookings.find((booking: any) => {
-        const existingFrom = new Date(booking.fromDate).getTime();
-        const existingTo = new Date(booking.toDate).getTime();
+        const bookingFromDateTime = new Date(booking.fromDate).getTime();
+        const bookingToDateTime = new Date(booking.toDate).getTime();
   
         return (
-          (fromDateTime >= existingFrom && fromDateTime < existingTo) ||
-          (toDateTime > existingFrom && toDateTime <= existingTo) ||
-          (fromDateTime <= existingFrom && toDateTime >= existingTo)
+          (fromDateTime >= bookingFromDateTime && fromDateTime < bookingToDateTime) || // Starts during an existing booking
+          (toDateTime > bookingFromDateTime && toDateTime <= bookingToDateTime) || // Ends during an existing booking
+          (fromDateTime <= bookingFromDateTime && toDateTime >= bookingToDateTime) // Fully overlaps an existing booking
         );
       });
   
@@ -206,6 +216,14 @@ export class BookingPageComponent {
       }
     }
   }
+  
+  
+  
+  
+  
+  
+  
+  
   
   
 
@@ -265,10 +283,17 @@ export class BookingPageComponent {
 
   getAllItems() {
     this.bookingService.getAllItems().subscribe((response: any) => {
-      this.bookings = response.bookings;
-      console.log(this.bookings, 'this is a list of  All bookings');
+      this.bookings = response.bookings.map((booking: any) => ({
+        ...booking,
+        fromDate: new Date(booking.fromDate),
+        toDate: new Date(booking.toDate),
+        
+      }));
+      
+      console.log(this.bookings, 'List of all bookings');
     });
   }
+  
 
   getPaginatedItems(page: number) {
     this.isLoading = true;
@@ -337,6 +362,7 @@ export class BookingPageComponent {
           this.getPaginatedItems(this.pageNumber);
           this.toastr.info('Item updated successfully!');
           this.addItemForm.markAsPristine();
+          this.addItemForm.reset(); // reset
           this.closeUpdateModal();
         },
         error: (error) => {

@@ -192,6 +192,7 @@
               formControlName="fromTime"
               class="form-control"
               (change)="checkAvailability()"
+              [disabled]="!addItemForm.get('fromDate')?.value"
               name="name"
               required
             />
@@ -205,7 +206,7 @@
               class="form-control"
               (change)="checkDateValidation() ; checkAvailability()"
               name="name"
-              [disabled]="!addItemForm.get('fromDate')?.value"
+              [disabled]="!addItemForm.get('fromDate && fromTime')?.value"
               required
             />
           </div>
@@ -218,20 +219,24 @@
               class="form-control"
               (change)="checkDateValidation() ; checkAvailability()"
               name="name"
-              [disabled]="!addItemForm.get('fromDate')?.value"
+              [disabled]="!addItemForm.get('fromDate && fromTime')?.value"
               required
             />
           </div>
 
-          <div *ngIf="bookingsOnSelectedDate.length > 0">
-            <h5>Bookings on this day:</h5>
-            <ul>
-              <li *ngFor="let booking of bookingsOnSelectedDate">
-                {{ booking.fromDate | date: 'yyyy-MM-dd hh:mm a' }} 
-                - {{ booking.toDate | date: 'yyyy-MM-dd hh:mm a' }}
+          <div *ngIf="bookingsOnSelectedDate.length > 0" class="booking-container">
+            <h5 class="booking-title">Bookings on this Day:</h5>
+            <ul class="booking-list">
+              <li *ngFor="let booking of bookingsOnSelectedDate" class="booking-item">
+                <span class="booking-time">
+                  {{ booking.fromDate | date: 'hh:mm a' }}
+                  -
+                  {{ booking.toDate | date: 'hh:mm a' }}
+                </span>
               </li>
             </ul>
           </div>
+          
           <p *ngIf="availabilityMessage" 
           [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
          <ng-container *ngIf="conflict; else availableMessage">
@@ -398,7 +403,7 @@
           <button
             type="submit"
             class="btn btn-primary"
-            [disabled]="!addItemForm.dirty || conflict"
+            [disabled]="!addItemForm.dirty"
             (click)="updateItem()"
           >
             Submit
