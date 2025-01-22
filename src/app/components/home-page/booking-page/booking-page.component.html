@@ -1,52 +1,410 @@
+<app-loader [isLoading]="isLoading"></app-loader>
+<div *ngIf="!isLoading"></div>
 <div class="container">
-    <div class="row">
-        <div class="col-12 ">
-            <!-- <span class="col-12 main-dasboard__Dashboard">detail about sales ratio</span>     -->
-            <div class="table-container bg-white rounded shadow p-4 mt-5">
-                <h2 class="mb-3">Bookings</h2>
-                
-           
-                <div class="table-responsive">
-                  <table class="table  align-middle">
-                    
-                    <thead>
-                      <tr >
-                        <th scope="col ">Name</th>
-                        <!-- <th scope="col ">Email</th> -->
-                        <th scope="col">Bookings</th>
-                        <th scope="col">Price </th>
-                        <th scope="col">Details</th>
-                      </tr>
-                      
-                      
-                    </thead>
-                    
-                    <tbody>
-                      <tr *ngFor="let Booking of Bookings" >
-                        <td class="avatar d-flex align-items-center">
-                          <!-- <img [src]="Booking.avatar" alt="Hanna Gover" class="rounded-circle me-2" width="40" height="40"> -->
-                          <div>
-                            <div>{{ Booking.name }}</div>
-                            <small class="text-muted">{{ Booking.email }}</small>
-                          </div>
-                        </td>
-                        <!-- <td>{{ Booking.name }}</td>
-                        <td>{{ Booking.email }}</td> -->
-                        <td> {{Booking.slots}} 
-                            <!-- <img [src]="Booking.slots" alt="Hanna Gover"  width="25" height="25"> assets/tickets-ticket-svgrepo-com.svg -->
-                        </td>
-                        <td>{{ Booking.price }}</td>
-                        <td>
-                            
-                            <img [src]="Booking.details" alt="Hanna Gover"  width="25" height="25">
-                        </td>
-                       
-                      </tr>
-                      
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="table-container bg-white rounded shadow p-4 mt-5">
+        <div class="headingTitle">
+          <h2 class="mb-3">Bookings</h2>
+          <img
+            [src]="AddItmePlus"
+            alt="Add new item"
+            (click)="openModal()"
+            class="AddItem"
+          />
+        </div>
+
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th scope="col ">Name</th>
+                <th scope="col ">Email</th>
+                <th scope="col ">Phone Number</th>
+                <th scope="col ">Bookings</th>
+                <th scope="col ">Price</th>
+                <th scope="col ">Action</th>
+                <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
+                <!-- <th scope="col">Transactions  </th> -->
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of ListItems">
+                <td>{{ item.name }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.number }}</td>
+                <td>{{ item.fromDate | date: 'yyyy-MM-dd HH:mm a' }} - {{item.toDate | date: 'YYYY-MM-dd HH:mm a'}}</td>
+                <td>{{ item.price }}</td>
+                <td class="slot d-flex">
+                  <div class="tooltip-container d-none">
+                    <img
+                      src="assets/view-eye-svgrepo-com.svg"
+                      alt="Hanna Gover"
+                      (click)="viewItem(item._id)"
+                    />
+                    <span class="tooltip-text">View Item</span>
+                  </div>
+                  <div class="tooltip-container">
+                    <img
+                      src="assets/edit-4-svgrepo-com.svg"
+                      alt="Hanna Gover"
+                      (click)="openUpdateModal(item)"
+                    />
+                    <span class="tooltip-text">Update Item</span>
+                  </div>
+                  <div class="tooltip-container">
+                    <img
+                      src="assets/delete-svgrepo-com.svg"
+                      alt="Hanna Gover"
+                      (click)="deleteItem(item._id)"
+                    />
+                    <span class="tooltip-text">Delete Item</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <app-confirmation-modal
+          *ngIf="showConfirmation"
+          (confirmed)="handleConfirmation($event)"
+        ></app-confirmation-modal>
+
+        <div class="pagination">
+          <button
+            class="page-btn"
+            (click)="onPageChange(currentPage - 1)"
+            (click)="previousPage()"
+            [disabled]="currentPage === 1">
+           <i class="fa-solid fa-backward"></i>
+          </button>
+        
+          <ng-container *ngFor="let page of pagination">
+            <button
+              class="page-btn"
+              *ngIf="page !== -1; else ellipsis"
+              [class.active]="page === currentPage"
+              (click)="onPageChange(page)">
+              {{ page }}
+            </button>
+            <ng-template #ellipsis>
+              <span class="ellipsis">...</span>
+            </ng-template>
+          </ng-container>
+        
+          <button
+            class="page-btn"
+            (click)="onPageChange(currentPage + 1)"
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages">
+            <i class="fa-solid fa-forward"></i>         </button>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
+<!-- Add Modal Backdrop -->
+<div
+  class="modal-backdrop"
+  *ngIf="showModal || showUpdateModal"
+  (click)="handleBackdropClick($event)"
+></div>
+<!-- add model -->
+<div
+  class="modal"
+  tabindex="-1"
+  role="dialog"
+  [@modalAnimation]="showModal ? '*' : 'void'"
+  *ngIf="showModal"
+  (click)="handleBackdropClick($event)"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header headerNewItem">
+        <h3 class="title">Add Bookings</h3>
+        <img
+          src="assets/close-sm-svgrepo-com.svg"
+          alt=""
+          class="close closeBtn"
+          (click)="closeModal()"
+          aria-label="Close"
+        />
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+          <div class="form-group inputFormGroup">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+              name="name"
+              required
+            />
+            <label for="name">Email</label>
+            <input
+              type="email"
+              id="name"
+              formControlName="email"
+              class="form-control"
+              name="name"
+              required
+            />
+            <label for="name">phone Number</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="number"
+              class="form-control"
+              name="name"
+              required
+            />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">Price</label>
+            <input
+              type="number"
+              id="name"
+              formControlName="price"
+              class="form-control"
+              name="name"
+              required
+            />
+          </div><div class="form-group inputFormGroup">
+            <label for="name">From Date</label>
+            <input
+              type="date"
+              id="name"
+              formControlName="fromDate"
+              class="form-control"
+              (change)="checkAvailability()"
+              name="name"
+              required
+            />
+          </div><div class="form-group inputFormGroup">
+            <label for="name">From Time</label>
+            <input
+              type="time"
+              id="name"
+              formControlName="fromTime"
+              class="form-control"
+              (change)="checkAvailability()"
+              name="name"
+              required
+            />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">To Date</label>
+            <input
+              type="date"
+              id="name"
+              formControlName="toDate"
+              class="form-control"
+              (change)="checkDateValidation() ; checkAvailability()"
+              name="name"
+              [disabled]="!addItemForm.get('fromDate')?.value"
+              required
+            />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">To Time</label>
+            <input
+              type="time"
+              id="name"
+              formControlName="toTime"
+              class="form-control"
+              (change)="checkDateValidation() ; checkAvailability()"
+              name="name"
+              [disabled]="!addItemForm.get('fromDate')?.value"
+              required
+            />
+          </div>
+
+          <div *ngIf="bookingsOnSelectedDate.length > 0">
+            <h5>Bookings on this day:</h5>
+            <ul>
+              <li *ngFor="let booking of bookingsOnSelectedDate">
+                {{ booking.fromDate | date: 'yyyy-MM-dd hh:mm a' }} 
+                - {{ booking.toDate | date: 'yyyy-MM-dd hh:mm a' }}
+              </li>
+            </ul>
+          </div>
+          <p *ngIf="availabilityMessage" 
+          [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
+         <ng-container *ngIf="conflict; else availableMessage">
+           Booking already reserved from {{ conflict.fromDate | date: 'yyyy-MM-dd hh:mm a' }} 
+           to {{ conflict.toDate | date: 'yyyy-MM-dd hh:mm a' }}
+         </ng-container>
+         <ng-template #availableMessage>
+           {{ availabilityMessage }}
+         </ng-template>
+       </p>
+       
+          <div *ngIf="dateError" class="text-danger">
+            To Date must be greater than From Date.
+          </div>
+         
+         
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!addItemForm.valid"
+            (click)="addItem()"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update model -->
+<div
+  class="modal"
+  tabindex="-1"
+  role="dialog"
+  [@modalAnimation]="showUpdateModal ? '*' : 'void'"
+  *ngIf="showUpdateModal"
+  (click)="handleBackdropClick($event)"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header headerNewItem">
+        <h3 class="title">Update Booking</h3>
+        <img
+          src="assets/close-sm-svgrepo-com.svg"
+          alt=""
+          class="close closeBtn"
+          (click)="closeUpdateModal()"
+          aria-label="Close"
+        />
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+          <div class="form-group inputFormGroup">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">Email</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="email"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">Number</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="number"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">Price</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="price"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">fromDate</label>
+            <input
+              type="date"
+              id="name"
+              formControlName="fromDate"
+              [value]="addItemForm.value.fromDate | date: 'yyyy-MM-ddTHH:mm'"
+              (change)="checkAvailability()"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">fromTime</label>
+            <input
+              type="time"
+              id="name"
+              formControlName="fromTime"
+              [value]="addItemForm.value.fromDate | date: 'yyyy-MM-ddTHH:mm'"
+              (change)="checkAvailability()"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">toDate</label>
+            <input
+              type="date"
+              id="name"
+              (change)="checkDateValidation() ; checkAvailability() "
+              formControlName="toDate"
+              [value]="addItemForm.value.toDate | date: 'yyyy-MM-ddTHH:mm'"
+              class="form-control"
+              required
+            />
+
+          </div>
+          <div class="form-group inputFormGroup">
+            <label for="name">toDate</label>
+            <input
+              type="time"
+              id="name"
+              (change)="checkDateValidation() ; checkAvailability() "
+              formControlName="toTime"
+              [value]="addItemForm.value.toDate | date: 'yyyy-MM-ddTHH:mm'"
+              class="form-control"
+              required
+            />
+
+          </div>
+          <p *ngIf="availabilityMessage" 
+          [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
+         <ng-container *ngIf="conflict; else availableMessage">
+           Booking already reserved from {{ conflict.fromDate | date: 'yyyy-MM-dd hh:mm a' }} 
+           to {{ conflict.toDate | date: 'yyyy-MM-dd hh:mm a' }}
+         </ng-container>
+         <ng-template #availableMessage>
+           {{ availabilityMessage }}
+         </ng-template>
+       </p>
+       
+       
+       
+       
+          <div *ngIf="dateError" class="text-danger">
+            To Date must be greater than From Date.
+          </div>
+
+         
+
+         
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!addItemForm.dirty || conflict"
+            (click)="updateItem()"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
