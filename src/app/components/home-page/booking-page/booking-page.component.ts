@@ -59,10 +59,10 @@ export class BookingPageComponent {
   showSubItemsSearch: boolean = false;
   showpackagesSearch: boolean = false;
   availabilityMessage: string = ''
+  currentBooking:any
 
   conflict: any
-  counts : any
-  maximumNUmber :any
+ validationError : boolean = false
 
 number = [1,2,3,4,5,6,2,3,3,'A','B']
   filteredPackages: any[] = [];
@@ -152,10 +152,13 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
   selectedID = '';
 
   openUpdateModal(item: any) {
+    this.currentBooking = item;
     this.item = { ...item };
 
    const fromDateObj = new Date(this.item.fromDate);
+   const fromTimeObj = new Date(this.item.fromTime);
    const toDateObj = new Date(this.item.toDate);
+   const toTimeObj = new Date(this.item.toTime);
  
 
    const fromDate = this.datePipe.transform(fromDateObj, 'yyyy-MM-dd');
@@ -178,9 +181,22 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
 
   closeModal() {
     this.showModal = false;
+    this.addItemForm.value.toDate = null;
+    this.addItemForm.value.toTime = null;
+    this.addItemForm.value.fromDate = null;
+    this.addItemForm.value.fromTime = null;
+    this.bookingsOnSelectedDate=[]
+    this.availabilityMessage='';
+    this.addItemForm.reset();
   }
   closeUpdateModal() {
     this.showUpdateModal = false;
+    this.addItemForm.value.toDate = null;
+    this.addItemForm.value.toTime = null;
+    this.addItemForm.value.fromDate = null;
+    this.addItemForm.value.fromTime = null;
+    this.bookingsOnSelectedDate=[]
+    this.availabilityMessage='';
     this.addItemForm.reset();
   }
 
@@ -245,35 +261,94 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
         this.availabilityMessage = 'This time is available for booking!';
       }
     }
+  }  
+  checkAvailabilityForUpDate() {
+    const fromDate = this.addItemForm.value.fromDate;
+    const fromTime = this.addItemForm.value.fromTime;
+    const toDate = this.addItemForm.value.toDate;
+    const toTime = this.addItemForm.value.toTime;
+  
+    // If no fromDate is provided, reset everything
+    if (!fromDate) {
+      this.bookingsOnSelectedDate = [];
+      this.availabilityMessage = '';
+      this.conflict = null;
+      return;
+    }
+  
+    // Format the selected fromDate for comparison
+    const formattedFromDate = new Date(fromDate).setHours(0, 0, 0, 0);
+  
+    // Filter bookings for the selected date, excluding the current booking being updated
+    this.bookingsOnSelectedDate = this.bookings.filter((booking: any) => {
+      const bookingFromDate = new Date(booking.fromDate).setHours(0, 0, 0, 0);
+      return bookingFromDate === formattedFromDate && booking._id !== this.currentBooking._id;
+    });
+  
+    // Update availability message based on bookings on the same day
+    if (this.bookingsOnSelectedDate.length > 0) {
+      this.availabilityMessage = 'Some bookings already exist on this date.';
+    } else {
+      this.availabilityMessage = 'No bookings on this date.';
+    }
+  
+    // Check for conflicts if all fields are provided
+    if (fromDate && fromTime && toDate && toTime) {
+      const fromDateTime = new Date(`${fromDate}T${fromTime}`).getTime();
+      const toDateTime = new Date(`${toDate}T${toTime}`).getTime();
+  
+      // Find conflicts with other bookings, excluding the current booking being updated
+      this.conflict = this.bookings.find((booking: any) => {
+        if (booking._id === this.currentBooking._id) return false; // Skip the current booking
+  
+        const bookingFromDateTime = new Date(booking.fromDate).getTime();
+        const bookingToDateTime = new Date(booking.toDate).getTime();
+  
+        return (
+          (fromDateTime >= bookingFromDateTime && fromDateTime < bookingToDateTime) || // Starts during another booking
+          (toDateTime > bookingFromDateTime && toDateTime <= bookingToDateTime) || // Ends during another booking
+          (fromDateTime <= bookingFromDateTime && toDateTime >= bookingToDateTime) // Fully overlaps another booking
+        );
+      });
+  
+      // Update the availability message based on conflicts
+      if (this.conflict) {
+        this.availabilityMessage = `Booking already reserved from ${new Date(
+          this.conflict.fromDate
+        ).toLocaleString()} to ${new Date(this.conflict.toDate).toLocaleString()}`;
+      } else {
+        this.availabilityMessage = 'This time is available for booking!';
+      }
+    }
   }
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
 
+ 
+  
   checkDateValidation() {
     const fromDate = this.addItemForm.get('fromDate')?.value;
-    const toDate = this.addItemForm.get('toDate')?.value;
     const fromTime = this.addItemForm.get('fromTime')?.value;
+    const toDate = this.addItemForm.get('toDate')?.value;
     const toTime = this.addItemForm.get('toTime')?.value;
   
-    if (fromDate && toDate && fromTime && toTime) {
+    if (fromDate && fromTime && toDate && toTime) {
+      // Combine the date and time into a single Date object for comparison
       const combinedFromDateTime = new Date(`${fromDate}T${fromTime}`);
       const combinedToDateTime = new Date(`${toDate}T${toTime}`);
   
-      if (combinedFromDateTime > combinedToDateTime) {
+      // Compare the two datetime objects
+      if (combinedFromDateTime >= combinedToDateTime) {
+        // To Date must be greater than From Date
         this.dateError = true;
+        this.validationError = true;
       } else {
         this.dateError = false;
+        this.validationError = false;
       }
     } else {
+      // Reset errors if any field is missing
       this.dateError = false;
+      this.validationError = false;
     }
   }
   
@@ -414,13 +489,7 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
     }
   }
 
-  onSelectPackage(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    const value = Number(target.value);
-    const selectedPackage = this.filteredPackages.find(
-      (pkg) => pkg._id === value
-    );
-  }
+
 
 
 

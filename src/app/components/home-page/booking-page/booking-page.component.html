@@ -180,7 +180,7 @@
               id="name"
               formControlName="fromDate"
               class="form-control"
-              (change)="checkAvailability()"
+              (change)="checkAvailability() ; checkDateValidation()"
               
               name="name"
               required
@@ -192,7 +192,7 @@
               id="name"
               formControlName="fromTime"
               class="form-control"
-              (change)="checkAvailability()"
+              (change)="checkAvailability() ;checkDateValidation() "
               [disabled]="!addItemForm.get('fromDate')?.value"
               name="name"
               required
@@ -262,7 +262,7 @@
           <button
             type="submit"
             class="btn btn-primary mt-2"
-            [disabled]="!addItemForm.valid || conflict"
+            [disabled]="!addItemForm.valid || conflict ||validationError"
             (click)="addItem()"
           >
             Submit
@@ -341,8 +341,7 @@
               type="date"
               id="name"
               formControlName="fromDate"
-              [value]="addItemForm.value.fromDate | date: 'yyyy-MM-ddTHH:mm'"
-              (change)="checkAvailability()"
+              (change)="checkAvailabilityForUpDate() ; checkDateValidation()"
               class="form-control"
               required
             />
@@ -353,8 +352,7 @@
               type="time"
               id="name"
               formControlName="fromTime"
-              [value]="addItemForm.value.fromDate | date: 'yyyy-MM-ddTHH:mm'"
-              (change)="checkAvailability()"
+              (change)="checkAvailabilityForUpDate() ; checkDateValidation()"
               class="form-control"
               required
             />
@@ -364,22 +362,20 @@
             <input
               type="date"
               id="name"
-              (change)="checkDateValidation() ; checkAvailability() "
+              (change)="checkDateValidation() ; checkAvailabilityForUpDate() "
               formControlName="toDate"
-              [value]="addItemForm.value.toDate | date: 'yyyy-MM-ddTHH:mm'"
               class="form-control"
               required
             />
 
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">toDate</label>
+            <label for="name">toTime</label>
             <input
               type="time"
               id="name"
-              (change)="checkDateValidation() ; checkAvailability() "
+              (change)="checkDateValidation() ; checkAvailabilityForUpDate() "
               formControlName="toTime"
-              [value]="addItemForm.value.toDate | date: 'yyyy-MM-ddTHH:mm'"
               class="form-control"
               required
             />
@@ -416,7 +412,7 @@
           <button
             type="submit"
             class="btn btn-primary mt-2"
-            [disabled]="!addItemForm || conflict"
+            [disabled]="!addItemForm || conflict || validationError"
             (click)="updateItem()"
           >
             Submit
