@@ -181,6 +181,7 @@
               formControlName="fromDate"
               class="form-control"
               (change)="checkAvailability()"
+              
               name="name"
               required
             />
@@ -206,7 +207,7 @@
               class="form-control"
               (change)="checkDateValidation() ; checkAvailability()"
               name="name"
-              [disabled]="!addItemForm.get('fromDate && fromTime')?.value"
+              [disabled]="!addItemForm.get('fromDate')?.value || !addItemForm.get('fromTime')?.value"
               required
             />
           </div>
@@ -219,9 +220,27 @@
               class="form-control"
               (change)="checkDateValidation() ; checkAvailability()"
               name="name"
-              [disabled]="!addItemForm.get('fromDate && fromTime')?.value"
+              [disabled]="
+              !addItemForm.get('fromDate')?.value ||
+              !addItemForm.get('fromTime')?.value ||
+              !addItemForm.get('toDate')?.value
+            "
               required
             />
+          </div>
+          <p *ngIf="availabilityMessage" 
+          [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
+         <ng-container *ngIf="conflict; else availableMessage">
+           Booking already reserved from {{ conflict.fromDate | date: 'hh:mm a' }} 
+           to {{ conflict.toDate | date: 'hh:mm a' }}
+         </ng-container>
+         <ng-template #availableMessage>
+           {{ availabilityMessage }}
+         </ng-template>
+       </p>
+       
+          <div *ngIf="dateError" class="text-danger">
+            To Date must be greater than From Date.
           </div>
 
           <div *ngIf="bookingsOnSelectedDate.length > 0" class="booking-container">
@@ -237,26 +256,13 @@
             </ul>
           </div>
           
-          <p *ngIf="availabilityMessage" 
-          [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
-         <ng-container *ngIf="conflict; else availableMessage">
-           Booking already reserved from {{ conflict.fromDate | date: 'yyyy-MM-dd hh:mm a' }} 
-           to {{ conflict.toDate | date: 'yyyy-MM-dd hh:mm a' }}
-         </ng-container>
-         <ng-template #availableMessage>
-           {{ availabilityMessage }}
-         </ng-template>
-       </p>
-       
-          <div *ngIf="dateError" class="text-danger">
-            To Date must be greater than From Date.
-          </div>
+     
          
          
           <button
             type="submit"
-            class="btn btn-primary"
-            [disabled]="!addItemForm.valid"
+            class="btn btn-primary mt-2"
+            [disabled]="!addItemForm.valid || conflict"
             (click)="addItem()"
           >
             Submit
@@ -382,28 +388,35 @@
           <p *ngIf="availabilityMessage" 
           [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
          <ng-container *ngIf="conflict; else availableMessage">
-           Booking already reserved from {{ conflict.fromDate | date: 'yyyy-MM-dd hh:mm a' }} 
-           to {{ conflict.toDate | date: 'yyyy-MM-dd hh:mm a' }}
+           Booking already reserved from {{ conflict.fromDate | date: ' hh:mm a' }} 
+           to {{ conflict.toDate | date: 'hh:mm a' }}
          </ng-container>
          <ng-template #availableMessage>
            {{ availabilityMessage }}
          </ng-template>
-       </p>
-       
-       
-       
-       
+       </p>       
           <div *ngIf="dateError" class="text-danger">
             To Date must be greater than From Date.
           </div>
+          <div *ngIf="bookingsOnSelectedDate.length > 0" class="booking-container">
+            <h5 class="booking-title">Bookings on this Day:</h5>
+            <ul class="booking-list">
+              <li *ngFor="let booking of bookingsOnSelectedDate" class="booking-item">
+                <span class="booking-time">
+                  {{ booking.fromDate | date: 'hh:mm a' }}
+                  -
+                  {{ booking.toDate | date: 'hh:mm a' }}
+                </span>
+              </li>
+            </ul>
+          </div>
+          
+      
 
-         
-
-         
           <button
             type="submit"
-            class="btn btn-primary"
-            [disabled]="!addItemForm.dirty"
+            class="btn btn-primary mt-2"
+            [disabled]="!addItemForm || conflict"
             (click)="updateItem()"
           >
             Submit

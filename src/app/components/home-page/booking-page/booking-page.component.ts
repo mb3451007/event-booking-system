@@ -61,8 +61,10 @@ export class BookingPageComponent {
   availabilityMessage: string = ''
 
   conflict: any
+  counts : any
+  maximumNUmber :any
 
-
+number = [1,2,3,4,5,6,2,3,3,'A','B']
   filteredPackages: any[] = [];
   pageNumber: number = 1;
   totalPages: number = 1;
@@ -90,6 +92,7 @@ export class BookingPageComponent {
   }
 
   ngOnInit(): void {
+
     this.itemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     this.getAllItems();
     this.getPaginatedItems(this.pageNumber);
@@ -105,16 +108,41 @@ export class BookingPageComponent {
       toDate: this.addItemForm.value.toDate,
       toTime: this.addItemForm.value.toTime,
     };
-    this.addItemForm.get('fromDate')?.valueChanges.subscribe((date) => {
-      if (date) {
-        this.addItemForm.get('toDate')?.enable()
-      }
-      else {
-        this.addItemForm.get('toDate')?.disable()
-      }
-    })
+ this.initializeFieldListeners()
+
   }
 
+  initializeFieldListeners(): void {
+    this.addItemForm.get('fromDate')?.valueChanges.subscribe((fromDate) => {
+      if (fromDate) {
+        this.addItemForm.get('fromTime')?.enable(); 
+      } else {
+        this.addItemForm.get('fromTime')?.disable(); 
+        this.addItemForm.get('toDate')?.disable(); 
+        this.addItemForm.get('toTime')?.disable(); 
+      }
+    });
+
+    this.addItemForm.get('fromTime')?.valueChanges.subscribe((fromTime) => {
+      const fromDate = this.addItemForm.get('fromDate')?.value;
+      if (fromDate && fromTime) {
+        this.addItemForm.get('toDate')?.enable(); 
+      } else {
+        this.addItemForm.get('toDate')?.disable(); 
+        this.addItemForm.get('toTime')?.disable(); 
+      }
+    });
+
+    this.addItemForm.get('toDate')?.valueChanges.subscribe((toDate) => {
+      const fromDate = this.addItemForm.get('fromDate')?.value;
+      const fromTime = this.addItemForm.get('fromTime')?.value;
+      if (fromDate && fromTime && toDate) {
+        this.addItemForm.get('toTime')?.enable(); 
+      } else {
+        this.addItemForm.get('toTime')?.disable();
+      }
+    });
+  }
   openModal() {
     this.showModal = true;
     this.addItemForm.reset();
@@ -166,7 +194,7 @@ export class BookingPageComponent {
     const toDate = this.addItemForm.value.toDate;
     const toTime = this.addItemForm.value.toTime;
   
-    // Reset messages and conflicts if fromDate is not provided
+   
     if (!fromDate) {
       this.bookingsOnSelectedDate = [];
       this.availabilityMessage = '';
@@ -174,36 +202,38 @@ export class BookingPageComponent {
       return;
     }
   
-    // Format the selected fromDate for comparison
-    const formattedFromDate = new Date(fromDate).setHours(0, 0, 0, 0); // Normalize to midnight
+   
+    const formattedFromDate = new Date(fromDate).setHours(0, 0, 0, 0); 
   
-    // Filter bookings for the selected date
+   
     this.bookingsOnSelectedDate = this.bookings.filter((booking: any) => {
-      const bookingFromDate = new Date(booking.fromDate).setHours(0, 0, 0, 0); // Normalize to midnight
+      const bookingFromDate = new Date(booking.fromDate).setHours(0, 0, 0, 0); 
       return bookingFromDate === formattedFromDate;
     });
   
-    // If bookings exist on the selected date, display them
+   
     if (this.bookingsOnSelectedDate.length > 0) {
       this.availabilityMessage = 'Some bookings already exist on this date.';
     } else {
       this.availabilityMessage = 'No bookings on this date.';
     }
   
-    // Check for time conflicts if both fromTime and toTime are provided
+ 
     if (fromDate && fromTime && toDate && toTime) {
       const fromDateTime = new Date(`${fromDate}T${fromTime}`).getTime();
       const toDateTime = new Date(`${toDate}T${toTime}`).getTime();
   
-      // Find conflicts within existing bookings
+    
       this.conflict = this.bookings.find((booking: any) => {
         const bookingFromDateTime = new Date(booking.fromDate).getTime();
         const bookingToDateTime = new Date(booking.toDate).getTime();
   
         return (
-          (fromDateTime >= bookingFromDateTime && fromDateTime < bookingToDateTime) || // Starts during an existing booking
-          (toDateTime > bookingFromDateTime && toDateTime <= bookingToDateTime) || // Ends during an existing booking
-          (fromDateTime <= bookingFromDateTime && toDateTime >= bookingToDateTime) // Fully overlaps an existing booking
+          (fromDateTime >= bookingFromDateTime && fromDateTime < bookingToDateTime) || 
+          (toDateTime > bookingFromDateTime && toDateTime <= bookingToDateTime) || 
+          
+          (fromDateTime <= bookingFromDateTime && toDateTime >= bookingToDateTime) 
+          
         );
       });
   
@@ -230,13 +260,23 @@ export class BookingPageComponent {
   checkDateValidation() {
     const fromDate = this.addItemForm.get('fromDate')?.value;
     const toDate = this.addItemForm.get('toDate')?.value;
-
-    if (fromDate && toDate && new Date(fromDate) > new Date(toDate)) {
-      this.dateError = true;
+    const fromTime = this.addItemForm.get('fromTime')?.value;
+    const toTime = this.addItemForm.get('toTime')?.value;
+  
+    if (fromDate && toDate && fromTime && toTime) {
+      const combinedFromDateTime = new Date(`${fromDate}T${fromTime}`);
+      const combinedToDateTime = new Date(`${toDate}T${toTime}`);
+  
+      if (combinedFromDateTime > combinedToDateTime) {
+        this.dateError = true;
+      } else {
+        this.dateError = false;
+      }
     } else {
       this.dateError = false;
     }
   }
+  
   addItem() {
 
 
@@ -456,4 +496,6 @@ export class BookingPageComponent {
 
     return pagination;
   }
+ 
+
 }
