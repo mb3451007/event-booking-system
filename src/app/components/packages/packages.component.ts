@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { PackagesService } from 'src/app/packages.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   loadStripe,
   Stripe,
@@ -7,6 +8,7 @@ import {
   StripeCardElement,
 } from '@stripe/stripe-js';
 import { HttpClient } from '@angular/common/http';
+import { ItemsModalComponent } from '../items-modal/items-modal.component';
 
 const stripePromise = loadStripe(
   'pk_test_51N2zfiBHAK3VyaqUHLxCAue1ZffFof5jE4X4lRfxvBqffzikRlcQTxj3Lrb3zbVgkmHSob3i2hidx0aQEP153HTM00rJFnDGJo'
@@ -17,27 +19,56 @@ const stripePromise = loadStripe(
   templateUrl: './packages.component.html',
   styleUrls: ['./packages.component.scss'],
 })
-export class PackagesComponent implements OnInit, AfterViewInit {
+export class PackagesComponent implements OnInit {
   packages: any;
   stripe!: Stripe | null;
   elements!: StripeElements;
   card!: StripeCardElement;
+  packageDetails: any
+  packageId: any
+  isLoading: boolean = false;
+
 
   constructor(
     private packageService: PackagesService,
-    private http: HttpClient
+    private http: HttpClient,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
     this.packageService.getAllPeckage().subscribe({
       next: (response: any) => {
         this.packages = response.items;
-        console.log(response);
+        console.log('packages', this.packages);
       },
       error: (error) => {
         console.log(error);
       },
     });
+  }
+
+  getItems(id: any){
+
+    this.isLoading = true;
+
+    this.packageService.getPackageById(id).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.packageDetails = response.data;
+          this.isLoading = false;
+          const modalRef = this.modalService.open(ItemsModalComponent);
+
+          modalRef.componentInstance.packageDetails = this.packageDetails;
+        } else {
+          this.isLoading = false;
+          console.warn('No data found in response');
+        }
+      },
+      (error: any) => {
+        this.isLoading = false;
+        console.error('Error fetching package details:', error);
+      }
+    );
   }
 
   async ngAfterViewInit() {

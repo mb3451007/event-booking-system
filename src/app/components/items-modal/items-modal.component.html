@@ -1,0 +1,88 @@
+
+<div class="modal-header d-flex justify-content-end aign-items-center" style="">
+  <div class="close-button" type="button" id="closeBtn" (click)="closeModal()">
+    <i class="fa fa-times"></i>
+  </div>
+
+</div>
+<!-- <div class="modal-body">
+  <div class="total d-flex justify-content-end">
+    <span class="total-text">Total: {{ getTotal() }}</span>
+  </div>
+
+  <div class="item-name" *ngFor="let item of packageDetails.itemsWithSubItems">
+    <div class="menu-block">
+      <h3 class="menu-title">{{ item.item?.name }}</h3>
+      <div class="menu-content">
+        <div class="row">
+          <div class="col-xs-12 my-2" *ngFor="let subItem of item.subItems">
+            <div class="dish-content row">
+              <h5 class="dish-title col-md-4">{{ subItem.name }}</h5>
+              <div class="dish-price col-md-2">
+                <p>€{{ subItem.price }} per person</p>
+              </div>
+              <div class="image col-md-3">
+                <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
+                  <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
+                </div>
+                <div *ngIf="getMediaURl(subItem.imageUrl) === ''" class="no-image">
+                  <p class="text-secondary fw-bold">No Image Uploaded</p>
+                </div>
+              </div>
+
+              <div class="select-quantity col-md-2">
+                <input type="number" min="0" (input)="calculateSubtotal(subItem._id, subItem.price, $event)" class="quantity-input">
+              </div>
+
+              <div class="subtotal col-md-1">
+                {{ getSubTotal(subItem._id) }}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items">
+            <p class="text-warning text-center">No sub-items available for this item.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+<div class="modal-body custom-scrollbar">
+  <div class="container py-5">
+    <!-- Package Title Section -->
+    <div class="row justify-content-center">
+      <div class="col-12 text-center">
+        <div class="page-section mb-4">
+          <h1 class="page-title font-weight-bold text-dark">
+            {{ packageDetails.package?.name }}
+            <span class="package-price text-primary">€{{ packageDetails.package?.price }} per person</span>
+          </h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Package Description Section -->
+    <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="package-description p-4 rounded-lg shadow-lg bg-white">
+          <div class="desc">
+            <p class="text-muted m-0" [innerHTML]="packageDetails.package?.description"></p>
+          </div>
+          <p class="text-muted m-0" [innerHTML]="packageDetails.package?.finalNotes"></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-footer justify-content-center">
+  <div class="continue-btn" (click)="preCheckoutPage()">
+    Continue
+  </div>
+</div>
+
+

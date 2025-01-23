@@ -1,0 +1,54 @@
+<div class="pre-checkout-page p-4">
+  <div class="total d-flex justify-content-end mb-4">
+    <span class="total-text">Total: {{ getTotal() }}</span>
+  </div>
+
+  <div class="items" *ngFor="let item of packageDetails.itemsWithSubItems">
+    <div class="menu-block p-4">
+      <h3 class="menu-title">{{ item.item?.name }}</h3>
+      <div class="menu-content">
+        <div class="row">
+          <div class="col-xs-12 my-3" *ngFor="let subItem of item.subItems">
+            <div class="dish-content row">
+              <h5 class="dish-title col-md-4 mb-2">{{ subItem.name }}</h5>
+              <div class="dish-price col-md-2 mb-2">
+                <p>€{{ subItem.price }} per person</p>
+              </div>
+              <div class="image col-md-3 mb-2">
+                <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
+                  <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
+                </div>
+                <div *ngIf="getMediaURl(subItem.imageUrl) === ''" class="no-image">
+                  <p class="text-secondary fw-bold">No Image Uploaded</p>
+                </div>
+              </div>
+
+              <div class="select-quantity col-md-2 mb-2">
+                <span class="quantity">Quantity</span>
+                <input type="number" min="0" value="1" (input)="calculateSubtotal(subItem._id, subItem.price, $event)"
+                  class="quantity-input" />
+              </div>
+
+              <div class="subtotal col-md-1 mb-2">
+                {{ getSubTotal(subItem._id) }}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items mt-4">
+            <p class="text-warning text-center">No sub-items available for this item.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
+    <p class="text-warning text-center">
+      No Items available for this Package.
+    </p>
+  </div>
+
+  <div class="continue-btn" (click)="preCheckoutPage()">
+    Checkout
+  </div>
+</div>

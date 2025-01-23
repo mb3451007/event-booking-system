@@ -9,9 +9,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { PackagesComponent } from './components/packages/packages.component';
+import { ItemsModalComponent } from './components/items-modal/items-modal.component';
+import { PreCheckoutComponent } from './components/pre-checkout/pre-checkout.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [AppComponent, PackagesComponent],
+  declarations: [AppComponent, PackagesComponent, ItemsModalComponent, PreCheckoutComponent, CheckoutComponent],
   imports: [
     CommonModule,
     BrowserModule,
