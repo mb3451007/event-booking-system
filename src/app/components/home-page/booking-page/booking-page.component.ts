@@ -377,7 +377,7 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
       this.bookingService.addItem(newItem).subscribe({
         next: (response: any) => {
           this.isLoading = false;
-          this.toastr.success('Item added successfully!');
+          this.toastr.success('Booking added successfully!');
           this.getAllItems();
           this.getPaginatedItems(this.pageNumber);
           this.addItemForm.reset();
@@ -387,7 +387,7 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
         },
         error: (err) => {
           this.isLoading = false;
-          this.toastr.error('Error Adding Item.');
+          this.toastr.error('Error Adding Booking.');
           console.log(err);
         },
       });
@@ -438,14 +438,14 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
     if (confirm && this.itemToDelete !== null) {
       this.bookingService.deleteItem(this.itemToDelete).subscribe(
         (response) => {
-          this.toastr.success('Item deleted successfully!');
+          this.toastr.success('Boooking deleted successfully!');
           this.itemToDelete = null;
           this.showConfirmation = false;
           this.getAllItems();
           this.getPaginatedItems(this.pageNumber);
         },
         (error) => {
-          this.toastr.error('Error deleting item!');
+          this.toastr.error('Error deleting Boooking!');
         }
       );
     } else {
@@ -475,14 +475,14 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
           console.log(response);
           this.getAllItems();
           this.getPaginatedItems(this.pageNumber);
-          this.toastr.info('Item updated successfully!');
+          this.toastr.info('Boooking updated successfully!');
           this.addItemForm.markAsPristine();
           this.addItemForm.reset(); // reset
           this.closeUpdateModal();
         },
         error: (error) => {
           this.isLoading = false;
-          this.toastr.error('Error Updating Item.');
+          this.toastr.error('Error Updating Boooking.');
           console.log(error);
         },
       });
