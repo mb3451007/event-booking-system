@@ -1,54 +1,174 @@
 <div class="pre-checkout-page p-4">
-  <div class="total d-flex justify-content-end mb-4">
-    <span class="total-text">Total: {{ getTotal() }}</span>
-  </div>
 
-  <div class="items" *ngFor="let item of packageDetails.itemsWithSubItems">
-    <div class="menu-block p-4">
-      <h3 class="menu-title">{{ item.item?.name }}</h3>
-      <div class="menu-content">
-        <div class="row">
-          <div class="col-xs-12 my-3" *ngFor="let subItem of item.subItems">
-            <div class="dish-content row">
-              <h5 class="dish-title col-md-4 mb-2">{{ subItem.name }}</h5>
-              <div class="dish-price col-md-2 mb-2">
-                <p>€{{ subItem.price }} per person</p>
-              </div>
-              <div class="image col-md-3 mb-2">
-                <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
-                  <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
+  <div class="main-body">
+    <div class="item-cards d-flex flex-column align-items-center justify-content-center gap-3">
+      <div class="items" *ngFor="let item of packageDetails.itemsWithSubItems">
+        <div class="menu-block p-4">
+          <h3 class="menu-title">{{ item.item?.name }}</h3>
+          <div class="menu-content">
+
+            <div class="row">
+              <div class="col-xs-12 my-3" *ngFor="let subItem of getSubItems(item)">
+                <div class="dish-content row">
+                  <h5 class="dish-title mb-2">{{ subItem.name }}</h5>
+                  <div class="dish-price mb-2">
+                    <p>€{{ subItem.price.toFixed(2) }} per person</p>
+                  </div>
+                  <div class="image mb-2">
+                    <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
+                      <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
+                    </div>
+                    <div *ngIf="getMediaURl(subItem.imageUrl) === ''" class="no-image">
+                      <p class="text-secondary fw-bold">No Image Uploaded</p>
+                    </div>
+                  </div>
+
+                  <div class="select-quantity mb-2">
+                    <span class="quantity">Quantity</span>
+                    <input type="number" min="0" value="1"
+                      (input)="calculateSubtotal(subItem._id, subItem.price, $event, subItem);" class="input-styling" />
+                  </div>
+
+                  <div class="subtotal mb-2">
+                    {{ getSubTotal(subItem._id) }}
+                  </div>
                 </div>
-                <div *ngIf="getMediaURl(subItem.imageUrl) === ''" class="no-image">
-                  <p class="text-secondary fw-bold">No Image Uploaded</p>
-                </div>
               </div>
-
-              <div class="select-quantity col-md-2 mb-2">
-                <span class="quantity">Quantity</span>
-                <input type="number" min="0" value="1" (input)="calculateSubtotal(subItem._id, subItem.price, $event)"
-                  class="quantity-input" />
-              </div>
-
-              <div class="subtotal col-md-1 mb-2">
-                {{ getSubTotal(subItem._id) }}
+              <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items mt-4">
+                <p class="text-warning text-center">No sub-items available for this item.</p>
               </div>
             </div>
+
           </div>
-          <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items mt-4">
-            <p class="text-warning text-center">No sub-items available for this item.</p>
+
+          <div *ngIf="!isScreenLarge" class="see-btn" (click)="toggleItemBtn(item.item._id)">
+            {{ itemBtn[item.item._id] ? 'See Less' : 'See More' }}
           </div>
+        </div>
+
+
+        <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
+          <p class="text-warning text-center">
+            No Items available for this Package.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="total-cont menu-block">
+
+      <h1 class="page-title font-weight-bold text-dark">
+        {{ packageDetails.package?.name }}
+        <span class="package-price text-primary">€{{ packageDetails.package?.price }} per person</span>
+      </h1>
+      <div class="prices d-flex flex-column justify-content-center gap-4">
+
+        <form [formGroup]="timingsForm" class="d-flex flex-column justify-content-center gap-2">
+          <div class="form-group inputFormGroup d-flex justify-content-between gap-2">
+            <label for="name" class="text-secondary fw-bold">From Date</label>
+            <input type="date" id="name" formControlName="fromDate" class="form-control input-styling-timing"
+              (change)="checkAvailability() ; checkDateValidation()" name="name" required />
+          </div>
+          <div class="form-group inputFormGroup d-flex justify-content-between gap-2">
+            <label for="name" class="text-secondary fw-bold">From Time</label>
+            <input type="time" id="name" formControlName="fromTime" class="form-control input-styling-timing"
+              (change)="checkAvailability() ;checkDateValidation() " [disabled]="!timingsForm.get('fromDate')?.value"
+              name="name" required />
+          </div>
+          <div class="form-group inputFormGroup d-flex justify-content-between gap-2">
+            <label for="name" class="text-secondary fw-bold">To Date</label>
+            <input type="date" id="name" formControlName="toDate" class="form-control input-styling-timing"
+              (change)="checkDateValidation() ; checkAvailability()" name="name"
+              [disabled]="!timingsForm.get('fromDate')?.value || !timingsForm.get('fromTime')?.value" required />
+          </div>
+          <div class="form-group inputFormGroup d-flex justify-content-between gap-2">
+            <label for="name" class="text-secondary fw-bold">To Time</label>
+            <input type="time" id="name" formControlName="toTime" class="form-control input-styling-timing"
+              (change)="checkDateValidation() ; checkAvailability()" name="name" [disabled]="
+              !timingsForm.get('fromDate')?.value ||
+              !timingsForm.get('fromTime')?.value ||
+              !timingsForm.get('toDate')?.value
+            " required />
+          </div>
+          <div *ngIf="dateError; else messages" class="text-danger">
+            {{dateSelectionError}}
+          </div>
+
+          <ng-template #messages>
+            <div *ngIf="availabilityMessage || fullyBookedMsg || availableSlotsMsg" [ngClass]="{'text-danger fw-semibold': availabilityMessage.includes('Fully booked'),
+                 'text-success fw-semibold': availabilityMessage.includes('Available slots')}"
+              class="availability-message bg-light p-3 rounded shadow-sm fs-6">
+
+              <div class="d-flex flex-column justify-content-center gap-1" *ngIf="fullyBookedMsg.length>0">
+                <strong>Fully booked days:</strong>
+                <span class="d-block mt-1" class="fully-booked-days">{{ fullyBookedMsg }}</span>
+              </div>
+
+              <div class="d-flex flex-column justify-content-center gap-1" *ngIf="isAvailableSlots">
+                <strong>Available slots:</strong>
+                <span class="d-block mt-1" class="available-slots">{{ availableSlotsMsg }}</span>
+              </div>
+
+              <div class="d-flex flex-column justify-content-center gap-1" *ngIf="allBooked">
+                <!-- <strong></strong> -->
+                <span class="d-block mt-1"class="all-booked-msg">{{ availabilityMessage }}</span>
+              </div>
+
+              <div class="d-flex flex-column justify-content-center gap-1" *ngIf="allAvailable && !allBooked">
+                <span class="d-block mt-1" class="all-available">{{ availabilityMessage }}</span>
+              </div>
+
+            </div>
+
+
+
+          </ng-template>
+
+
+        </form>
+
+
+
+        <div class="upper-sec d-flex flex-column justify-content-center gap-4">
+          <div class="persons d-flex justify-content-between gap-2">
+            <label for="persons" class="text-secondary fw-bold">Number of Persons: </label>
+            <input name="person" type="number" min="1" value="1" (input)="calculatePersonsSubtotal($event)"
+              class="input-styling" />
+          </div>
+          <div class="perPersonSubTotal d-flex justify-content-between gap-2">
+            <div class="title" class="text-secondary fw-bold">Subtotal:</div>
+            <span class="price">€{{getPersonsSubtotal()}}</span>
+          </div>
+          <div class="subItemTotal d-flex justify-content-between gap-2">
+            <div class="title" class="text-secondary fw-bold">Additional Bookable Options Total:</div>
+            <span class="price">{{getSubItemsTotal()}}</span>
+          </div>
+        </div>
+        <div class="lower-sec d-flex flex-column justify-content-center gap-4">
+          <div class="d-flex justify-content-between gap-2">
+            <div class="title" class="text-secondary fw-bold">Total:</div>
+            <span class="price">€{{getTotal()}}</span>
+          </div>
+          <div class="d-flex justify-content-between gap-2">
+            <div class="title" class="text-secondary fw-bold">40% Advance Booking:</div>
+            <span class="price">€{{getAdvance()}}</span>
+          </div>
+        </div>
+
+        <div *ngIf="errorMsg" class="error-message">
+          Please select an available slot for booking!
+        </div>
+        <div  (click)="preCheckoutPage()" [ngClass]="{
+          'continue-btn': isSlotValid,
+          'invalid-btn': !isSlotValid
+        }">
+          Checkout
         </div>
       </div>
     </div>
   </div>
 
-  <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
-    <p class="text-warning text-center">
-      No Items available for this Package.
-    </p>
-  </div>
 
-  <div class="continue-btn" (click)="preCheckoutPage()">
-    Checkout
-  </div>
+
+
 </div>

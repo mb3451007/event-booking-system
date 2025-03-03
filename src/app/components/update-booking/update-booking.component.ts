@@ -1,40 +1,32 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BookingsService } from 'src/app/bookings.service';
-import { ItemsService } from 'src/app/items.service';
 import { PackagesService } from 'src/app/packages.service';
 import { SubItemsService } from 'src/app/sub-items.service';
 
 @Component({
-  selector: 'app-booking-page',
-  templateUrl: './booking-page.component.html',
-  styleUrls: ['./booking-page.component.scss'],
-  animations: [
-    trigger('modalAnimation', [
-      state(
-        'void',
-        style({
-          opacity: 0,
-          transform: 'scale(0.7)',
-        })
-      ),
-      state(
-        '*',
-        style({
-          opacity: 1,
-          transform: 'scale(1)',
-        })
-      ),
-      transition('void => *', [animate('300ms ease-in')]),
-      transition('* => void', [animate('300ms ease-out')]),
-    ]),
-  ],
+  selector: 'app-update-booking',
+  templateUrl: './update-booking.component.html',
+  styleUrls: ['./update-booking.component.scss']
 })
-export class BookingPageComponent {
+export class UpdateBookingComponent {
+  packageDetails!: any;
+  selectedPackage:any
+  subItemTotals: { [subItemId: number]: number } = {};
+  itemBtn: { [itemId: string]: boolean } = {}
+  perPersonSubt = 0
+  subItems!:any
+  total = 0
+  subItemTotal = 0
+  advance = 0
+  showAllSubItems = false
+  smallScreenItems: any
+  isScreenLarge = false
+  seeBtn = false
+  noOfPersons=1
   currentPage = 1;
   pagination: number[] = [];
   autoitems: string[] = [];
@@ -60,58 +52,103 @@ export class BookingPageComponent {
   showpackagesSearch: boolean = false;
   availabilityMessage: string = ''
   currentBooking:any
-  openedItem:any
+  statusOpts=['Pending', 'Advance Paid', 'Fully Paid']
   conflict: any
  validationError : boolean = false
-
+  packages:any
 number = [1,2,3,4,5,6,2,3,3,'A','B']
-  filteredPackages: any[] = [];
-  pageNumber: number = 1;
-  totalPages: number = 1;
   isLoading: boolean = false;
   dateError: boolean = false;
   showConfirmation: boolean = false;
   itemToDelete: number | null = null;
+
   constructor(
+    private packageService: PackagesService,
     private bookingService: BookingsService,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
     private datePipe: DatePipe,
-    private router: Router
+    private subItemService: SubItemsService,
   ) {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
       number: ['', Validators.required],
       email: ['', Validators.required],
-      price: ['', Validators.required],
+      // price: ['', Validators.required],
       fromDate: ['', Validators.required],
       fromTime: ['', Validators.required],
       toDate: ['', Validators.required],
       toTime: ['', Validators.required],
+      status: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
 
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.item = JSON.parse(params['item']);
+      this.addItemForm.patchValue({
+        name: this.item.name,
+        number: this.item.phone,
+        email: this.item.email,
+        fromDate: this.extractDate(this.item.fromDate),
+        fromTime: this.extractTime(this.item.fromDate),
+        toDate: this.extractDate(this.item.toDate),
+        toTime: this.extractTime(this.item.toDate),
+        status: this.item.status
+      });
+      console.log('Received item:', this.addItemForm.value);
+    });
+
+    this.packageService.getAllPeckage().subscribe({
+      next: (response: any) => {
+        this.packages = response.items;
+        console.log('packages', this.packages);
+
+        this.packages.forEach((pkg: { _id: any; }) => {
+          if(pkg._id == this.item.packageId)
+            this.getPackageDetails(pkg._id)
+        });
+
+
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+
+
+
     this.itemId = this.activatedRoute.snapshot.paramMap.get('itemId');
     this.getAllItems();
-    this.getPaginatedItems(this.pageNumber);
-    this.pagesCount();
 
-    this.item = {
-      name: this.addItemForm.value.name,
-      email: this.addItemForm.value.email,
-      number: this.addItemForm.value.number,
-      price: this.addItemForm.value.price,
-      fromDate: this.addItemForm.value.fromDate,
-      fromTime: this.addItemForm.value.fromTime,
-      toDate: this.addItemForm.value.toDate,
-      toTime: this.addItemForm.value.toTime,
-    };
+    // this.item = {
+    //   name: this.addItemForm.value.name,
+    //   email: this.addItemForm.value.email,
+    //   number: this.addItemForm.value.number,
+    //   price: this.addItemForm.value.price,
+    //   fromDate: this.addItemForm.value.fromDate,
+    //   fromTime: this.addItemForm.value.fromTime,
+    //   toDate: this.addItemForm.value.toDate,
+    //   toTime: this.addItemForm.value.toTime,
+    // };
  this.initializeFieldListeners()
 
   }
+
+  extractDate(dateTime: string): string {
+    console.log('str', dateTime)
+    return dateTime ? dateTime.split('T')[0] : ''; // Extract YYYY-MM-DD
+  }
+
+  extractTime(dateTime: string): string {
+    console.log('str', dateTime)
+    return dateTime.split("T")[1].substring(0, 5);
+  }
+
+
+
 
   initializeFieldListeners(): void {
     this.addItemForm.get('fromDate')?.valueChanges.subscribe((fromDate) => {
@@ -144,16 +181,15 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
       }
     });
   }
-  openModal() {
-    this.showModal = true;
-    this.addItemForm.reset();
-    this.formData.isAvailable = true;
-  }
+  // openModal() {
+  //   this.showModal = true;
+  //   this.addItemForm.reset();
+  //   this.formData.isAvailable = true;
+  // }
 
   selectedID = '';
 
   openUpdateModal(item: any) {
-    console.log('toggled item', item)
     this.currentBooking = item;
     this.item = { ...item };
 
@@ -168,49 +204,21 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
    const toDate = this.datePipe.transform(toDateObj, 'yyyy-MM-dd');
    const toTime = this.datePipe.transform(toDateObj, 'HH:mm');
 
-    this.addItemForm.patchValue({
-      name: this.item.name,
-      email: this.item.email,
-      number: this.item.number,
-      price: this.item.price,
-      fromDate: fromDate,
-      fromTime: fromTime,
-      toDate: toDate,
-      toTime: toTime
-    });
-
-    this.openedItem=this.addItemForm.value
-
-    console.log('this.openedItem',this.openedItem)
-    this.router.navigate(['/update-booking'], {
-      queryParams: { item: JSON.stringify(item) }
-    });
+    // this.addItemForm.patchValue({
+    //   name: this.item.name,
+    //   email: this.item.email,
+    //   number: this.item.number,
+    //   price: this.item.price,
+    //   fromDate: fromDate,
+    //   fromTime: fromTime,
+    //   toDate: toDate,
+    //   toTime: toTime
+    // });
     this.showUpdateModal = true;
   }
 
-  closeModal() {
-    this.showModal = false;
-    this.addItemForm.value.toDate = null;
-    this.addItemForm.value.toTime = null;
-    this.addItemForm.value.fromDate = null;
-    this.addItemForm.value.fromTime = null;
-    this.bookingsOnSelectedDate=[]
-    this.availabilityMessage='';
-    this.addItemForm.reset();
-  }
-  closeUpdateModal() {
-    this.showUpdateModal = false;
-    this.addItemForm.value.toDate = null;
-    this.addItemForm.value.toTime = null;
-    this.addItemForm.value.fromDate = null;
-    this.addItemForm.value.fromTime = null;
-    this.bookingsOnSelectedDate=[]
-    this.availabilityMessage='';
-    this.addItemForm.reset();
-  }
-
   onSubmit() {
-    this.closeModal();
+
   }
 
   checkAvailability() {
@@ -272,6 +280,7 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
     }
   }
   checkAvailabilityForUpDate() {
+    this.currentBooking=this.item
     const fromDate = this.addItemForm.value.fromDate;
     const fromTime = this.addItemForm.value.fromTime;
     const toDate = this.addItemForm.value.toDate;
@@ -361,49 +370,6 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
     }
   }
 
-  addItem() {
-
-
-    const combinedFromDateTime = `${this.addItemForm.value.fromDate}T${this.addItemForm.value.fromTime}`;
-    const combinedToDateTime = `${this.addItemForm.value.toDate}T${this.addItemForm.value.toTime}`;
-
-    if (new Date(combinedFromDateTime) >= new Date(combinedToDateTime)) {
-      this.toastr.warning('To Date & Time must be greater than From Date & Time');
-      return;
-    }
-    this.isLoading = true;
-    if (this.addItemForm.valid) {
-      const newItem = {
-        name: this.addItemForm.value.name,
-        email: this.addItemForm.value.email,
-        number: this.addItemForm.value.number,
-        price: this.addItemForm.value.price,
-        fromDate: combinedFromDateTime,
-        toDate: combinedToDateTime,
-      };
-      console.log('formVal', this.addItemForm.value);
-      console.log(newItem, 'jjhjhj');
-      this.bookingService.addItem(newItem).subscribe({
-        next: (response: any) => {
-          this.isLoading = false;
-          this.toastr.success('Item added successfully!');
-          this.getAllItems();
-          this.getPaginatedItems(this.pageNumber);
-          this.addItemForm.reset();
-          this.addItemForm.markAsPristine();
-          console.log(response);
-          this.closeModal();
-        },
-        error: (err) => {
-          this.isLoading = false;
-          this.toastr.error('Error Adding Item.');
-          console.log(err);
-        },
-      });
-    } else {
-      this.addItemForm.markAllAsTouched();
-    }
-  }
 
   getAllItems() {
     this.bookingService.getAllItems().subscribe((response: any) => {
@@ -418,72 +384,36 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
     });
   }
 
-  addBooking(){
-    this.router.navigate(['/add-booking'])
-  }
 
 
-  getPaginatedItems(page: number) {
-    this.isLoading = true;
-    this.pageNumber = page;
-    this.bookingService
-      .getPaginatedItems(this.pageNumber)
-      .subscribe((response: any) => {
-        this.isLoading = false;
-        this.ListItems = response.bookings;
-        this.totalPages = response.totalPages;
-        console.log(this.ListItems, 'this is response list');
-        console.log(this.totalPages, 'this is response pages');
-        this.updatePagination();
-        this.pagesCount();
-        if (this.pageNumber > response.totalPages) {
-          this.getPaginatedItems(this.pageNumber - 1);
-        }
-      });
-  }
-
-  deleteItem(itemId: number) {
-    this.itemToDelete = itemId;
-    this.showConfirmation = true;
-  }
-
-  handleConfirmation(confirm: boolean) {
-    if (confirm && this.itemToDelete !== null) {
-      this.bookingService.deleteItem(this.itemToDelete).subscribe(
-        (response) => {
-          this.toastr.success('Item deleted successfully!');
-          this.itemToDelete = null;
-          this.showConfirmation = false;
-          this.getAllItems();
-          this.getPaginatedItems(this.pageNumber);
-        },
-        (error) => {
-          this.toastr.error('Error deleting item!');
-        }
-      );
-    } else {
-      this.showConfirmation = false;
-    }
-  }
-
-  viewItem(itemId: any) {
-    this.router.navigate(['/view-booking'], {
-      queryParams: { item: JSON.stringify(this.bookings.find((item: { _id: any; }) => item._id === itemId)) }
-    });
-  }
+  viewItem(itemId: any) { }
 
   updateItem() {
     const combinedFromDateTime = `${this.addItemForm.value.fromDate}T${this.addItemForm.value.fromTime}`;
     const combinedToDateTime = `${this.addItemForm.value.toDate}T${this.addItemForm.value.toTime}`;
     this.isLoading = true;
-    if (this.addItemForm.dirty) {
+    console.log('val', this.addItemForm.value)
+
+    // if (this.addItemForm.dirty) {
       const updatedItem = {
+        // name: this.addItemForm.value.name,
+        // email: this.addItemForm.value.email,
+        // number: this.addItemForm.value.number,
+        // price: this.addItemForm.value.price,
+        // fromDate: combinedFromDateTime,
+        // toDate: combinedToDateTime,
+        // status: this.addItemForm.value.status
+        userId: '676ebd9caa6ea87633c515c9',
         name: this.addItemForm.value.name,
         email: this.addItemForm.value.email,
-        number: this.addItemForm.value.number,
-        price: this.addItemForm.value.price,
+        phone: this.addItemForm.value.number,
+        status: this.addItemForm.value.status,
         fromDate: combinedFromDateTime,
         toDate: combinedToDateTime,
+          packageId: this.packageDetails?.package?._id,
+          noOfPersons: this.noOfPersons,
+          totalPrice: this.total.toFixed(2),
+          subItems: this.subItems
       };
       console.log(updatedItem, '----------------updated item----');
       this.bookingService.updateItem(this.item._id, updatedItem).subscribe({
@@ -491,11 +421,9 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
           this.isLoading = false;
           console.log(response);
           this.getAllItems();
-          this.getPaginatedItems(this.pageNumber);
           this.toastr.info('Item updated successfully!');
           this.addItemForm.markAsPristine();
-          this.addItemForm.reset(); // reset
-          this.closeUpdateModal();
+          this.addItemForm.reset();
         },
         error: (error) => {
           this.isLoading = false;
@@ -503,85 +431,174 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
           console.log(error);
         },
       });
+    // }
+  }
+
+  initializeQuantities(): void {
+    console.log('subs', this.packageDetails.itemsWithSubItems)
+    this.packageDetails.itemsWithSubItems?.forEach((item: any) => {
+      item.subItems?.forEach((subItem: any) => {
+        this.subItemTotals[subItem._id] = subItem.price;
+        // console.log('price', console.log(subItem))
+      });
+    });
+
+    this.packageDetails.itemsWithSubItems?.forEach((item: any) => {
+      this.itemBtn[item.item._id] = false; // Initialize with the price of each subItem
+    });
+
+    this.subItems = []
+  this.packageDetails.itemsWithSubItems?.forEach((item: any) => {
+    item.subItems?.forEach((subItem: any) => {
+      subItem.quantity = 1; // Initialize with the price of each subItem
+      this.subItems.push(subItem); // Collect all subItems
+    });
+  });
+
+  console.log('itemBtn', this.itemBtn);
+  console.log('subItemTotals', this.subItemTotals);
+}
+
+  getPackageDetails(selectedValue: any) {
+    console.log('Selected Package ID:', selectedValue);
+
+    this.packageService.getPackageById(selectedValue).subscribe(
+          (response: any) => {
+            if (response && response.data) {
+              this.packageDetails = response.data;
+              this.initializeQuantities()
+              this.isLoading = false;
+              console.log('package details', this.packageDetails)
+            } else {
+              this.isLoading = false;
+              console.warn('No data found in response');
+            }
+          },
+          (error: any) => {
+            this.isLoading = false;
+            console.error('Error fetching package details:', error);
+          }
+        );
+  }
+
+  getSubItems(item: any): any[] {
+    if (!this.isScreenLarge && !this.itemBtn[item.item._id]) {
+      return item.subItems.slice(0, 5); // Limit to 5 sub-items if screen is small
     }
+    return item.subItems; // Show all sub-items if screen is large
   }
 
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize(): void {
+    this.isScreenLarge = window.innerWidth > 800;
+    console.log('isScreenLarge', this.isScreenLarge)
+  }
+
+
+  getMediaURl(url: string) {
+    const mediaUrl = this.subItemService.getMedia(url);
+    return mediaUrl.includes('null') ? '' : mediaUrl;
+  }
+
+  calculateSubtotal(id: any, price: number, event: Event, itemId: any) {
+    const inputElement = event.target as HTMLInputElement;
+
+    const quantity = parseInt(inputElement.value, 10) || 0;
+
+    const subtotal = quantity * price;
+
+    this.subItemTotals[id] = subtotal;
+
+    console.log('subtotal', this.subItemTotals[id])
+
+    // const parentObject = this.subItems.find((obj: any) => obj.item._id === itemId);
 
 
 
+        // const subItem = this.subItems.find((sub: any) => sub._id === id);
+        this.subItems.forEach((sub: { _id: any; quantity: number; price: number; }) => {
+          if(sub._id == id){
+            sub.quantity = quantity;
+            sub.price = subtotal;
+          }
+        });
 
+        // if (subItem) {
+        //     // Update quantity and subtotal
+        //     subItem.quantity = quantity;
+        //     subItem.price = subtotal;
+        // }
+    // }
 
-  previousPage() {
-    if (this.pageNumber > 1) {
-      this.pageNumber--;
-      this.getPaginatedItems(this.pageNumber);
+    console.log('Updated subItems:', this.subItems);
+  }
+
+  calculatePersonsSubtotal(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+
+    // Extract and parse the value, defaulting to 0 if invalid
+    const quantity = parseInt(inputElement.value, 10) || 0;
+    this.noOfPersons = quantity
+
+    this.perPersonSubt = quantity * this.packageDetails.package.price
+
+    console.log('perPersonSubt', this.perPersonSubt, this.total)
+
+    // this.total=this.perPersonSubt
+
+    console.log('perPersonSubt', this.perPersonSubt)
+    // console.log('subtotal', subtotal)
+  }
+
+  getPersonsSubtotal() {
+
+    return this.perPersonSubt.toFixed(2);
+  }
+
+  getSubTotal(id: any) {
+    if (this.subItemTotals[id] == null) {
+      return '€0.00';
     }
+
+
+    // Ensure the subtotal is a number before applying toFixed
+    const formattedSubtotal = (+this.subItemTotals[id]).toFixed(2);
+    return `€${formattedSubtotal}`;
   }
 
-  nextPage() {
-    if (this.pageNumber < this.totalPages) {
-      this.pageNumber++;
-      this.getPaginatedItems(this.pageNumber);
-    }
-  }
-  pagesCount() {
-    this.pageCountArray = [];
-    for (let i = 1; i <= this.totalPages; i++) {
-      this.pageCountArray.push(i);
-    }
+  getSubItemsTotal(): string {
+    // Calculate the sum of all the subItemTotals in the subItemTotals object
+    this.subItemTotal = Object.values(this.subItemTotals).reduce((sum, subtotal) => sum + (subtotal || 0), 0);
+
+    // Format the total to 2 decimal places
+    const formattedTotal = this.subItemTotal.toFixed(2);
+
+    // Return the total formatted as a currency
+    return `€${formattedTotal}`;
   }
 
+  getTotal() {
+    this.total = this.subItemTotal
+    this.total += this.perPersonSubt
 
-
-
-  handleBackdropClick(event: MouseEvent) {
-    if ((event.target as HTMLElement).classList.contains('modal')) {
-      this.closeModal();
-      this.closeUpdateModal();
-    }
-  }
-  onPageChange(page: number): void {
-    console.log('Page changed to:' + page);
-    if (page < 1 || page > this.totalPages) return;
-
-    this.currentPage = page;
-    this.pageNumber = page;
-    this.updatePagination();
-    this.getPaginatedItems(this.pageNumber);
+    return this.total.toFixed(2)
   }
 
-  updatePagination(): void {
-    this.pagination = this.getPagination(this.currentPage, this.totalPages);
+  getAdvance() {
+    this.advance = this.total * 0.4
+
+    return this.advance.toFixed(2)
   }
 
-  getPagination(currentPage: number, totalPages: number): number[] {
-    const visiblePages = 9;
-    const pagination: number[] = [];
 
-    if (totalPages <= visiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pagination.push(i);
-      }
-    } else {
-      pagination.push(1);
-
-      if (currentPage > 5) pagination.push(-1);
-
-      const startPage = Math.max(2, currentPage - 3);
-      const endPage = Math.min(totalPages - 1, currentPage + 3);
-
-      for (let i = startPage; i <= endPage; i++) {
-        pagination.push(i);
-      }
-
-      if (currentPage < totalPages - 4) pagination.push(-1);
-
-      pagination.push(totalPages);
-    }
-
-    return pagination;
+  toggleItemBtn(id: any) {
+    this.itemBtn[id] = !this.itemBtn[id]
+    console.log('itemBtn', this.itemBtn[id]);
   }
-
 
 }

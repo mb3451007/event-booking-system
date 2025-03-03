@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Stripe, StripeElements, StripeCardElement, loadStripe } from '@stripe/stripe-js';
@@ -17,25 +17,46 @@ export class CheckoutComponent {
   stripe!: Stripe | null;
   elements!: StripeElements;
   card!: StripeCardElement;
-  total= 0;
+  advance= 0;
   packageName: string = '';
+  packageId!: any;
   checkoutPrice = 0;
   infoForm!: FormGroup;
-  cardValid: boolean = false; // Track card validity
+  cardValid: boolean = false;
+  noOfPersons!:any
+  totalPrice!:any
+  fromDate!:any
+  toDate!:any
+  subItems!:any
 
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
-    // this.checkoutPrice = parseFloat(this.total);
+    // this.checkoutPrice = parseFloat(this.advance);
 
     this.route.queryParams.subscribe(params => {
-      this.total = Number(params['amount']);;
+      this.advance = params['advance'];
       this.packageName = params['packageName'];
+      this.packageId = params['packageId'];
+      this.noOfPersons = params['noOfPersons'];
+      this.totalPrice = params['totalPrice'];
+      this.fromDate = params['fromDate'];
+      this.toDate = params['toDate'];
+      this.subItems = JSON.parse(params['subItems']);
     });
+    console.log('this.advance',this.advance)
+    console.log('this.packageName',this.packageName)
+    console.log('this.packageId',this.packageId)
+    console.log('this.noOfPersons',this.noOfPersons)
+    console.log('this.totalPrice',this.totalPrice)
+    console.log('this.fromDate',this.fromDate)
+    console.log('this.toDate',this.toDate)
+    console.log('this.subItems',this.subItems)
     // console.log(this.total)
 
     this.initForm();
@@ -67,28 +88,34 @@ export class CheckoutComponent {
     // Listen for card changes and validate
     this.card.on('change', (event) => {
       const displayError = document.getElementById('card-errors');
-      if (event.error) {
-        displayError!.textContent = event.error.message;
-        this.cardValid = false;
-      } else {
-        displayError!.textContent = '';
-        this.cardValid = event.complete; // `complete` is true when card input is valid
-      }
+      this.ngZone.run(() => {
+        if (event.error) {
+          displayError!.textContent = event.error.message;
+          this.cardValid = false;
+        } else {
+          displayError!.textContent = '';
+          this.cardValid = event.complete;
+        }
+      });
     });
   }
 
   async onCheckout(): Promise<void> {
-    // if (!this.stripe || !this.cardValid || this.infoForm.invalid) {
-
-    //   alert('Please fill in all required details and provide valid card information.');
-    //   return;
-    // }
     console.log(this.infoForm.value)
+    console.log('card', this.cardValid)
 
-    this.http.post('http://localhost:3000/payment/create-payment-intent', {
-      amount: this.total * 100,
+    this.http.post('https://a684-154-192-1-94.ngrok-free.app/payment/create-payment-intent', {
+      amount: this.advance * 100,
       currency: 'eur',
-      userId: '676ebd9caa6ea87633c515c9'
+      userId: '676ebd9caa6ea87633c515c9',
+      userInfo: this.infoForm.value,
+      packageId: this.packageId,
+      packageName: this.packageName,
+      noOfPersons: this.noOfPersons,
+      totalPrice: this.totalPrice,
+      fromDate: this.fromDate,
+      toDate: this.toDate,
+      subItems: this.subItems
     }).subscribe({
       next: async (response: any) => {
         const clientSecret = response.clientSecret;

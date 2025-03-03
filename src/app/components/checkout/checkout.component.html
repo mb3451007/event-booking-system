@@ -56,7 +56,7 @@
         {{packageName}}
       </div>
       <div class="order-price">
-        €{{total}}
+        €{{advance}}
       </div>
     </div>
     <button type="button"  (click)="onCheckout()"  [ngClass]="{ 'disabled': infoForm.invalid || !cardValid, 'checkout-btn': infoForm.valid && cardValid }">

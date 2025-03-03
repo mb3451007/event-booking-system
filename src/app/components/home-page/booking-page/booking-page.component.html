@@ -9,7 +9,7 @@
           <img
             [src]="AddItmePlus"
             alt="Add new item"
-            (click)="openModal()"
+            (click)="addBooking()"
             class="AddItem"
           />
         </div>
@@ -33,11 +33,11 @@
               <tr *ngFor="let item of ListItems">
                 <td>{{ item.name }}</td>
                 <td>{{ item.email }}</td>
-                <td>{{ item.number }}</td>
+                <td>{{ item.phone }}</td>
                 <td>{{ item.fromDate | date: 'yyyy-MM-dd HH:mm a' }} - {{item.toDate | date: 'YYYY-MM-dd HH:mm a'}}</td>
-                <td>{{ item.price }}</td>
+                <td>€{{ item.totalPrice }}</td>
                 <td class="slot d-flex">
-                  <div class="tooltip-container d-none">
+                  <div class="tooltip-container">
                     <img
                       src="assets/view-eye-svgrepo-com.svg"
                       alt="Hanna Gover"
@@ -45,7 +45,7 @@
                     />
                     <span class="tooltip-text">View Item</span>
                   </div>
-                  <div class="tooltip-container">
+                  <div class="tooltip-container d-none">
                     <img
                       src="assets/edit-4-svgrepo-com.svg"
                       alt="Hanna Gover"
@@ -53,7 +53,7 @@
                     />
                     <span class="tooltip-text">Update Item</span>
                   </div>
-                  <div class="tooltip-container">
+                  <div class="tooltip-container d-none">
                     <img
                       src="assets/delete-svgrepo-com.svg"
                       alt="Hanna Gover"
@@ -80,7 +80,7 @@
             [disabled]="currentPage === 1">
            <i class="fa-solid fa-backward"></i>
           </button>
-        
+
           <ng-container *ngFor="let page of pagination">
             <button
               class="page-btn"
@@ -93,7 +93,7 @@
               <span class="ellipsis">...</span>
             </ng-template>
           </ng-container>
-        
+
           <button
             class="page-btn"
             (click)="onPageChange(currentPage + 1)"
@@ -105,12 +105,15 @@
     </div>
   </div>
 </div>
+
+
+
 <!-- Add Modal Backdrop -->
-<div
+<!-- <div
   class="modal-backdrop"
   *ngIf="showModal || showUpdateModal"
   (click)="handleBackdropClick($event)"
-></div>
+></div> -->
 <!-- add model -->
 <div
   class="modal"
@@ -181,7 +184,7 @@
               formControlName="fromDate"
               class="form-control"
               (change)="checkAvailability() ; checkDateValidation()"
-              
+
               name="name"
               required
             />
@@ -228,17 +231,17 @@
               required
             />
           </div>
-          <p *ngIf="availabilityMessage" 
+          <p *ngIf="availabilityMessage"
           [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
          <ng-container *ngIf="conflict; else availableMessage">
-           Booking already reserved from {{ conflict.fromDate | date: 'hh:mm a' }} 
+           Booking already reserved from {{ conflict.fromDate | date: 'hh:mm a' }}
            to {{ conflict.toDate | date: 'hh:mm a' }}
          </ng-container>
          <ng-template #availableMessage>
            {{ availabilityMessage }}
          </ng-template>
        </p>
-       
+
           <div *ngIf="dateError" class="text-danger">
             To Date must be greater than From Date.
           </div>
@@ -255,10 +258,10 @@
               </li>
             </ul>
           </div>
-          
-     
-         
-         
+
+
+
+
           <button
             type="submit"
             class="btn btn-primary mt-2"
@@ -381,16 +384,16 @@
             />
 
           </div>
-          <p *ngIf="availabilityMessage" 
+          <p *ngIf="availabilityMessage"
           [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
          <ng-container *ngIf="conflict; else availableMessage">
-           Booking already reserved from {{ conflict.fromDate | date: ' hh:mm a' }} 
+           Booking already reserved from {{ conflict.fromDate | date: ' hh:mm a' }}
            to {{ conflict.toDate | date: 'hh:mm a' }}
          </ng-container>
          <ng-template #availableMessage>
            {{ availabilityMessage }}
          </ng-template>
-       </p>       
+       </p>
           <div *ngIf="dateError" class="text-danger">
             To Date must be greater than From Date.
           </div>
@@ -406,8 +409,8 @@
               </li>
             </ul>
           </div>
-          
-      
+
+
 
           <button
             type="submit"

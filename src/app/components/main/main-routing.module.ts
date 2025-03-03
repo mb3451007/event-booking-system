@@ -17,6 +17,9 @@ import { SettingComponent } from '../home-page/setting/setting.component';
 import { PeckagesComponent } from '../home-page/peckages/peckages.component';
 import { PackageDetailsComponent } from '../home-page/package-details/package-details.component';
 import { ForgetPasswordComponent } from '../home-page/forget-password/forget-password.component';
+import { UpdateBookingComponent } from '../update-booking/update-booking.component';
+import { AddBookingComponent } from '../add-booking/add-booking.component';
+import { ViewBookingComponent } from '../view-booking/view-booking.component';
 
 const routes: Routes = [
   {
@@ -44,6 +47,9 @@ const routes: Routes = [
       { path: 'settings', component: SettingComponent },
       { path: 'packages', component: PeckagesComponent },
       { path: 'resetPassword', component: ForgetPasswordComponent },
+      { path: 'update-booking', component: UpdateBookingComponent },
+      { path: 'add-booking', component: AddBookingComponent },
+      { path: 'view-booking', component: ViewBookingComponent },
       { path: 'package-detail/:itemId', component: PackageDetailsComponent },
     ],
   },
