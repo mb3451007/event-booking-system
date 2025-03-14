@@ -35,6 +35,8 @@ import { SubItemsService } from 'src/app/sub-items.service';
   ],
 })
 export class BookingPageComponent {
+  packages:any // Object to store package names
+
   currentPage = 1;
   pagination: number[] = [];
   autoitems: string[] = [];
@@ -59,12 +61,12 @@ export class BookingPageComponent {
   showSubItemsSearch: boolean = false;
   showpackagesSearch: boolean = false;
   availabilityMessage: string = ''
-  currentBooking:any
-  openedItem:any
+  currentBooking: any
+  openedItem: any
   conflict: any
- validationError : boolean = false
+  validationError: boolean = false
 
-number = [1,2,3,4,5,6,2,3,3,'A','B']
+  number = [1, 2, 3, 4, 5, 6, 2, 3, 3, 'A', 'B']
   filteredPackages: any[] = [];
   pageNumber: number = 1;
   totalPages: number = 1;
@@ -74,6 +76,7 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
   itemToDelete: number | null = null;
   constructor(
     private bookingService: BookingsService,
+    private packageService: PackagesService,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
@@ -109,9 +112,22 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
       toDate: this.addItemForm.value.toDate,
       toTime: this.addItemForm.value.toTime,
     };
- this.initializeFieldListeners()
+    this.initializeFieldListeners()
+
+    this.packageService.getAllPeckage().subscribe({
+      next: (response: any) => {
+        this.packages = response.items;
+
+
+        console.log('packages', this.packages);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
 
   }
+
 
   initializeFieldListeners(): void {
     this.addItemForm.get('fromDate')?.valueChanges.subscribe((fromDate) => {
@@ -157,16 +173,16 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
     this.currentBooking = item;
     this.item = { ...item };
 
-   const fromDateObj = new Date(this.item.fromDate);
-   const fromTimeObj = new Date(this.item.fromTime);
-   const toDateObj = new Date(this.item.toDate);
-   const toTimeObj = new Date(this.item.toTime);
+    const fromDateObj = new Date(this.item.fromDate);
+    const fromTimeObj = new Date(this.item.fromTime);
+    const toDateObj = new Date(this.item.toDate);
+    const toTimeObj = new Date(this.item.toTime);
 
 
-   const fromDate = this.datePipe.transform(fromDateObj, 'yyyy-MM-dd');
-   const fromTime = this.datePipe.transform(fromDateObj, 'HH:mm');
-   const toDate = this.datePipe.transform(toDateObj, 'yyyy-MM-dd');
-   const toTime = this.datePipe.transform(toDateObj, 'HH:mm');
+    const fromDate = this.datePipe.transform(fromDateObj, 'yyyy-MM-dd');
+    const fromTime = this.datePipe.transform(fromDateObj, 'HH:mm');
+    const toDate = this.datePipe.transform(toDateObj, 'yyyy-MM-dd');
+    const toTime = this.datePipe.transform(toDateObj, 'HH:mm');
 
     this.addItemForm.patchValue({
       name: this.item.name,
@@ -179,13 +195,18 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
       toTime: toTime
     });
 
-    this.openedItem=this.addItemForm.value
+    this.openedItem = this.addItemForm.value
 
-    console.log('this.openedItem',this.openedItem)
+    console.log('this.openedItem', this.openedItem)
     this.router.navigate(['/update-booking'], {
       queryParams: { item: JSON.stringify(item) }
     });
     this.showUpdateModal = true;
+  }
+
+  getPackageName(packageId: any){
+    // console.log('pkgs', this.packages)
+    return this.packages.find((pkg: { _id: any; }) => pkg._id === packageId).name;
   }
 
   closeModal() {
@@ -194,8 +215,8 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
     this.addItemForm.value.toTime = null;
     this.addItemForm.value.fromDate = null;
     this.addItemForm.value.fromTime = null;
-    this.bookingsOnSelectedDate=[]
-    this.availabilityMessage='';
+    this.bookingsOnSelectedDate = []
+    this.availabilityMessage = '';
     this.addItemForm.reset();
   }
   closeUpdateModal() {
@@ -204,8 +225,8 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
     this.addItemForm.value.toTime = null;
     this.addItemForm.value.fromDate = null;
     this.addItemForm.value.fromTime = null;
-    this.bookingsOnSelectedDate=[]
-    this.availabilityMessage='';
+    this.bookingsOnSelectedDate = []
+    this.availabilityMessage = '';
     this.addItemForm.reset();
   }
 
@@ -418,7 +439,7 @@ number = [1,2,3,4,5,6,2,3,3,'A','B']
     });
   }
 
-  addBooking(){
+  addBooking() {
     this.router.navigate(['/add-booking'])
   }
 

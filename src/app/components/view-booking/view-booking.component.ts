@@ -19,6 +19,7 @@ export class ViewBookingComponent {
   bookingItems!:any
   fromDate!:any
   toDate!:any
+  packageName=''
 
 
   constructor(
@@ -37,6 +38,7 @@ export class ViewBookingComponent {
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(params => {
       this.booking = JSON.parse(params['item']);
+      this.getPackageName(this.booking.packageId)
       console.log('received booking',this.booking)
 
       this.fromDate=new Date(this.booking.fromDate)
@@ -45,6 +47,22 @@ export class ViewBookingComponent {
     });
 
 
+  }
+
+  getPackageName(id:any){
+    this.packageService.getPackageById(id).subscribe(
+      (response: any) => {
+        if (response && response.data) {
+          this.packageName=response.data.package.name
+          console.log('resp', response)
+        } else {
+          console.warn('No data found in response');
+        }
+      },
+      (error: any) => {
+        console.error('Error fetching package details:', error);
+      }
+    );
   }
 
   getBookingItems(){

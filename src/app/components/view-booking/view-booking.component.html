@@ -6,11 +6,12 @@
         <li><strong>Name:</strong> {{booking.name}}</li>
         <li><strong>Email:</strong> {{booking.email}}</li>
         <li><strong>Number:</strong> {{booking.phone}}</li>
+        <li><strong>Package:</strong> {{packageName}}</li>
         <li><strong>Price:</strong> {{booking.totalPrice}}</li>
         <li><strong>Number of Persons:</strong> {{booking.noOfPersons}}</li>
         <li><strong>Status:</strong> {{booking.status}}</li>
-        <li><strong>From Date:</strong> {{fromDate}}</li>
-        <li><strong>To Date:</strong> {{toDate}}</li>
+        <li><strong>From Date:</strong> {{ fromDate | date: 'yyyy-MM-dd hh:mm a' }}</li>
+        <li><strong>To Date:</strong> {{ toDate | date: 'yyyy-MM-dd hh:mm a' }}</li>
       </ul>
     </div>
   </div>
