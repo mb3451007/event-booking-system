@@ -5,10 +5,10 @@
     <div class="col-12">
       <div class="table-container bg-white rounded shadow p-4 mt-5">
         <div class="headingTitle">
-          <h2 class="mb-3">Packages</h2>
+          <h2 class="mb-3">Pakete</h2>
           <img
             [src]="AddItmePlus"
-            alt="Add new item"
+            alt="Neues Element hinzufügen"
             (click)="openModal()"
             class="AddItem"
           />
@@ -19,12 +19,10 @@
             <thead>
               <tr>
                 <th scope="col ">Name</th>
-                <th scope="col ">Price</th>
-                <th scope="col ">Min no. of Persons</th>
-                <th scope="col ">Max no. of Persons</th>
-                <th scope="col ">Action</th>
-                <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
-                <!-- <th scope="col">Transactions  </th> -->
+                <th scope="col ">Preis</th>
+                <th scope="col ">Min. Personenanzahl</th>
+                <th scope="col ">Max. Personenanzahl</th>
+                <th scope="col ">Aktion</th>
               </tr>
             </thead>
 
@@ -41,7 +39,7 @@
                       alt="Hanna Gover"
                       class="tooltip-image"
                     />
-                    <span class="tooltip-text">View Package</span>
+                    <span class="tooltip-text">Paket ansehen</span>
                   </div>
                   <div class="tooltip-container">
                     <img
@@ -49,7 +47,7 @@
                       alt="Hanna Gover"
                       (click)="openUpdateModal(item)"
                     />
-                    <span class="tooltip-text">Update Package</span>
+                    <span class="tooltip-text">Paket bearbeiten</span>
                   </div>
                   <div class="tooltip-container">
                     <img
@@ -57,7 +55,7 @@
                       alt="Hanna Gover"
                       (click)="deleteItem(item._id)"
                     />
-                    <span class="tooltip-text">Delete Package</span>
+                    <span class="tooltip-text">Paket löschen</span>
                   </div>
                 </td>
               </tr>
@@ -116,13 +114,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Add Package</h3>
+        <h3 class="title">Paket hinzufügen</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
           class="close closeBtn"
           (click)="closeModal()"
-          aria-label="Close"
+          aria-label="Schließen"
         />
       </div>
       <div class="modal-body">
@@ -132,7 +130,7 @@
               *ngIf="!addItemForm.valid && addItemForm.touched"
               class="alert alert-danger"
             >
-              <h5 class="text-danger">Please fill all required fields.</h5>
+              <h5 class="text-danger">Bitte füllen Sie alle erforderlichen Felder aus.</h5>
             </div>
             <label for="name">Name</label>
             <input
@@ -151,10 +149,10 @@
               "
               class="text-danger"
             >
-              Name is required.
+              Name ist erforderlich.
             </div>
 
-            <label for="name">Price</label>
+            <label for="name">Preis</label>
             <input
               type="number"
               id="price"
@@ -164,7 +162,7 @@
               name="name"
               required
             />
-            <label for="minPersons">Min No. of Persons</label>
+            <label for="minPersons">Min. Personenanzahl</label>
             <input
               type="number"
               id="minPersons"
@@ -172,7 +170,7 @@
               class="form-control"
               required
             />
-            <label for="maxPersons">Max No. of Persons</label>
+            <label for="maxPersons">Max. Personenanzahl</label>
             <input
               type="number"
               id="maxPersons"
@@ -181,20 +179,20 @@
               required
             />
 
-            <label for="description" class="mt-2">Description</label>
+            <label for="description" class="mt-2">Beschreibung</label>
             <quill-editor formControlName="description"></quill-editor>
-            <label for="finalNotes" class="mt-2">Final Notes</label>
+            <label for="finalNotes" class="mt-2">Abschließende Notizen</label>
             <quill-editor formControlName="finalNotes"></quill-editor>
           </div>
-          <h3 class="fw-bold">Discount</h3>
-          <label for="discountName">Discount Name</label>
+          <h3 class="fw-bold">Rabatt</h3>
+          <label for="discountName">Rabattname</label>
           <input
             type="text"
             id="discountName"
             formControlName="discountName"
             class="form-control"
           />
-          <label for="discountPercentage">Discount Percentage</label>
+          <label for="discountPercentage">Rabattprozentsatz</label>
           <input
             type="number"
             id="discountPercentage"
@@ -202,7 +200,7 @@
             class="form-control"
           />
           <div class="form-check form-switch mt-3">
-            <label for="discount" class="form-check-label">Active</label>
+            <label for="discount" class="form-check-label">Aktiv</label>
             <input
               type="checkbox"
               id="discount"
@@ -217,7 +215,7 @@
             [disabled]="addItemForm.invalid"
             (click)="addItem()"
           >
-            Submit
+            Absenden
           </button>
         </form>
       </div>
@@ -237,13 +235,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Update Package</h3>
+        <h3 class="title">Paket bearbeiten</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
           class="close closeBtn"
           (click)="closeUpdateModal()"
-          aria-label="Close"
+          aria-label="Schließen"
         />
       </div>
       <div class="modal-body">
@@ -259,7 +257,7 @@
               name="name"
               required
             />
-            <label for="name">Price</label>
+            <label for="name">Preis</label>
             <input
               type="number"
               id="price"
@@ -269,7 +267,7 @@
               name="price"
               required
             />
-            <label for="minPersons">Min No. of Persons</label>
+            <label for="minPersons">Min. Personenanzahl</label>
             <input
               type="number"
               id="minPersons"
@@ -277,7 +275,7 @@
               class="form-control"
               required
             />
-            <label for="maxPersons">Max No. of Persons</label>
+            <label for="maxPersons">Max. Personenanzahl</label>
             <input
               type="number"
               id="maxPersons"
@@ -286,21 +284,21 @@
               required
             />
 
-            <label for="description" class="mt-2">Description</label>
+            <label for="description" class="mt-2">Beschreibung</label>
             <quill-editor formControlName="description"></quill-editor>
-            <label for="finalNotes" class="mt-2">Final Notes</label>
+            <label for="finalNotes" class="mt-2">Abschließende Notizen</label>
 
             <quill-editor formControlName="finalNotes"></quill-editor>
-            <h3 class="fw-bold items-center">Discount</h3>
+            <h3 class="fw-bold items-center">Rabatt</h3>
 
-            <label for="discountName">Discount Name</label>
+            <label for="discountName">Rabattname</label>
             <input
               type="text"
               id="discountName"
               formControlName="discountName"
               class="form-control"
             />
-            <label for="discountPercentage">Discount Percentage</label>
+            <label for="discountPercentage">Rabattprozentsatz</label>
             <input
               type="number"
               id="discountPercentage"
@@ -309,7 +307,7 @@
             />
 
             <div class="form-check form-switch mt-3">
-              <label for="discount" class="form-check-label">Active</label>
+              <label for="discount" class="form-check-label">Aktiv</label>
               <input
                 type="checkbox"
                 id="discount"
@@ -325,14 +323,14 @@
             [disabled]="!addItemForm.dirty"
             (click)="updateItem()"
           >
-            Submit
+            Absenden
           </button>
           <button
             type="submit"
             class="btn btn-secondary ms-2"
             (click)="previewUpdatedChanges()"
           >
-            Preview
+            Vorschau
           </button>
         </form>
       </div>
