@@ -18,11 +18,9 @@
           <table class="table align-middle">
             <thead>
               <tr>
-                <th scope="col ">Name</th>
-                <th scope="col ">Pakete</th>
-                <th scope="col ">Aktion</th>
-                <!-- <th scope="col" style="visibility: hidden">Unterartikel</th> -->
-                <!-- <th scope="col">Transaktionen</th> -->
+                <th scope="col">Name</th>
+                <th scope="col">Pakete</th>
+                <th scope="col">Aktion</th>
               </tr>
             </thead>
 
@@ -34,7 +32,7 @@
                   <div class="tooltip-container d-none">
                     <img
                       src="assets/view-eye-svgrepo-com.svg"
-                      alt="Hanna Gover"
+                      alt="Artikel ansehen"
                       (click)="viewItem(item._id)"
                     />
                     <span class="tooltip-text">Artikel ansehen</span>
@@ -42,7 +40,7 @@
                   <div class="tooltip-container">
                     <img
                       src="assets/edit-4-svgrepo-com.svg"
-                      alt="Hanna Gover"
+                      alt="Artikel aktualisieren"
                       (click)="openUpdateModal(item)"
                     />
                     <span class="tooltip-text">Artikel aktualisieren</span>
@@ -50,7 +48,7 @@
                   <div class="tooltip-container">
                     <img
                       src="assets/delete-svgrepo-com.svg"
-                      alt="Hanna Gover"
+                      alt="Artikel löschen"
                       (click)="deleteItem(item._id)"
                     />
                     <span class="tooltip-text">Artikel löschen</span>
@@ -70,7 +68,6 @@
           <button
             class="page-btn"
             (click)="onPageChange(currentPage - 1)"
-            (click)="previousPage()"
             [disabled]="currentPage === 1">
             <i class="fa-solid fa-backward"></i>
           </button>
@@ -91,7 +88,6 @@
           <button
             class="page-btn"
             (click)="onPageChange(currentPage + 1)"
-            (click)="nextPage()"
             [disabled]="currentPage === totalPages">
             <i class="fa-solid fa-forward"></i>
           </button>
@@ -106,7 +102,7 @@
   *ngIf="showModal || showUpdateModal"
   (click)="handleBackdropClick($event)"
 ></div>
-<!-- add modal -->
+<!-- Add Modal -->
 <div
   class="modal"
   tabindex="-1"
@@ -181,7 +177,7 @@
     </div>
   </div>
 </div>
-<!-- Update modal -->
+<!-- Update Modal -->
 <div
   class="modal"
   tabindex="-1"
