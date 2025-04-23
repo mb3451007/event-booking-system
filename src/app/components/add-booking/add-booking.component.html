@@ -10,70 +10,39 @@
             <label for="name">Name</label>
             <input type="text" id="name" formControlName="name" class="form-control" name="name" required />
 
-            <label for="name">E-Mail</label>
-            <input type="email" id="name" formControlName="email" class="form-control" name="name" required />
+            <label for="email">E-Mail</label>
+            <input type="email" id="email" formControlName="email" class="form-control" name="email" required />
 
-            <label for="name">Telefonnummer</label>
-            <input type="text" id="name" formControlName="number" class="form-control" name="name" required />
+            <label for="number">Telefonnummer</label>
+            <input type="text" id="number" formControlName="number" class="form-control" name="number" required />
           </div>
 
           <div class="form-group inputFormGroup">
-            <label for="name">Von Datum</label>
-            <input
-              type="date"
-              id="name"
-              formControlName="fromDate"
-              class="form-control"
+            <label for="fromDate">Von Datum</label>
+            <input type="date" id="fromDate" formControlName="fromDate" class="form-control"
+              (change)="checkAvailability(); checkDateValidation()" name="fromDate" required />
+          </div>
+
+          <div class="form-group inputFormGroup">
+            <label for="fromTime">Von Uhrzeit</label>
+            <input type="time" id="fromTime" formControlName="fromTime" class="form-control"
               (change)="checkAvailability(); checkDateValidation()"
-              name="name"
-              required
-            />
+              [disabled]="!addItemForm.get('fromDate')?.value" name="fromTime" required />
           </div>
 
           <div class="form-group inputFormGroup">
-            <label for="name">Von Uhrzeit</label>
-            <input
-              type="time"
-              id="name"
-              formControlName="fromTime"
-              class="form-control"
-              (change)="checkAvailability(); checkDateValidation()"
-              [disabled]="!addItemForm.get('fromDate')?.value"
-              name="name"
-              required
-            />
-          </div>
-
-          <div class="form-group inputFormGroup">
-            <label for="name">Bis Datum</label>
-            <input
-              type="date"
-              id="name"
-              formControlName="toDate"
-              class="form-control"
+            <label for="toDate">Bis Datum</label>
+            <input type="date" id="toDate" formControlName="toDate" class="form-control"
               (change)="checkDateValidation(); checkAvailability()"
-              name="name"
-              [disabled]="!addItemForm.get('fromDate')?.value || !addItemForm.get('fromTime')?.value"
-              required
-            />
+              [disabled]="!addItemForm.get('fromDate')?.value || !addItemForm.get('fromTime')?.value" name="toDate" required />
           </div>
 
           <div class="form-group inputFormGroup">
-            <label for="name">Bis Uhrzeit</label>
-            <input
-              type="time"
-              id="name"
-              formControlName="toTime"
-              class="form-control"
+            <label for="toTime">Bis Uhrzeit</label>
+            <input type="time" id="toTime" formControlName="toTime" class="form-control"
               (change)="checkDateValidation(); checkAvailability()"
-              name="name"
-              [disabled]="
-                !addItemForm.get('fromDate')?.value ||
-                !addItemForm.get('fromTime')?.value ||
-                !addItemForm.get('toDate')?.value
-              "
-              required
-            />
+              [disabled]="!addItemForm.get('fromDate')?.value || !addItemForm.get('fromTime')?.value || !addItemForm.get('toDate')?.value"
+              name="toTime" required />
           </div>
 
           <div class="form-group inputFormGroup">
@@ -84,41 +53,39 @@
           </div>
 
           <div class="form-group inputFormGroup">
-            <label for="status">Paket</label>
-            <select id="status" name="status" #packageSelect (change)="getPackageDetails(packageSelect.value)" required>
+            <label for="package">Paket</label>
+            <select id="package" name="package" #packageSelect (change)="getPackageDetails(packageSelect.value)" required>
               <option *ngFor="let pkg of packages" [value]="pkg._id">{{ pkg.name }}</option>
             </select>
           </div>
 
           <div *ngIf="dateError; else messages" class="text-danger">
-            {{dateSelectionError}}
+            {{ dateSelectionError }}
           </div>
 
           <ng-template #messages>
-            <div
-              *ngIf="availabilityMessage || fullyBookedMsg || availableSlotsMsg"
+            <div *ngIf="availabilityMessage || fullyBookedMsg || availableSlotsMsg"
               [ngClass]="{
                 'text-danger fw-semibold': availabilityMessage.includes('Fully booked'),
                 'text-success fw-semibold': availabilityMessage.includes('Available slots')
               }"
-              class="availability-message bg-light p-3 rounded shadow-sm fs-6"
-            >
-              <div class="d-flex flex-column justify-content-center gap-1" *ngIf="fullyBookedMsg.length>0">
+              class="availability-message bg-light p-3 rounded shadow-sm fs-6">
+              <div class="d-flex flex-column justify-content-center gap-1" *ngIf="fullyBookedMsg.length > 0">
                 <strong>Ausgebuchte Tage:</strong>
-                <span class="d-block mt-1" class="fully-booked-days">{{ fullyBookedMsg }}</span>
+                <span class="d-block mt-1 fully-booked-days">{{ fullyBookedMsg }}</span>
               </div>
 
               <div class="d-flex flex-column justify-content-center gap-1" *ngIf="isAvailableSlots">
                 <strong>Verfügbare Zeitfenster:</strong>
-                <span class="d-block mt-1" class="available-slots">{{ availableSlotsMsg }}</span>
+                <span class="d-block mt-1 available-slots">{{ availableSlotsMsg }}</span>
               </div>
 
               <div class="d-flex flex-column justify-content-center gap-1" *ngIf="allBooked">
-                <span class="d-block mt-1" class="all-booked-msg">{{ availabilityMessage }}</span>
+                <span class="d-block mt-1 all-booked-msg">{{ availabilityMessage }}</span>
               </div>
 
               <div class="d-flex flex-column justify-content-center gap-1" *ngIf="allAvailable && !allBooked">
-                <span class="d-block mt-1" class="all-available">{{ availabilityMessage }}</span>
+                <span class="d-block mt-1 all-available">{{ availabilityMessage }}</span>
               </div>
             </div>
           </ng-template>
@@ -133,29 +100,34 @@
         {{ packageDetails.package?.name }}
         <span class="package-price text-primary">€{{ packageDetails.package?.price }} pro Person</span>
       </h1>
+
       <div class="prices d-flex flex-column justify-content-center gap-4">
         <div class="upper-sec d-flex flex-column justify-content-center gap-4">
           <div class="persons d-flex justify-content-between gap-2">
             <label for="persons" class="text-secondary fw-bold">Anzahl der Personen:</label>
             <input name="person" type="number" min="1" value="1" (input)="calculatePersonsSubtotal($event)" class="input-styling" />
           </div>
+
           <div class="perPersonSubTotal d-flex justify-content-between gap-2">
             <div class="title text-secondary fw-bold">Zwischensumme:</div>
-            <span class="price">€{{getPersonsSubtotal()}}</span>
+            <span class="price">€{{ getPersonsSubtotal() }}</span>
           </div>
+
           <div class="subItemTotal d-flex justify-content-between gap-2">
             <div class="title text-secondary fw-bold">Zusätzliche buchbare Optionen:</div>
-            <span class="price">{{getSubItemsTotal()}}</span>
+            <span class="price">{{ getSubItemsTotal() }}</span>
           </div>
         </div>
+
         <div class="lower-sec d-flex flex-column justify-content-center gap-4">
           <div class="d-flex justify-content-between gap-2">
             <div class="title text-secondary fw-bold">Gesamtsumme:</div>
-            <span class="price">€{{getTotal()}}</span>
+            <span class="price">€{{ getTotal() }}</span>
           </div>
+
           <div class="d-flex justify-content-between gap-2">
             <div class="title text-secondary fw-bold">40% Anzahlung:</div>
-            <span class="price">€{{getAdvance()}}</span>
+            <span class="price">€{{ getAdvance() }}</span>
           </div>
         </div>
       </div>
@@ -170,9 +142,11 @@
               <div class="col-xs-12 my-3" *ngFor="let subItem of getSubItems(item)">
                 <div class="dish-content row">
                   <h5 class="dish-title mb-2">{{ subItem.name }}</h5>
+
                   <div class="dish-price mb-2">
                     <p>€{{ subItem.price.toFixed(2) }} pro Person</p>
                   </div>
+
                   <div class="image mb-2">
                     <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
                       <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
@@ -184,17 +158,20 @@
 
                   <div class="select-quantity mb-2">
                     <span class="quantity">Menge</span>
-                    <input
-                      type="number"
-                      min="0"
-                      value="1"
+                    <input type="number" min="0" value="1"
                       (input)="calculateSubtotal(subItem._id, subItem.price, $event, item.item._id);"
-                      class="input-styling"
-                    />
+                      class="input-styling" />
                   </div>
 
                   <div class="subtotal mb-2">
                     {{ getSubTotal(subItem._id) }}
                   </div>
-                </div>
-              </div
+                </div> <!-- .dish-content -->
+              </div> <!-- *ngFor subItem -->
+            </div> <!-- .row -->
+          </div> <!-- .menu-content -->
+        </div> <!-- .menu-block -->
+      </div> <!-- *ngFor item -->
+    </div> <!-- .item-cards -->
+  </div> <!-- .d-flex -->
+</div> <!-- outermost div -->
