@@ -4,10 +4,10 @@
     <div class="col-12">
       <div class="table-container bg-white rounded shadow p-4 mt-5">
         <div class="headingTitle">
-          <h2 class="mb-3">Subitems</h2>
+          <h2 class="mb-3">Unterartikel</h2>
           <img
             [src]="AddItmePlus"
-            alt="Add new item"
+            alt="Neuen Artikel hinzufügen"
             (click)="openModal()"
             class="AddItem"
           />
@@ -17,12 +17,12 @@
             <thead>
               <tr>
                 <th scope="col ">Name</th>
-                <th scope="col ">Price</th>
-                <th scope="col ">Item</th>
-                <th scope="col ">Image</th>
-                <th scope="col ">Action</th>
-                <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
-                <!-- <th scope="col">Transactions  </th> -->
+                <th scope="col ">Preis</th>
+                <th scope="col ">Artikel</th>
+                <th scope="col ">Bild</th>
+                <th scope="col ">Aktion</th>
+                <!-- <th scope="col" style="visibility: hidden">Unterartikel</th> -->
+                <!-- <th scope="col">Transaktionen</th> -->
               </tr>
             </thead>
 
@@ -44,7 +44,7 @@
                     />
                   </a>
                   <p *ngIf="getMediaURl(subItem.imageUrl) === ''">
-                    No file uploaded
+                    Keine Datei hochgeladen
                   </p>
                 </td>
 
@@ -54,7 +54,7 @@
                       src="assets/view-eye-svgrepo-com.svg"
                       alt="Hanna Gover"
                     />
-                    <span class="tooltip-text">View Subitem</span>
+                    <span class="tooltip-text">Unterartikel ansehen</span>
                   </div> -->
                   <div class="tooltip-container">
                     <img
@@ -62,7 +62,7 @@
                       alt="Hanna Gover"
                       (click)="openUpdateModal(subItem)"
                     />
-                    <span class="tooltip-text">Update Subitem</span>
+                    <span class="tooltip-text">Unterartikel aktualisieren</span>
                   </div>
                   <div class="tooltip-container">
                     <img
@@ -70,7 +70,7 @@
                       alt="Hanna Gover"
                       (click)="deleteSubItem(subItem._id)"
                     />
-                    <span class="tooltip-text">Delete Subitem</span>
+                    <span class="tooltip-text">Unterartikel löschen</span>
                   </div>
                 </td>
               </tr>
@@ -122,7 +122,7 @@
   *ngIf="showModal || showUpdateModal"
   (click)="handleBackdropClick($event)"
 ></div>
-<!-- add Item -->
+<!-- Artikel hinzufügen -->
 <div
   class="modal"
   tabindex="-1"
@@ -134,13 +134,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Add Subitem</h3>
+        <h3 class="title">Unterartikel hinzufügen</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
           class="close closeBtn"
           (click)="closeModal()"
-          aria-label="Close"
+          aria-label="Schließen"
         />
       </div>
       <div class="modal-body">
@@ -158,7 +158,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="price">price</label>
+            <label for="price">Preis</label>
             <input
               type="number"
               id="price"
@@ -171,7 +171,7 @@
           </div>
 
           <div class="form-group inputFormGroup">
-            <label for="item">Select Item</label>
+            <label for="item">Artikel auswählen</label>
             <select
               id="item"
               formControlName="item"
@@ -179,7 +179,7 @@
               name="item"
               required
             >
-              <option value="" disabled>Select Item</option>
+              <option value="" disabled>Artikel auswählen</option>
               <option *ngFor="let pkg of ListAllItems" [value]="pkg._id">
                 {{ pkg.name }}
               </option>
@@ -200,11 +200,11 @@
               name="isAvailable"
             />
             <label class="form-check-label" for="isAvailable"
-              >Is Available</label
+              >Verfügbar</label
             >
           </div>
           <div class="form-group inputFormGroup">
-            <label for="image">Select Image</label>
+            <label for="image">Bild auswählen</label>
             <input
               type="file"
               id="image"
@@ -224,7 +224,7 @@
             [disabled]="!addSubItemForm.valid"
             (click)="addSubItem()"
           >
-            Submit
+            Absenden
           </button>
         </form>
       </div>
@@ -232,8 +232,8 @@
   </div>
 </div>
 
-<!-- add sUb Item -->
-<!-- Update model -->
+<!-- Artikel hinzufügen -->
+<!-- Update-Modal -->
 <div
   class="modal"
   tabindex="-1"
@@ -245,13 +245,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Update Subitem</h3>
+        <h3 class="title">Unterartikel aktualisieren</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
           class="close closeBtn"
           (click)="closeUpdateModal()"
-          aria-label="Close"
+          aria-label="Schließen"
         />
       </div>
       <div class="modal-body">
@@ -269,7 +269,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="price">price</label>
+            <label for="price">Preis</label>
             <input
               type="number"
               id="price"
@@ -282,14 +282,14 @@
           </div>
 
           <div class="form-group inputFormGroup">
-            <label for="item">Items</label>
+            <label for="item">Artikel</label>
             <select
               id="item"
               formControlName="item"
               class="form-control"
               required
             >
-              <option value="" disabled>Select Item</option>
+              <option value="" disabled>Artikel auswählen</option>
               <option *ngFor="let item of ListAllItems" [value]="item._id">
                 {{ item.name }}
               </option>
@@ -306,11 +306,11 @@
               name="isAvailable"
             />
             <label class="form-check-label" for="isAvailable"
-              >Is Available</label
+              >Verfügbar</label
             >
           </div>
           <div class="form-group inputFormGroup">
-            <label for="image">Update Image</label>
+            <label for="image">Bild aktualisieren</label>
             <input
               type="file"
               id="image"
@@ -339,7 +339,7 @@
             [disabled]="!addSubItemForm.dirty"
             (click)="updateSubItem()"
           >
-            Submit
+            Absenden
           </button>
         </form>
       </div>
