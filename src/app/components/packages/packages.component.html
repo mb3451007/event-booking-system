@@ -1,3 +1,27 @@
+<div class="loader" *ngIf="isLoading">
+  <div class="spinner"></div>
+</div>
+
+<div *ngIf="!isLoading" class="packages">
+  <div *ngFor="let package of packages" class="package d-flex flex-column justify-content-between">
+    <div class="package-name">
+      {{ package.name }}
+    </div>
+
+    <div class="price d-flex justify-content-start align-items-baseline gap-2">
+      <div class="euro">€</div>
+      <div class="number">{{ package.price }}</div>
+    </div>
+
+    <div class="continue-btn" (click)="getItems(package._id)">
+      Weiter
+    </div>
+  </div>
+</div>
+
+<!-- <app-items-modal #itemsModal [packageDetails]="packageId"></app-items-modal> -->
+
+<!-- 
 <div
   *ngFor="let package of packages"
   style="
@@ -12,10 +36,10 @@
   <div
     style="font-size: 18px; font-weight: bold; margin-bottom: 8px; color: #333"
   >
-    Package Name: {{ package.name }}
+    Paketname: {{ package.name }}
   </div>
   <div style="font-size: 16px; margin-bottom: 12px; color: #555">
-    Package Price: €{{ package.price }}
+    Paketpreis: €{{ package.price }}
   </div>
   <button
     style="
@@ -28,8 +52,12 @@
     "
     (click)="BuyNow(package.price)"
   >
-    Buy Now
+    Jetzt kaufen
   </button>
-</div>
+</div> 
+-->
+
+<!-- 
 <div id="card-element"></div>
-<div id="card-errors" role="alert"></div>
+<div id="card-errors" role="alert"></div> 
+-->

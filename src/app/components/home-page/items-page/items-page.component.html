@@ -5,10 +5,10 @@
     <div class="col-12">
       <div class="table-container bg-white rounded shadow p-4 mt-5">
         <div class="headingTitle">
-          <h2 class="mb-3">Items</h2>
+          <h2 class="mb-3">Artikel</h2>
           <img
             [src]="AddItmePlus"
-            alt="Add new item"
+            alt="Neuen Artikel hinzufügen"
             (click)="openModal()"
             class="AddItem"
           />
@@ -18,11 +18,9 @@
           <table class="table align-middle">
             <thead>
               <tr>
-                <th scope="col ">Name</th>
-                <th scope="col ">Packages</th>
-                <th scope="col ">Action</th>
-                <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
-                <!-- <th scope="col">Transactions  </th> -->
+                <th scope="col">Name</th>
+                <th scope="col">Pakete</th>
+                <th scope="col">Aktion</th>
               </tr>
             </thead>
 
@@ -34,26 +32,26 @@
                   <div class="tooltip-container d-none">
                     <img
                       src="assets/view-eye-svgrepo-com.svg"
-                      alt="Hanna Gover"
+                      alt="Artikel ansehen"
                       (click)="viewItem(item._id)"
                     />
-                    <span class="tooltip-text">View Item</span>
+                    <span class="tooltip-text">Artikel ansehen</span>
                   </div>
                   <div class="tooltip-container">
                     <img
                       src="assets/edit-4-svgrepo-com.svg"
-                      alt="Hanna Gover"
+                      alt="Artikel aktualisieren"
                       (click)="openUpdateModal(item)"
                     />
-                    <span class="tooltip-text">Update Item</span>
+                    <span class="tooltip-text">Artikel aktualisieren</span>
                   </div>
                   <div class="tooltip-container">
                     <img
                       src="assets/delete-svgrepo-com.svg"
-                      alt="Hanna Gover"
+                      alt="Artikel löschen"
                       (click)="deleteItem(item._id)"
                     />
-                    <span class="tooltip-text">Delete Item</span>
+                    <span class="tooltip-text">Artikel löschen</span>
                   </div>
                 </td>
               </tr>
@@ -70,9 +68,8 @@
           <button
             class="page-btn"
             (click)="onPageChange(currentPage - 1)"
-            (click)="previousPage()"
             [disabled]="currentPage === 1">
-           <i class="fa-solid fa-backward"></i>
+            <i class="fa-solid fa-backward"></i>
           </button>
         
           <ng-container *ngFor="let page of pagination">
@@ -91,9 +88,9 @@
           <button
             class="page-btn"
             (click)="onPageChange(currentPage + 1)"
-            (click)="nextPage()"
             [disabled]="currentPage === totalPages">
-            <i class="fa-solid fa-forward"></i>         </button>
+            <i class="fa-solid fa-forward"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -105,7 +102,7 @@
   *ngIf="showModal || showUpdateModal"
   (click)="handleBackdropClick($event)"
 ></div>
-<!-- add model -->
+<!-- Add Modal -->
 <div
   class="modal"
   tabindex="-1"
@@ -117,13 +114,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Add Item</h3>
+        <h3 class="title">Artikel hinzufügen</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
           class="close closeBtn"
           (click)="closeModal()"
-          aria-label="Close"
+          aria-label="Schließen"
         />
       </div>
       <div class="modal-body">
@@ -141,7 +138,7 @@
           </div>
 
           <div class="form-group inputFormGroup">
-            <label for="itemName">Package</label>
+            <label for="itemName">Paket</label>
             <select
               id="packages"
               formControlName="packages"
@@ -149,7 +146,7 @@
               name="packages"
               required
             >
-              <option value="" disabled>Select Package</option>
+              <option value="" disabled>Paket auswählen</option>
               <option *ngFor="let pkg of packages" [value]="pkg._id">
                 {{ pkg.name }}
               </option>
@@ -165,9 +162,7 @@
               [(ngModel)]="formData.isAvailable"
               name="isAvailable"
             />
-            <label class="form-check-label" for="isAvailable"
-              >Is Available</label
-            >
+            <label class="form-check-label" for="isAvailable">Verfügbar</label>
           </div>
           <button
             type="submit"
@@ -175,14 +170,14 @@
             [disabled]="!addItemForm.valid"
             (click)="addItem()"
           >
-            Submit
+            Absenden
           </button>
         </form>
       </div>
     </div>
   </div>
 </div>
-<!-- Update model -->
+<!-- Update Modal -->
 <div
   class="modal"
   tabindex="-1"
@@ -194,13 +189,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Update Item</h3>
+        <h3 class="title">Artikel aktualisieren</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
           class="close closeBtn"
           (click)="closeUpdateModal()"
-          aria-label="Close"
+          aria-label="Schließen"
         />
       </div>
       <div class="modal-body">
@@ -217,14 +212,14 @@
           </div>
 
           <div class="form-group inputFormGroup">
-            <label for="packages">Packages</label>
+            <label for="packages">Pakete</label>
             <select
               id="packages"
               formControlName="packages"
               class="form-control"
               required
             >
-              <option value="" disabled>Select Package</option>
+              <option value="" disabled>Paket auswählen</option>
               <option *ngFor="let pkg of packages" [value]="pkg._id">
                 {{ pkg.name }}
               </option>
@@ -238,9 +233,7 @@
               formControlName="isAvailable"
               class="form-check-input"
             />
-            <label class="form-check-label" for="isAvailable"
-              >Is Available</label
-            >
+            <label class="form-check-label" for="isAvailable">Verfügbar</label>
           </div>
 
           <button
@@ -249,7 +242,7 @@
             [disabled]="!addItemForm.dirty"
             (click)="updateItem()"
           >
-            Submit
+            Absenden
           </button>
         </form>
       </div>

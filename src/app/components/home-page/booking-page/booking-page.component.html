@@ -5,11 +5,11 @@
     <div class="col-12">
       <div class="table-container bg-white rounded shadow p-4 mt-5">
         <div class="headingTitle">
-          <h2 class="mb-3">Bookings</h2>
+          <h2 class="mb-3">Buchungen</h2>
           <img
             [src]="AddItmePlus"
-            alt="Add new item"
-            (click)="openModal()"
+            alt="Neues Element hinzufügen"
+            (click)="addBooking()"
             class="AddItem"
           />
         </div>
@@ -19,13 +19,11 @@
             <thead>
               <tr>
                 <th scope="col ">Name</th>
-                <th scope="col ">Email</th>
-                <th scope="col ">Phone Number</th>
-                <th scope="col ">Bookings</th>
-                <th scope="col ">Price</th>
-                <th scope="col ">Action</th>
-                <!-- <th scope="col" style="visibility: hidden">Sub-items</th> -->
-                <!-- <th scope="col">Transactions  </th> -->
+                <th scope="col ">E-Mail</th>
+                <th scope="col ">Paket</th>
+                <th scope="col ">Buchungen</th>
+                <th scope="col ">Preis</th>
+                <th scope="col ">Aktion</th>
               </tr>
             </thead>
 
@@ -33,33 +31,33 @@
               <tr *ngFor="let item of ListItems">
                 <td>{{ item.name }}</td>
                 <td>{{ item.email }}</td>
-                <td>{{ item.number }}</td>
-                <td>{{ item.fromDate | date: 'yyyy-MM-dd HH:mm a' }} - {{item.toDate | date: 'YYYY-MM-dd HH:mm a'}}</td>
-                <td>{{ item.price }}</td>
+                <td>{{  getPackageName(item.packageId) }}</td>
+                <td>{{ item.fromDate | date: 'yyyy-MM-dd hh:mm a' }} - {{item.toDate | date: 'yyyy-MM-dd hh:mm a'}}</td>
+                <td>€{{ item.totalPrice }}</td>
                 <td class="slot d-flex">
-                  <div class="tooltip-container d-none">
+                  <div class="tooltip-container">
                     <img
                       src="assets/view-eye-svgrepo-com.svg"
                       alt="Hanna Gover"
                       (click)="viewItem(item._id)"
                     />
-                    <span class="tooltip-text">View Item</span>
+                    <span class="tooltip-text">Element anzeigen</span>
                   </div>
-                  <div class="tooltip-container">
+                  <div class="tooltip-container d-none">
                     <img
                       src="assets/edit-4-svgrepo-com.svg"
                       alt="Hanna Gover"
                       (click)="openUpdateModal(item)"
                     />
-                    <span class="tooltip-text">Update Item</span>
+                    <span class="tooltip-text">Element aktualisieren</span>
                   </div>
-                  <div class="tooltip-container">
+                  <div class="tooltip-container d-none">
                     <img
                       src="assets/delete-svgrepo-com.svg"
                       alt="Hanna Gover"
                       (click)="deleteItem(item._id)"
                     />
-                    <span class="tooltip-text">Delete Item</span>
+                    <span class="tooltip-text">Element löschen</span>
                   </div>
                 </td>
               </tr>
@@ -80,7 +78,7 @@
             [disabled]="currentPage === 1">
            <i class="fa-solid fa-backward"></i>
           </button>
-        
+
           <ng-container *ngFor="let page of pagination">
             <button
               class="page-btn"
@@ -93,7 +91,7 @@
               <span class="ellipsis">...</span>
             </ng-template>
           </ng-container>
-        
+
           <button
             class="page-btn"
             (click)="onPageChange(currentPage + 1)"
@@ -105,12 +103,13 @@
     </div>
   </div>
 </div>
+
 <!-- Add Modal Backdrop -->
-<div
+<!-- <div
   class="modal-backdrop"
   *ngIf="showModal || showUpdateModal"
   (click)="handleBackdropClick($event)"
-></div>
+></div> -->
 <!-- add model -->
 <div
   class="modal"
@@ -123,13 +122,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Add Bookings</h3>
+        <h3 class="title">Buchung hinzufügen</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
           class="close closeBtn"
           (click)="closeModal()"
-          aria-label="Close"
+          aria-label="Schließen"
         />
       </div>
       <div class="modal-body">
@@ -144,7 +143,7 @@
               name="name"
               required
             />
-            <label for="name">Email</label>
+            <label for="name">E-Mail</label>
             <input
               type="email"
               id="name"
@@ -153,7 +152,7 @@
               name="name"
               required
             />
-            <label for="name">phone Number</label>
+            <label for="name">Telefonnummer</label>
             <input
               type="text"
               id="name"
@@ -164,7 +163,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">Price</label>
+            <label for="name">Preis</label>
             <input
               type="number"
               id="name"
@@ -174,19 +173,18 @@
               required
             />
           </div><div class="form-group inputFormGroup">
-            <label for="name">From Date</label>
+            <label for="name">Von Datum</label>
             <input
               type="date"
               id="name"
               formControlName="fromDate"
               class="form-control"
               (change)="checkAvailability() ; checkDateValidation()"
-              
               name="name"
               required
             />
           </div><div class="form-group inputFormGroup">
-            <label for="name">From Time</label>
+            <label for="name">Von Uhrzeit</label>
             <input
               type="time"
               id="name"
@@ -199,7 +197,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">To Date</label>
+            <label for="name">Bis Datum</label>
             <input
               type="date"
               id="name"
@@ -212,7 +210,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">To Time</label>
+            <label for="name">Bis Uhrzeit</label>
             <input
               type="time"
               id="name"
@@ -228,23 +226,23 @@
               required
             />
           </div>
-          <p *ngIf="availabilityMessage" 
+          <p *ngIf="availabilityMessage"
           [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
          <ng-container *ngIf="conflict; else availableMessage">
-           Booking already reserved from {{ conflict.fromDate | date: 'hh:mm a' }} 
-           to {{ conflict.toDate | date: 'hh:mm a' }}
+           Buchung bereits reserviert von {{ conflict.fromDate | date: 'hh:mm a' }}
+           bis {{ conflict.toDate | date: 'hh:mm a' }}
          </ng-container>
          <ng-template #availableMessage>
            {{ availabilityMessage }}
          </ng-template>
        </p>
-       
+
           <div *ngIf="dateError" class="text-danger">
-            To Date must be greater than From Date.
+            Das Enddatum muss nach dem Startdatum liegen.
           </div>
 
           <div *ngIf="bookingsOnSelectedDate.length > 0" class="booking-container">
-            <h5 class="booking-title">Bookings on this Day:</h5>
+            <h5 class="booking-title">Buchungen an diesem Tag:</h5>
             <ul class="booking-list">
               <li *ngFor="let booking of bookingsOnSelectedDate" class="booking-item">
                 <span class="booking-time">
@@ -255,17 +253,17 @@
               </li>
             </ul>
           </div>
-          
-     
-         
-         
+
+
+
+
           <button
             type="submit"
             class="btn btn-primary mt-2"
             [disabled]="!addItemForm.valid || conflict ||validationError"
             (click)="addItem()"
           >
-            Submit
+            Absenden
           </button>
         </form>
       </div>
@@ -284,13 +282,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header headerNewItem">
-        <h3 class="title">Update Booking</h3>
+        <h3 class="title">Buchung aktualisieren</h3>
         <img
           src="assets/close-sm-svgrepo-com.svg"
           alt=""
           class="close closeBtn"
           (click)="closeUpdateModal()"
-          aria-label="Close"
+          aria-label="Schließen"
         />
       </div>
       <div class="modal-body">
@@ -306,7 +304,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">Email</label>
+            <label for="name">E-Mail</label>
             <input
               type="text"
               id="name"
@@ -316,7 +314,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">Number</label>
+            <label for="name">Nummer</label>
             <input
               type="text"
               id="name"
@@ -326,7 +324,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">Price</label>
+            <label for="name">Preis</label>
             <input
               type="text"
               id="name"
@@ -336,7 +334,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">fromDate</label>
+            <label for="name">Von Datum</label>
             <input
               type="date"
               id="name"
@@ -347,7 +345,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">fromTime</label>
+            <label for="name">Von Uhrzeit</label>
             <input
               type="time"
               id="name"
@@ -358,7 +356,7 @@
             />
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">toDate</label>
+            <label for="name">Bis Datum</label>
             <input
               type="date"
               id="name"
@@ -370,7 +368,7 @@
 
           </div>
           <div class="form-group inputFormGroup">
-            <label for="name">toTime</label>
+            <label for="name">Bis Uhrzeit</label>
             <input
               type="time"
               id="name"
@@ -381,21 +379,21 @@
             />
 
           </div>
-          <p *ngIf="availabilityMessage" 
+          <p *ngIf="availabilityMessage"
           [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
          <ng-container *ngIf="conflict; else availableMessage">
-           Booking already reserved from {{ conflict.fromDate | date: ' hh:mm a' }} 
-           to {{ conflict.toDate | date: 'hh:mm a' }}
+           Buchung bereits reserviert von {{ conflict.fromDate | date: ' hh:mm a' }}
+           bis {{ conflict.toDate | date: 'hh:mm a' }}
          </ng-container>
          <ng-template #availableMessage>
            {{ availabilityMessage }}
          </ng-template>
-       </p>       
+       </p>
           <div *ngIf="dateError" class="text-danger">
-            To Date must be greater than From Date.
+            Das Enddatum muss nach dem Startdatum liegen.
           </div>
           <div *ngIf="bookingsOnSelectedDate.length > 0" class="booking-container">
-            <h5 class="booking-title">Bookings on this Day:</h5>
+            <h5 class="booking-title">Buchungen an diesem Tag:</h5>
             <ul class="booking-list">
               <li *ngFor="let booking of bookingsOnSelectedDate" class="booking-item">
                 <span class="booking-time">
@@ -406,8 +404,8 @@
               </li>
             </ul>
           </div>
-          
-      
+
+
 
           <button
             type="submit"
@@ -415,7 +413,7 @@
             [disabled]="!addItemForm || conflict || validationError"
             (click)="updateItem()"
           >
-            Submit
+            Absenden
           </button>
         </form>
       </div>

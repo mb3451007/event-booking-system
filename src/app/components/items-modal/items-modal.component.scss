@@ -1,0 +1,284 @@
+
+::ng-deep{
+
+  .modal-dialog{
+    margin:0.75rem auto;
+    max-width: unset !important;
+    width: 70% !important;
+
+    @media (max-width:750px) {
+      width: 80% !important;
+    }
+
+    @media (max-width:550px) {
+      width: 90% !important;
+    }
+  }
+
+}
+.modal-body{
+  height: 70vh;
+  overflow: auto;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #242A33 #caced4; /* Scrollbar thumb and track colors for Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+  height: 12px; /* Height of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #242A33; /* Scrollbar thumb color */
+  border-radius: 10px; /* Rounded scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #3A414D; /* Lighter track color */
+  border-radius: 10px; /* Rounded track */
+}
+
+
+
+
+// .close-button{
+//   color: black;
+//   font-size: 1.5rem;
+//   cursor: pointer;
+// }
+
+// .close-button:hover{
+//   color: rgb(100, 99, 99);
+// }
+
+// .modal-footer{
+//   border-top: 1px solid rgb(222, 226, 230);
+// }
+
+.continue-btn{
+  width: 50%;
+  border-radius: 0.5rem;
+  border: 2px solid black;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.continue-btn:hover{
+  background-color: rgb(235, 231, 231);
+}
+
+
+
+// .menu-block {
+//   margin-bottom: 30px;
+// }
+
+// .menu-title {
+//   border-bottom: 3px solid #e0e6e3;
+//   margin-bottom: 20px;
+//   padding-bottom: 10px;
+// }
+
+// .menu-content {
+//   margin-bottom: 30px;
+// }
+
+// .select-quantity input{
+//   width: 40%;
+// }
+
+// .dish-content{
+//   // display: grid;
+//   // grid-template-columns: 40% 10% 30% 10% 10%;
+//   // gap: 1rem;
+// }
+
+// .dish-title {
+//   margin-bottom: 6px;
+//   font-size: 15px;
+//   text-transform: uppercase;
+//   font-weight: 500;
+// }
+
+// .dish-price {
+//   font-size: 20px;
+//   color: #e03c23;
+//   font-weight: 500;
+//   font-family: 'Zilla Slab', serif;
+// }
+
+// .no-sub-items {
+//   margin-top: 10px;
+// }
+
+
+// /* Modal Body */
+// .modal-body {
+//   background-color: #f9f9f9;
+//   padding: 20px;
+//   font-family: 'Arial', sans-serif;
+//   color: #333;
+// }
+
+// .total {
+//   margin-bottom: 20px;
+// }
+
+// .total-text {
+//   font-size: 1.25rem;
+//   font-weight: 600;
+//   color: #4a90e2; /* Sleek blue for total */
+// }
+
+// .menu-block {
+//   background-color: #fff;
+//   padding: 15px;
+//   margin-bottom: 20px;
+//   border-radius: 8px;
+//   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+// }
+
+// .menu-title {
+//   font-size: 1.5rem;
+//   font-weight: 700;
+//   margin-bottom: 10px;
+//   color: #333;
+// }
+
+// .menu-content {
+//   font-size: 1rem;
+//   color: #666;
+// }
+
+// .dish-content {
+//   margin-bottom: 10px;
+//   padding: 10px;
+//   border-bottom: 1px solid #ddd;
+// }
+
+// .dish-title {
+//   font-weight: 600;
+//   color: #333;
+// }
+
+// .dish-price p {
+//   color: #4caf50; /* Green for price */
+//   font-size: 1.1rem;
+//   font-weight: 500;
+// }
+
+// .dish-image img {
+//   border-radius: 4px;
+//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+// }
+
+// .no-image {
+//   font-size: 0.9rem;
+//   color: #aaa;
+// }
+
+// .select-quantity input {
+//   width: 80%;
+//   padding: 5px;
+//   border-radius: 5px;
+//   border: 1px solid #ccc;
+//   font-size: 1rem;
+//   background-color: #f4f4f4;
+// }
+
+// .select-quantity input:focus {
+//   outline: none;
+//   border-color: #4a90e2;
+// }
+
+// .subtotal {
+//   font-weight: 600;
+//   color: #4caf50; /* Green for subtotal */
+//   font-size: 1.1rem;
+// }
+
+// .no-sub-items p {
+//   color: #ff9800;
+//   font-style: italic;
+// }
+
+// /* Responsive */
+// @media (max-width: 768px) {
+//   .dish-content {
+//     flex-direction: column;
+//   }
+
+//   .dish-title, .dish-price, .image, .select-quantity, .subtotal {
+//     text-align: left;
+//   }
+
+//   .dish-price, .image, .select-quantity, .subtotal {
+//     margin-top: 10px;
+//   }
+// }
+
+// .modal-header, .modal-footer{
+//   // position: fixed;
+//   width: 100%;
+// }
+
+
+
+.page-title {
+  font-size: 2.5rem;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: #333;
+  line-height: 2.5rem;
+}
+
+.package-price {
+  font-size: 1.5rem;
+  color: #007bff; /* Vibrant blue for the price */
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.package-price:hover {
+  color: #0056b3; /* Slightly darker blue on hover */
+}
+
+.package-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.package-description {
+  background: #f9f9f9;
+  border-left: 5px solid #171b20; /* Accent border to tie in with price */
+}
+
+.page-section {
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Subtle gradient background */
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+.package-description p {
+  color: #555;
+}
+
+
+.desc{
+  padding: 0 0 3rem 0;
+  margin: 0 0 3rem 0;
+  border-bottom: 1px solid grey;
+}

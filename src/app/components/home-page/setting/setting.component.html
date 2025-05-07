@@ -1,19 +1,17 @@
-
 <app-loader [isLoading]="isLoading"></app-loader>
-<form >
-    <div *ngFor="let flatRate of flatrRatesData; let i = index">
-      
-      <label *ngIf="i===0">Flat Rate:</label>
-      <label *ngIf="i===1">Min no of persons:</label>
-      <label *ngIf="i===2">Max no of persons:</label>
-      <input
-        type="number"
-        [(ngModel)]="flatRate.value"
-        (ngModelChange)="onInputChange(flatRate._id, flatRate.key, flatRate.value)"
-        name="flatRate{{i}}"
-        (change)="updateFlatRate(flatRate._id, flatRate.key, flatRate.value)"
-        placeholder="Enter amount"
-      />
-    </div>
-  </form>
-  
+<form>
+  <div *ngFor="let flatRate of flatrRatesData; let i = index">
+    
+    <label *ngIf="i===0">Pauschalbetrag:</label>
+    <label *ngIf="i===1">Min. Personenanzahl:</label>
+    <label *ngIf="i===2">Max. Personenanzahl:</label>
+    <input
+      type="number"
+      [(ngModel)]="flatRate.value"
+      (ngModelChange)="onInputChange(flatRate._id, flatRate.key, flatRate.value)"
+      name="flatRate{{i}}"
+      (change)="updateFlatRate(flatRate._id, flatRate.key, flatRate.value)"
+      placeholder="Betrag eingeben"
+    />
+  </div>
+</form>

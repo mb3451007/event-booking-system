@@ -1,0 +1,35 @@
+<div class="container mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h5 class="card-title mb-3 text-primary">Buchungsdetails</h5>
+      <ul class="list-unstyled mb-0">
+        <li><strong>Name:</strong> {{ booking.name }}</li>
+        <li><strong>E-Mail:</strong> {{ booking.email }}</li>
+        <li><strong>Telefonnummer:</strong> {{ booking.phone }}</li>
+        <li><strong>Paket:</strong> {{ packageName }}</li>
+        <li><strong>Gesamtpreis:</strong> {{ booking.totalPrice }}</li>
+        <li><strong>Anzahl der Personen:</strong> {{ booking.noOfPersons }}</li>
+        <li><strong>Status:</strong> {{ booking.status }}</li>
+        <li><strong>Von Datum:</strong> {{ fromDate | date: 'yyyy-MM-dd hh:mm a' }}</li>
+        <li><strong>Bis Datum:</strong> {{ toDate | date: 'yyyy-MM-dd hh:mm a' }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row">
+    <div *ngFor="let item of bookingItems" class="col-12 col-sm-6 col-md-4 mb-4">
+      <div class="card shadow-sm custom-card">
+
+        <!-- Artikel-Details -->
+        <div class="card-body">
+          <h5 class="card-title">{{ item.itemName }}</h5>
+          <p class="card-text">Menge: {{ item.quantity }}</p>
+          <p class="font-weight-bold price">€{{ item.price }}</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,174 @@
+<div class="modal-content">
+  <div class="modal-header headerNewItem">
+    <h3 class="title">Buchung aktualisieren</h3>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+      <div class="form-group inputFormGroup">
+        <label for="name">Name</label>
+        <input type="text" id="name" formControlName="name" class="form-control" required />
+      </div>
+      <div class="form-group inputFormGroup">
+        <label for="name">E-Mail</label>
+        <input type="text" id="name" formControlName="email" class="form-control" required />
+      </div>
+      <div class="form-group inputFormGroup">
+        <label for="name">Telefonnummer</label>
+        <input type="text" id="name" formControlName="number" class="form-control" required />
+      </div>
+
+      <div class="form-group inputFormGroup">
+        <label for="name">Von Datum</label>
+        <input type="date" id="name" formControlName="fromDate"
+          (change)="checkAvailabilityForUpDate(); checkDateValidation()" class="form-control" required />
+      </div>
+      <div class="form-group inputFormGroup">
+        <label for="name">Von Uhrzeit</label>
+        <input type="time" id="name" formControlName="fromTime"
+          (change)="checkAvailabilityForUpDate(); checkDateValidation()" class="form-control" required />
+      </div>
+      <div class="form-group inputFormGroup">
+        <label for="name">Bis Datum</label>
+        <input type="date" id="name" (change)="checkDateValidation(); checkAvailabilityForUpDate()"
+          formControlName="toDate" class="form-control" required />
+      </div>
+      <div class="form-group inputFormGroup">
+        <label for="name">Bis Uhrzeit</label>
+        <input type="time" id="name" (change)="checkDateValidation(); checkAvailabilityForUpDate()"
+          formControlName="toTime" class="form-control" required />
+      </div>
+
+      <div class="form-group inputFormGroup">
+        <label for="status">Status</label>
+        <select id="status" name="status" formControlName="status" required>
+          <option *ngFor="let option of statusOpts" [value]="option">
+            {{ option }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group inputFormGroup">
+        <label for="status">Paket</label>
+        <select id="status" name="status" #packageSelect (change)="getPackageDetails(packageSelect.value)" required>
+          <option *ngFor="let pkg of packages" [value]="pkg._id">
+            {{ pkg.name }}
+          </option>
+        </select>
+      </div>
+
+      <p *ngIf="availabilityMessage"
+        [ngClass]="{'text-danger': availabilityMessage.includes('reserved'), 'text-success': availabilityMessage.includes('available')}">
+        <ng-container *ngIf="conflict; else availableMessage">
+          Buchung bereits reserviert von {{ conflict.fromDate | date: ' hh:mm a' }} bis {{ conflict.toDate | date: 'hh:mm a' }}
+        </ng-container>
+        <ng-template #availableMessage>
+          {{ availabilityMessage }}
+        </ng-template>
+      </p>
+
+      <div *ngIf="dateError" class="text-danger">
+        Das Enddatum muss nach dem Startdatum liegen.
+      </div>
+
+      <div *ngIf="bookingsOnSelectedDate.length > 0" class="booking-container">
+        <h5 class="booking-title">Buchungen an diesem Tag:</h5>
+        <ul class="booking-list">
+          <li *ngFor="let booking of bookingsOnSelectedDate" class="booking-item">
+            <span class="booking-time">
+              {{ booking.fromDate | date: 'hh:mm a' }} - {{ booking.toDate | date: 'hh:mm a' }}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </form>
+  </div>
+
+  <div class="d-flex flex-column justify-content-center">
+    <div class="total-cont menu-block">
+      <h1 class="page-title font-weight-bold text-dark">
+        {{ packageDetails.package?.name }}
+        <span class="package-price text-primary">€{{ packageDetails.package?.price }} pro Person</span>
+      </h1>
+      <div class="prices d-flex flex-column justify-content-center gap-4">
+        <div class="upper-sec d-flex flex-column justify-content-center gap-4">
+          <div class="persons d-flex justify-content-between gap-2">
+            <label for="persons" class="text-secondary fw-bold">Anzahl der Personen:</label>
+            <input name="person" type="number" min="1" value="1" (input)="calculatePersonsSubtotal($event)"
+              class="input-styling" />
+          </div>
+          <div class="perPersonSubTotal d-flex justify-content-between gap-2">
+            <div class="title text-secondary fw-bold">Zwischensumme:</div>
+            <span class="price">€{{getPersonsSubtotal()}}</span>
+          </div>
+          <div class="subItemTotal d-flex justify-content-between gap-2">
+            <div class="title text-secondary fw-bold">Zusätzliche Optionen Gesamt:</div>
+            <span class="price">{{getSubItemsTotal()}}</span>
+          </div>
+        </div>
+        <div class="lower-sec d-flex flex-column justify-content-center gap-4">
+          <div class="d-flex justify-content-between gap-2">
+            <div class="title text-secondary fw-bold">Gesamt:</div>
+            <span class="price">€{{getTotal()}}</span>
+          </div>
+          <div class="d-flex justify-content-between gap-2">
+            <div class="title text-secondary fw-bold">40% Vorauszahlung:</div>
+            <span class="price">€{{getAdvance()}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="packageDetails" class="item-cards d-flex flex-column align-items-center justify-content-center gap-3">
+      <div class="items" *ngFor="let item of packageDetails.itemsWithSubItems">
+        <div class="menu-block p-4">
+          <h3 class="menu-title">{{ item.item?.name }}</h3>
+          <div class="menu-content">
+            <div class="row">
+              <div class="col-xs-12 my-3" *ngFor="let subItem of getSubItems(item)">
+                <div class="dish-content row">
+                  <h5 class="dish-title mb-2">{{ subItem.name }}</h5>
+                  <div class="dish-price mb-2">
+                    <p>€{{ subItem.price.toFixed(2) }} pro Person</p>
+                  </div>
+                  <div class="image mb-2">
+                    <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
+                      <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
+                    </div>
+                    <div *ngIf="getMediaURl(subItem.imageUrl) === ''" class="no-image">
+                      <p class="text-secondary fw-bold">Kein Bild hochgeladen</p>
+                    </div>
+                  </div>
+                  <div class="select-quantity mb-2">
+                    <span class="quantity">Menge</span>
+                    <input type="number" min="0" value="1"
+                      (input)="calculateSubtotal(subItem._id, subItem.price, $event, item.item._id);" class="input-styling" />
+                  </div>
+                  <div class="subtotal mb-2">
+                    {{ getSubTotal(subItem._id) }}
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items mt-4">
+                <p class="text-warning text-center">Keine Unterpunkte für diesen Artikel verfügbar.</p>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!isScreenLarge" class="see-btn" (click)="toggleItemBtn(item.item._id)">
+            {{ itemBtn[item.item._id] ? 'Weniger anzeigen' : 'Mehr anzeigen' }}
+          </div>
+        </div>
+        <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
+          <p class="text-warning text-center">
+            Keine Artikel für dieses Paket verfügbar.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn d-flex justify-content-start align-items-center">
+    <button type="submit" class="btn btn-primary mt-2" style="width:30%" (click)="updateItem()">
+      Absenden
+    </button>
+  </div>
+</div>

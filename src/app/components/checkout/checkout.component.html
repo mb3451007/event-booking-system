@@ -1,0 +1,70 @@
+<form [formGroup]="infoForm" class="checkout-page d-flex flex-column justify-content-center align-items-center gap-5">
+  <div class="details">
+    <div class="d-flex flex-column gap-4">
+      <div class="name-input gap-4">
+        <div class="first-name d-flex flex-column">
+          <label for="first-name">Vorname</label>
+          <input formControlName="firstName" placeholder="Vorname eingeben" type="text" id="first-name" name="first-name" />
+          <div class="error" *ngIf="infoForm.get('firstName')?.invalid && infoForm.get('firstName')?.touched">
+            <span *ngIf="infoForm.get('firstName')?.errors?.['required']">Vorname ist erforderlich.</span>
+          </div>
+        </div>
+        <div class="last-name d-flex flex-column">
+          <label for="last-name">Nachname</label>
+          <input formControlName="lastName" placeholder="Nachname eingeben" type="text" id="last-name" name="last-name" />
+          <div class="error" *ngIf="infoForm.get('lastName')?.invalid && infoForm.get('lastName')?.touched">
+            <span *ngIf="infoForm.get('lastName')?.errors?.['required']">Nachname ist erforderlich.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="email-phone-input gap-4">
+        <div class="email d-flex flex-column">
+          <label for="email">E-Mail</label>
+          <input formControlName="email" placeholder="E-Mail eingeben" type="email" id="email" name="email" />
+          <div class="error" *ngIf="infoForm.get('email')?.invalid && infoForm.get('email')?.touched">
+            <span *ngIf="infoForm.get('email')?.errors?.['required']">E-Mail ist erforderlich.</span>
+            <span *ngIf="infoForm.get('email')?.errors?.['email']">Ungültiges E-Mail-Format.</span>
+          </div>
+        </div>
+        <div class="phone d-flex flex-column">
+          <label for="phone">Telefon</label>
+          <input formControlName="phone" placeholder="z. B. +49 123-456-7890" type="tel" id="phone" name="phone" />
+          <div class="error" *ngIf="infoForm.get('phone')?.invalid && infoForm.get('phone')?.touched">
+            <span *ngIf="infoForm.get('phone')?.errors?.['required']">Telefonnummer ist erforderlich.</span>
+            <span *ngIf="infoForm.get('phone')?.errors?.['pattern']">Ungültiges Telefonnummernformat.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stripe d-flex flex-column gap-4">
+    <div class="stripe-form d-flex flex-column gap-3">
+      <label for="card-element">Kreditkarteninformationen</label>
+      <div id="card-element" class="stripe-input"></div>
+      <div id="card-errors" role="alert" class="stripe-error"></div>
+    </div>
+  </div>
+
+  <div class="order-summary d-flex flex-column justify-content-between gap-4">
+    <div class="title">
+      Bestellübersicht
+    </div>
+    <div class="name-price d-flex justify-content-between gap-2">
+      <div class="order-name">
+        {{packageName}}
+      </div>
+      <div class="order-price">
+        €{{advance}}
+      </div>
+    </div>
+    <button
+      type="button"
+      (click)="onCheckout()"
+      [ngClass]="{ 'disabled': infoForm.invalid || !cardValid, 'checkout-btn': infoForm.valid && cardValid }"
+    >
+      Zur Kasse
+    </button>
+  </div>
+</form>
