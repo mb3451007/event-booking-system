@@ -20,6 +20,7 @@
               <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Pakete</th>
+                <th scope="col">Max Quantity</th>
                 <th scope="col">Aktion</th>
               </tr>
             </thead>
@@ -28,6 +29,7 @@
               <tr *ngFor="let item of ListItems">
                 <td>{{ item.name }}</td>
                 <td>{{ item.package.name }}</td>
+                <td>{{ item.max_quantity ?? 1 }}</td>
                 <td class="slot">
                   <div class="tooltip-container d-none">
                     <img
@@ -153,6 +155,23 @@
             </select>
           </div>
 
+          <div class="form-group inputFormGroup">
+            <label for="name">Max Quantity</label>
+            <input
+              type="number"
+              id="name"
+              formControlName="max_quantity"
+              class="form-control"
+              name="name"
+              min="1"
+              required
+            />
+          </div>
+          <div *ngIf="addItemForm.get('max_quantity')?.errors?.['min'] && addItemForm.get('max_quantity')?.touched" class="text-danger">
+            Max Quantity must be at least 1
+          </div>
+          
+
           <div class="form-group form-check inputFormGroup">
             <input
               type="checkbox"
@@ -207,6 +226,7 @@
               id="name"
               formControlName="name"
               class="form-control"
+              [disabled]="nameDisabled"
               required
             />
           </div>
@@ -225,7 +245,22 @@
               </option>
             </select>
           </div>
-
+          <div class="form-group inputFormGroup">
+            <label for="name">Max Quantity</label>
+            <input
+              type="number"
+              id="name"
+              formControlName="max_quantity"
+              class="form-control"
+              name="name"
+              min="1"
+              required
+            />
+          </div>
+          <div *ngIf="addItemForm.get('max_quantity')?.errors?.['min'] && addItemForm.get('max_quantity')?.touched" class="text-danger">
+            Max Quantity must be at least 1
+          </div>
+          
           <div class="form-group form-check inputFormGroup">
             <input
               type="checkbox"
@@ -240,6 +275,7 @@
             type="submit"
             class="btn btn-primary"
             [disabled]="!addItemForm.dirty"
+            [disabled]="!addItemForm.valid"
             (click)="updateItem()"
           >
             Absenden

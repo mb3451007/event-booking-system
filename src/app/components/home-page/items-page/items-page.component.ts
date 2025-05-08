@@ -58,8 +58,8 @@ export class ItemsPageComponent implements OnInit {
   pListItems: any = [];
   showModal: boolean = false;
   showUpdateModal: boolean = false;
-  formData = { name: '', price: '', isAvailable: true };
-  items: Array<{ name: string; price: string; isAvailable: boolean }> = [];
+  formData = { name: '', price: '', isAvailable: true ,max_quantity:1};
+  items: Array<{ name: string; price: string; isAvailable: boolean ; max_quantity:number }> = [];
   itemId: any;
   addItemForm: FormGroup;
   filterItemArray: any[] = [];
@@ -81,6 +81,16 @@ export class ItemsPageComponent implements OnInit {
   isLoading: boolean = false;
   showConfirmation: boolean = false;
   itemToDelete: number | null = null;
+
+  readonly lockedNames = [
+    'Zusätzlich buchbare Optionen',
+    'Textilien',
+    'Mobiliar',
+    'Tischdekoration',
+    'Raumdekoration & Outdoordekoration',
+    'Gedeckter Tisch & co'
+  ];
+  nameDisabled: boolean = false;
   constructor(
     private itemService: ItemsService,
     private packageService: PackagesService,
@@ -91,6 +101,7 @@ export class ItemsPageComponent implements OnInit {
   ) {
     this.addItemForm = this.fb.group({
       name: ['', Validators.required],
+      max_quantity: [1, [Validators.required, Validators.min(1)]],
       isAvailable: [true],
       packages: ['', Validators.required],
     });
@@ -107,6 +118,7 @@ export class ItemsPageComponent implements OnInit {
     this.item = {
       name: this.addItemForm.value.name,
       isAvailable: this.addItemForm.value.isAvailable,
+      max_quantity: this.addItemForm.value.max_quantity,
       packages: this.addItemForm.value.selectedPackage,
     };
   }
@@ -126,9 +138,20 @@ export class ItemsPageComponent implements OnInit {
     this.addItemForm.patchValue({
       name: this.item.name,
       isAvailable: this.item.isAvailable,
+      max_quantity: item.max_quantity,
       packages: this.item.package.id,
     });
     this.showUpdateModal = true;
+
+  
+    // Disable name field conditionally
+    this.nameDisabled = this.lockedNames.includes(item.name);
+  
+    if (this.nameDisabled) {
+      this.addItemForm.get('name')?.disable();
+    } else {
+      this.addItemForm.get('name')?.enable();
+    }
   }
 
   closeModal() {
@@ -150,6 +173,7 @@ export class ItemsPageComponent implements OnInit {
       const newItem = {
         name: this.addItemForm.value.name,
         isAvailable: this.addItemForm.value.isAvailable,
+        max_quantity: this.addItemForm.value.max_quantity,
         packages: this.addItemForm.value.packages,
       };
       console.log('formVal', this.addItemForm.value);
@@ -239,6 +263,7 @@ export class ItemsPageComponent implements OnInit {
       const updatedItem = {
         name: this.addItemForm.value.name,
         isAvailable: this.addItemForm.value.isAvailable,
+        max_quantity: this.addItemForm.value.max_quantity,
         packages: this.addItemForm.value.packages, // Ensure this is an ID
       };
       console.log(updatedItem, '----------------updated item----');
