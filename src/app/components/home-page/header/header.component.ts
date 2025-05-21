@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { SettingService } from 'src/app/setting.service';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +18,7 @@ export class HeaderComponent {
   selectedCreate: string | null = null;
   isDropdownCreateOpen: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private service:SettingService) {}
   toggleDropdown(event: MouseEvent) {
     this.isDropdownOpen = !this.isDropdownOpen;
     event.stopPropagation();
@@ -57,4 +58,9 @@ export class HeaderComponent {
     }
     return null; // No link for other options
   } 
+
+
+toggleSideBar(){
+this.service.toggleSideBar()
+}
 }

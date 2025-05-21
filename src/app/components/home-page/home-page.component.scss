@@ -13,9 +13,11 @@ html, body {
     position: fixed;
     top: 0;
     bottom: 0;
-    // left: 0;
+    left: 0;
     // overflow-y: auto;
     background-color: #f8f9fa;
+    // z-index: 1000 !important;
+    height: 100vh !important;
   }
   
   .main-content {
@@ -41,10 +43,64 @@ html, body {
     flex-grow: 1;
     padding: 20px;
     // overflow-y: auto; 
+    // z-index: 1 !important;
   }
   
   .footer {
     background-color: #f1f1f1;
     padding: 10px;
   }
-  
+@media screen and (max-width: 768px) {
+  .main-content {
+    margin-left: 0%;
+     margin: 0 !important;
+    padding: 0 !important;
+  }
+  .sidebar{
+    height: auto !important;
+    position: relative !important;
+  }
+  #sidebar{
+    height: 50vh !important;
+  }
+}
+/* styles.css */
+.sidebar {
+  transition: all 0.3s ease-in-out;
+  height: 100vh !important;
+}
+.sidebar-hidden {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-container {
+  overflow: hidden;
+}
+
+.sidebar-inner {
+  height: 100%;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  background-color: #f1f1f1;
+}
+
+
+.transition-width {
+  transition: all 0.3s ease;
+}
+
+.col-0 {
+  width: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+
+.container-fluid,
+.main-content,
+.content-wrapper,
+.router-section {
+  max-width: 100vw !important;     /* Prevents overflowing the viewport */
+  overflow-x: hidden !important;   /* Ensures horizontal overflow is clipped */
+}
