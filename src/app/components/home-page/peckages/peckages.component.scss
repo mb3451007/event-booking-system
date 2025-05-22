@@ -372,3 +372,11 @@
 .ellipsis:hover {
   cursor: default;
 }
+
+
+@media screen and (max-width:768px) {
+  .modal-dialog{
+    margin-top: 60px !important;
+  }
+}
+

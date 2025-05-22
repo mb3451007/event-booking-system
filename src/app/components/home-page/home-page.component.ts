@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SettingService } from 'src/app/setting.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
@@ -15,7 +16,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 })
 export class HomePageComponent implements OnInit {
 sidebarVisible: boolean = true;
-constructor(private service:SettingService){}
+constructor(private service:SettingService,private router:Router){}
 ngOnInit(): void {
    this.service.sideBarDisplay$.subscribe(value =>{
     this.sidebarVisible=value;
@@ -24,5 +25,13 @@ ngOnInit(): void {
 isMobileScreen(): boolean {
   return window.innerWidth <= 768;
 }
+logout() {
+  localStorage.clear();
+  this.router.navigate(['/login']);
+}
+isMobileSidebarVisible = false;
 
+toggleSideBar() {
+  this.isMobileSidebarVisible = !this.isMobileSidebarVisible;
+}
 }

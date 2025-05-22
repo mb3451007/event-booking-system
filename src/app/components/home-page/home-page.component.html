@@ -1,39 +1,39 @@
 <div class="container-fluid">
-  <div class="row flex-column flex-md-row">
-    
-    <!-- Header (Always on top) -->
-    <div class="col-12">
-      <app-header></app-header>
-    </div>
-
+  <div class="row">
     <!-- Sidebar -->
-    <div 
-      [ngClass]="{
-        'col-12': isMobileScreen(),
-        'col-md-2': !isMobileScreen() && sidebarVisible,
-        'd-none': !sidebarVisible && !isMobileScreen()
-      }"
-      class="sidebar transition-width order-2 order-md-1"
-      id="sidebar"
-    >
-      <div class="sidebar-inner" [@slideInOut]="sidebarVisible ? 'in' : 'out'">
+    <div class="sidebar col-lg-2 col-md-2 transition-width hide-on-mobile" id="sidebar">
+
+      <div class="sidebar-inner" >
         <app-side-bar></app-side-bar>
       </div>
     </div>
+    <!-- mobile sidebar -->
+    <div [ngClass]="{'col-lg-2 col-md-2': sidebarVisible, 'col-0': !sidebarVisible}" class="sidebar transition-width sidebar-mobile p-0 show-on-mobile" id="sidebar">
 
-    <!-- Main Content -->
+      <div class="sidebar-inner" [@slideInOut]="sidebarVisible ? 'in' : 'out'">
+        <app-side-bar-mobile></app-side-bar-mobile>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
     <div
       [ngClass]="{
-        'col-12': isMobileScreen(),
-        'col-md-10': sidebarVisible && !isMobileScreen(),
-        'col-md-12': !sidebarVisible && !isMobileScreen()
+        'col-lg-10 col-md-10': sidebarVisible,
+        'col-lg-12 col-md-12': !sidebarVisible
       }"
-      class="main-content order-3 order-md-2"
+      class="main-content"
     >
       <div class="content-wrapper">
+        <!-- Header -->
+        <div class="header">
+          <app-header></app-header>
+        </div>
+
         <div class="router-section">
           <router-outlet></router-outlet>
         </div>
+
+        <!-- Footer -->
         <div class="footer">
           <app-footer></app-footer>
         </div>

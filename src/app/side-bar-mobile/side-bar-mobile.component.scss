@@ -2,7 +2,7 @@
   &__sideBarContainer {
     height: 100%;
     background: white;
-    width: 105%;
+    width: 112%;
   }
 
   &__sideBarLogo {
@@ -83,6 +83,20 @@
   &__sideBarContainer {
     height:100vh !important;
     width: 100% !important;
+    padding-top: 60px;
   }
 }
+}
+.closeBtn{
+  width: 35px ;
+  cursor: pointer;
+}
+.closeBtn {
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.closeBtn:hover {
+  transform: rotate(90deg);
+  opacity: 0.8;
 }

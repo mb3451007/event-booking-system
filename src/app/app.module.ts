@@ -17,7 +17,7 @@ import { AddBookingComponent } from './components/add-booking/add-booking.compon
 import { ViewBookingComponent } from './components/view-booking/view-booking.component';
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [AppComponent, PackagesComponent, ItemsModalComponent, PreCheckoutComponent, CheckoutComponent, UpdateBookingComponent, AddBookingComponent, ViewBookingComponent],
+  declarations: [AppComponent, PackagesComponent, ItemsModalComponent, PreCheckoutComponent, CheckoutComponent, UpdateBookingComponent, AddBookingComponent, ViewBookingComponent,],
   imports: [
     CommonModule,
     BrowserModule,

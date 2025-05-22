@@ -2,7 +2,7 @@
   <div class="container-fluid d-flex justify-content-between align-items-center">
     
     <!-- Hamburger Icon (Only visible on small screens) -->
-    <div class="mobile-hamburger d-lg-none d-none">
+    <div class="mobile-hamburger d-lg-none">
       <span class="navbar-toggler-icon" (click)="toggleSideBar()"></span>
     </div>
 
@@ -30,7 +30,7 @@
     </div>
 
     <!-- Admin Dropdown -->
-    <div class="dropdown-container" (click)="toggleDropdown($event)">
+    <div class="dropdown-container hide-on-mobile" (click)="toggleDropdown($event)">
       <div class="dropdown-header nav-link dropdown-toggle">
         <img src="assets/img_avatar.png" alt="Avatar" class="main-header__avatar d-none">
         Admin

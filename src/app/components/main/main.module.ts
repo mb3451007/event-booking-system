@@ -29,6 +29,7 @@ import { SettingComponent } from '../home-page/setting/setting.component';
 import { QuillModule } from 'ngx-quill';
 import { LogInComponent } from '../log-in/log-in.component';
 import { ForgetPasswordComponent } from '../home-page/forget-password/forget-password.component';
+import { SideBarMobileComponent } from 'src/app/side-bar-mobile/side-bar-mobile.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { ForgetPasswordComponent } from '../home-page/forget-password/forget-pas
     HeaderComponent,
     FooterComponent,
     SideBarComponent,
+    SideBarMobileComponent,
     DashBoardComponent,
     ButtonPageComponent,
     AlertPageComponent,

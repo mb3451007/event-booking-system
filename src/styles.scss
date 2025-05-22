@@ -29,3 +29,7 @@ body { margin: 0; font-family: 'Montserrat';
 .toast-warning {
   background-color: #ffc107 !important; 
 }
+
+.modal-dialog{
+  z-index: 10000000 !important;
+}

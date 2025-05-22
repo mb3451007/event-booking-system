@@ -1,0 +1,62 @@
+<div class="container-fluid main-sideBar__sideBarContainer">
+    <div class="row">
+        <div class="d-flex justify-content-end">
+            <img src="assets/close-sm-svgrepo-com.svg" alt="" class="close closeBtn" (click)="toggleSideBar()"
+                aria-label="Schließen" />
+        </div>
+        <div class="col-12 main-sideBar__sideBarLogo d-flex justify-content-center align-items-center">
+            <img src="assets/logo2.png">
+        </div>
+        <div class="col-12 main-sideBar__menu">
+
+            <ul class="main-sideBar__menuBar">
+                <li [routerLink]="'dashboard'" [routerLinkActive]="'active'" class="d-none">
+                    <span>Dashboard</span>
+                </li>
+                <li [routerLink]="'alert'" [routerLinkActive]="'active'" class="d-none">
+                    <span>Benachrichtigungen</span>
+                </li>
+                <li [routerLink]="'bookings'" [routerLinkActive]="'active'" (click)="toggleSideBar()">
+                    <span>Buchungen</span>
+                </li>
+                <li [routerLink]="'customers'" [routerLinkActive]="'active'" (click)="toggleSideBar()">
+                    <span>Kunden</span>
+                </li>
+                <li [routerLink]="'packages'" [routerLinkActive]="'active'" (click)="toggleSideBar()">
+                    <span>Pakete</span>
+                </li>
+                <li [routerLink]="'button'" [routerLinkActive]="'active'" class="d-none">
+                    <span>Button</span>
+                </li>
+                <li [routerLink]="'Transactions'" [routerLinkActive]="'active'" class="d-none">
+                    <span>Transaktionen</span>
+                </li>
+                <li [routerLink]="'items'" [routerLinkActive]="'active'" (click)="toggleSideBar()">
+                    <span>Artikel</span>
+                </li>
+                <li [routerLink]="'subitems'" [routerLinkActive]="'active'" (click)="toggleSideBar()">
+                    <span>Unterartikel</span>
+                </li>
+                <li [routerLink]="'settings'" [routerLinkActive]="'active'" class="d-none">
+                    <span>Einstellungen</span>
+                </li>
+                <li [routerLink]="'resetPassword'" [routerLinkActive]="'active'" (click)="toggleSideBar()">
+                    <span>Passwort zurücksetzen</span>
+                </li>
+
+                <li [routerLink]="'#'" [routerLinkActive]="'active'" class="d-none">
+                    <span>Nav</span>
+                </li>
+                <li [routerLink]="'#'" [routerLinkActive]="'active'" class="d-none">
+                    <span>Tabelle</span>
+                </li>
+                <li [routerLink]="'#'" [routerLinkActive]="'active'" class="d-none">
+                    <span>Über</span>
+                </li>
+                <li [routerLink]="'#'" [routerLinkActive]="'active'" (click)="logout()">
+                    <span>LogOut</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

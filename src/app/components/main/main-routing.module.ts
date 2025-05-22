@@ -20,6 +20,7 @@ import { ForgetPasswordComponent } from '../home-page/forget-password/forget-pas
 import { UpdateBookingComponent } from '../update-booking/update-booking.component';
 import { AddBookingComponent } from '../add-booking/add-booking.component';
 import { ViewBookingComponent } from '../view-booking/view-booking.component';
+import { SideBarMobileComponent } from 'src/app/side-bar-mobile/side-bar-mobile.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashBoardComponent },
 
       { path: 'sidebar', component: SideBarComponent },
+      { path: 'sidebar-mobile', component: SideBarMobileComponent },
       { path: 'header', component: HeaderComponent },
       { path: 'footer', component: FooterComponent },
       { path: 'button', component: ButtonPageComponent },
