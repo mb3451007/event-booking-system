@@ -73,7 +73,7 @@
             [disabled]="currentPage === 1">
             <i class="fa-solid fa-backward"></i>
           </button>
-        
+
           <ng-container *ngFor="let page of pagination">
             <button
               class="page-btn"
@@ -86,7 +86,7 @@
               <span class="ellipsis">...</span>
             </ng-template>
           </ng-container>
-        
+
           <button
             class="page-btn"
             (click)="onPageChange(currentPage + 1)"
@@ -170,7 +170,7 @@
           <div *ngIf="addItemForm.get('max_quantity')?.errors?.['min'] && addItemForm.get('max_quantity')?.touched" class="text-danger">
             Max Quantity must be at least 1
           </div>
-          
+
 
           <div class="form-group form-check inputFormGroup">
             <input
@@ -260,7 +260,7 @@
           <div *ngIf="addItemForm.get('max_quantity')?.errors?.['min'] && addItemForm.get('max_quantity')?.touched" class="text-danger">
             Max Quantity must be at least 1
           </div>
-          
+
           <div class="form-group form-check inputFormGroup">
             <input
               type="checkbox"

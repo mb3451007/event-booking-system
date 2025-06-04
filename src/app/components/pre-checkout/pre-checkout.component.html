@@ -1,58 +1,129 @@
+ <div class="loader" *ngIf="isLoading">
+    <div class="spinner"></div>
+</div>
+
+
 <div class="pre-checkout-page p-4">
 
   <div class="main-body">
     <div class="item-cards d-flex flex-column align-items-center justify-content-center gap-3">
-      <div class="items" *ngFor="let item of packageDetails.itemsWithSubItems">
-        <div class="menu-block p-4">
-          <h3 class="menu-title">{{ item.item?.name }}</h3>
-          <div class="menu-content">
+      <ng-container *ngFor="let item of packageDetails.itemsWithSubItems" >
+        <div class="items" *ngIf="additionalBookableOptions.includes(item.item?.name)">
+          <div class="menu-block p-4">
+            <h3 class="menu-title">{{ item.item?.name }}</h3>
+            <div class="menu-content">
 
-            <div class="row">
-              <div class="col-xs-12 my-3" *ngFor="let subItem of getSubItems(item)">
-                <div class="dish-content row">
-                  <h5 class="dish-title mb-2">{{ subItem.name }}</h5>
-                  <div class="dish-price mb-2">
-                    <p>€{{ subItem.price.toFixed(2) }} pro Person</p>
-                  </div>
-                  <div class="image mb-2">
-                    <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
-                      <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
+              <div class="row">
+                <div class="col-xs-12 my-3" *ngFor="let subItem of getSubItems(item)">
+                  <div class="dish-content row">
+
+
+                    <h5 class="mb-2" [ngClass]="checkedState[subItem._id] ? 'dish-title' : 'dish-title-unchecked'">
+                      <div class="form-chec mb-2">
+                        <input type="checkbox" class="form-check-input"
+                          (click)="changeCheckedState(subItem._id, $event)" />
+                      </div>
+                      <span>{{ subItem.name }}</span>
+                    </h5>
+                    <div class="mb-2" [ngClass]="checkedState[subItem._id] ? 'dish-price' : 'dish-price-unchecked'">
+                      <p>€{{ subItem.price.toFixed(2) }} pro Person</p>
                     </div>
-                    <div *ngIf="getMediaURl(subItem.imageUrl) === ''" class="no-image">
-                      <p class="text-secondary fw-bold">Kein Bild hochgeladen</p>
+                    <div class="mb-2" [ngClass]="checkedState[subItem._id] ? 'image' : 'image-unchecked'">
+                      <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
+                        <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
+                      </div>
+                      <div *ngIf="getMediaURl(subItem.imageUrl) === ''" class="no-image">
+                        <p class="text-secondary fw-bold">Kein Bild hochgeladen</p>
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="select-quantity mb-2">
-                    <span class="quantity">Menge</span>
-                    <input type="number" min="0" value="1"
-                      (input)="calculateSubtotal(subItem._id, subItem.price, $event, subItem);" class="input-styling" />
-                  </div>
+                    <div class="select-quantity mb-2">
+                      <span [ngClass]="checkedState[subItem._id] ? 'quantity' : 'quantity-unchecked'">Menge</span>
+                      <input type="number" min="0" [value]="checkedState[subItem._id] ? 1 : 0"
+                        (input)="calculateSubtotal(subItem._id, subItem.price, $event, subItem);" class="input-styling"
+                        [ngClass]="checkedState[subItem._id] ? 'select-quantity-inp' : 'select-quantity-inp-unchecked'"
+                        [disabled]="!checkedState[subItem._id]" />
+                    </div>
 
-                  <div class="subtotal mb-2">
-                    {{ getSubTotal(subItem._id) }}
+                    <div class="mb-2" [ngClass]="checkedState[subItem._id] ? 'subtotal' : 'subtotal-unchecked'">
+                      {{ getSubTotal(subItem._id) }}
+                    </div>
                   </div>
                 </div>
+                <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items mt-4">
+                  <p class="text-warning text-center">Keine Unterpunkte für diesen Artikel verfügbar.</p>
+                </div>
               </div>
-              <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items mt-4">
-                <p class="text-warning text-center">Keine Unterpunkte für diesen Artikel verfügbar.</p>
-              </div>
+
             </div>
 
+            <div *ngIf="!isScreenLarge" class="see-btn" (click)="toggleItemBtn(item.item._id)">
+              {{ itemBtn[item.item._id] ? 'Weniger anzeigen' : 'Mehr anzeigen' }}
+            </div>
           </div>
 
-          <div *ngIf="!isScreenLarge" class="see-btn" (click)="toggleItemBtn(item.item._id)">
-            {{ itemBtn[item.item._id] ? 'Weniger anzeigen' : 'Mehr anzeigen' }}
+          <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
+            <p class="text-warning text-center">
+              Keine Artikel für dieses Paket verfügbar.
+            </p>
           </div>
         </div>
+      </ng-container>
 
-        <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
-          <p class="text-warning text-center">
-            Keine Artikel für dieses Paket verfügbar.
-          </p>
+      <ng-container *ngFor="let item of packageDetails.itemsWithSubItems" >
+        <div class="items" *ngIf="!additionalBookableOptions.includes(item.item?.name)">
+          <div class="menu-block p-4">
+            <h3 class="menu-title">{{ item.item?.name }}</h3>
+
+            <div *ngIf="isMaxReached(item)" class="text-danger mt-2">
+             You cant select more than {{ item.item?.max_quantity }} items from this list.
+              <span class="text-primary cursor-pointer text-decoration-underline" data-bs-toggle="modal" data-bs-target="#contactModal">
+                Contact us for more options.
+              </span>
+            </div>
+
+            <div class="menu-content">
+
+              <div class="row">
+                <div class="col-xs-12 my-3" *ngFor="let subItem of getSubItems(item)">
+                  <div class="dish-content-menu-items row">
+
+
+                    <h5 class="mb-2" [ngClass]="checkedState[subItem._id] ? 'dish-title' : 'dish-title-unchecked'">
+                      <div class="form-chec mb-2">
+                        <input type="checkbox" class="form-check-input"
+                          (click)="changeCheckedState(subItem._id, $event)"  [ngStyle]="{
+                            'pointer-events': !checkedState[subItem._id] && (isMaxReached(item)) ? 'none' : 'auto',
+                          }" />
+                      </div>
+                      <span>{{ subItem.name }}</span>
+                    </h5>
+                  </div>
+                </div>
+                <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items mt-4">
+                  <p class="text-warning text-center">Keine Unterpunkte für diesen Artikel verfügbar.</p>
+                </div>
+              </div>
+
+            </div>
+
+            <div *ngIf="!isScreenLarge" class="see-btn" (click)="toggleItemBtn(item.item._id)">
+              {{ itemBtn[item.item._id] ? 'Weniger anzeigen' : 'Mehr anzeigen' }}
+            </div>
+          </div>
+
+          <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
+            <p class="text-warning text-center">
+              Keine Artikel für dieses Paket verfügbar.
+            </p>
+          </div>
         </div>
-      </div>
+      </ng-container>
+
     </div>
+
+
+
 
     <div class="total-cont menu-block">
 
@@ -62,7 +133,7 @@
       </h1>
       <div class="prices d-flex flex-column justify-content-center gap-4">
 
-        <form [formGroup]="timingsForm" class="d-flex flex-column justify-content-center gap-2">
+        <!-- <form [formGroup]="timingsForm" class="d-flex flex-column justify-content-center gap-2">
           <div class="form-group inputFormGroup d-flex justify-content-between gap-2">
             <label for="name" class="text-secondary fw-bold">Von Datum</label>
             <input type="date" id="name" formControlName="fromDate" class="form-control input-styling-timing"
@@ -118,12 +189,24 @@
 
             </div>
           </ng-template>
-        </form>
+        </form> -->
 
         <div class="upper-sec d-flex flex-column justify-content-center gap-4">
+
+          <div class="fromDate d-flex justify-content-between gap-2">
+            <div class="title text-secondary fw-bold">Aus</div>
+            <span class="date">{{ fromDate | date: 'yyyy-MM-dd hh:mm a' }}</span>
+          </div>
+
+          <div class="toDate d-flex justify-content-between gap-2">
+            <div class="title text-secondary fw-bold">Zu</div>
+            <span class="date">{{ toDate | date: 'yyyy-MM-dd hh:mm a' }}</span>
+          </div>
+
           <div class="persons d-flex justify-content-between gap-2">
             <label for="persons" class="text-secondary fw-bold">Anzahl der Personen:</label>
-            <input name="person" type="number" min="1" value="1" (input)="calculatePersonsSubtotal($event)"
+            <input #personInput name="person" type="number" [min]="packageDetails.package?.minPersons"
+            [max]="packageDetails.package?.maxPersons" [value]="packageDetails.package?.minPersons" (input)="calculatePersonsSubtotal($event,false)" (blur)="calculatePersonsSubtotal($event, true)"
               class="input-styling" />
           </div>
           <div class="perPersonSubTotal d-flex justify-content-between gap-2">
@@ -149,13 +232,54 @@
         <div *ngIf="errorMsg" class="error-message">
           Bitte wählen Sie ein verfügbares Zeitfenster zur Buchung aus!
         </div>
-        <div (click)="preCheckoutPage()" [ngClass]="{
+        <!-- <div (click)="preCheckoutPage()" [ngClass]="{
           'continue-btn': isSlotValid,
           'invalid-btn': !isSlotValid
         }">
+          Zur Kasse
+        </div> -->
+        <div (click)="preCheckoutPage()" class="continue-btn">
           Zur Kasse
         </div>
       </div>
     </div>
   </div>
 </div>
+
+
+
+<!-- Modal -->
+<form [formGroup]="contactForm" (ngSubmit)="sendEmail()">
+  <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="contactModalLabel">Contact Admin</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="emailTitle" class="form-label">Title</label>
+            <input type="text" id="emailTitle" class="form-control" formControlName="title">
+          </div>
+          <div class="mb-3">
+            <label for="emailSubject" class="form-label">Subject</label>
+            <input type="text" id="emailSubject" class="form-control" formControlName="subject">
+          </div>
+          <div class="mb-3">
+            <label for="emailDesc" class="form-label">Description</label>
+            <textarea id="emailDesc" rows="4" class="form-control" formControlName="description"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" [disabled]="contactForm.invalid">Send</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</form>

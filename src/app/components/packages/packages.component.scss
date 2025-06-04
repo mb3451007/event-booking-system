@@ -1,102 +1,46 @@
-// .packages{
-//   display: grid;
-//     width: 100%;
-//     grid-template-columns: 20% 20% 20% 20%;
-//     gap: 2rem;
-//     justify-content: space-evenly;
-//     align-items: start;
-//     margin: 5rem 0rem ;
+:host {
+  display: block;
+  min-height: 100vh;
+  padding: 1rem 3rem;
+  background: #cdc4ab  ;
+  // background-image: url('/assets/flower-bg8.jpg');
+  // background-size: cover;
+  // background-position: center;
+  height: 100vh; /* or any height you need */
+  width: 100%;
+}
 
-//     @media (max-width:1050px){
-//       grid-template-columns: 28% 28% 28%;
-//     }
-
-//     @media (max-width:750px){
-//       grid-template-columns: 43% 43%;
-//     }
-
-//     @media (max-width:550px){
-//       grid-template-columns: 90%;
-//     }
-// }
-
-// .package{
-//   flex-grow: 1;
-//   background-color: #F9F9F9;
-//   border: 1px solid #CCCCCC;
-//   padding: 3.5rem 1.75rem;
-//   border-radius: 1rem;
-//   gap: 4rem;
-// }
-
-// .package-name{
-//   font-weight: 500;
-//   font-size: 1.25rem;
-
-//   @media (max-width:550px){
-//     font-size: 1rem;
-//   }
-// }
-
-// .euro{
-//   font-size: 1.75rem;
-
-//   @media (max-width:550px){
-//     font-size: 1.5rem;
-//   }
-// }
-
-// .number{
-//   font-weight: 600;
-//   font-size: 3rem;
-
-//   @media (max-width:550px){
-//     font-size: 2.5rem;
-//   }
-// }
-
-// .continue-btn{
+// :host {
+//   position: relative;
+//   display: block;
+//   min-height: 100vh;
+//   padding: 1rem 3rem;
+//   background-image: url('/assets/flower-bg5.jpg');
+//   background-size: cover;
+//   background-position: center;
+//   height: 100vh;
 //   width: 100%;
-//   border-radius: 0.5rem;
-//   border: 2px solid black;
-//   padding: 1rem;
-//   text-align: center;
-//   cursor: pointer;
-//   font-size: 1rem;
-//   font-weight: 500;
-//   transition: all 0.3s ease;
+//   z-index: 0;
+//   overflow: hidden;
 // }
 
-// .continue-btn:hover{
-//   background-color: rgb(235, 231, 231);
-// }
-// .loader{
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   position: fixed;
+// /* Add a grayscale overlay */
+// :host::before {
+//   content: '';
+//   position: absolute;
 //   top: 0;
 //   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   background-color: rgba(0, 0, 0, 0.5);
-//   z-index: 999;
-// }
-// .spinner{
-//   width: 50px;
-//   height: 50px;
-//   border: 5px solid #f3f3f3;
-//   border-top: 5px solid #3498db;
-//   border-radius: 50%;
-//   animation: spin 1s linear infinite
+//   right: 0;
+//   bottom: 0;
+//   background: inherit; /* Inherit the background image */
+//   filter: grayscale(50%);
+//   z-index: -1;
 // }
 
-// @keyframes spin{
-//   0% {transform: rotate(0deg);}
-//   100% {transform: rotate(180deg);}
-// }
 
-/* Base Styling */
+
+
+
 .packages {
   display: grid;
   width: 100%;
@@ -104,7 +48,7 @@
   gap: 2rem;
   justify-content: space-evenly;
   align-items: start;
-  margin: 5rem 0;
+  margin: 4rem 1rem;
 
   @media (max-width: 1050px) {
     grid-template-columns: 28% 28% 28%;
@@ -124,11 +68,31 @@
   border: 1px solid #cccccc;
   padding: 2.5rem 1.5rem;
   border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
   gap: 2rem;
   transition: all 0.3s ease;
   height: 18rem;
+  position: relative;
 }
+
+.bg-image {
+  position: absolute;
+  border-radius: 1rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/card-bg.webp'); /* Replace with your image path */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.7; /* Low opacity */
+  z-index: 0;
+}
+
+.package > * {
+  z-index: 1;
+}
+
 
 .package:hover {
   transform: translateY(-5px);
@@ -166,8 +130,6 @@
 .continue-btn {
   width: 100%;
   border-radius: 0.5rem;
-  // border: 2px solid #3498db;
-  // background-color: #3498db;
   background-color: #242A33;
   padding: 1rem;
   text-align: center;
@@ -180,10 +142,7 @@
 }
 
 .continue-btn:hover {
-  // background-color: #2980b9;
   background-color: #171b20;
-
-  // border-color: #2980b9;
 }
 
 .loader {
@@ -239,4 +198,73 @@
     font-size: 0.9rem;
     padding: 0.75rem;
   }
+}
+
+.input-styling-timing {
+  width: 50%;
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #f5f5f5;
+}
+
+.input-styling-timing:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background-color: #ffffff;
+}
+
+
+.all-booked-msg, .fully-booked-days, .error-message{
+  color: red;
+  font-weight: 500;
+    font-size: 1rem;
+}
+
+.available-slots, .all-available{
+  color: green;
+  font-weight: 500;
+    font-size: 1rem;
+}
+
+
+.btn-disabled{
+  pointer-events: none;
+  background-color: #677181;
+  width: 100%;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+
+.loader{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+.spinner{
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite
+}
+
+@keyframes spin{
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(180deg);}
 }

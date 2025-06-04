@@ -1,9 +1,13 @@
-<div class="loader" *ngIf="isLoading">
-  <div class="spinner"></div>
+ <div class="loader" *ngIf="isLoading">
+    <div class="spinner"></div>
 </div>
 
-<div *ngIf="!isLoading" class="packages">
+
+<div  class="packages">
   <div *ngFor="let package of packages" class="package d-flex flex-column justify-content-between">
+
+    <div class="bg-image"></div>
+
     <div class="package-name">
       {{ package.name }}
     </div>
@@ -19,45 +23,76 @@
   </div>
 </div>
 
-<!-- <app-items-modal #itemsModal [packageDetails]="packageId"></app-items-modal> -->
-
-<!-- 
-<div
-  *ngFor="let package of packages"
-  style="
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 12px 0;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  "
->
-  <div
-    style="font-size: 18px; font-weight: bold; margin-bottom: 8px; color: #333"
-  >
-    Paketname: {{ package.name }}
+<ng-template #dateModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Select Date</h4>
+    <!-- <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button> -->
   </div>
-  <div style="font-size: 16px; margin-bottom: 12px; color: #555">
-    Paketpreis: €{{ package.price }}
-  </div>
-  <button
-    style="
-      padding: 10px 16px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    "
-    (click)="BuyNow(package.price)"
-  >
-    Jetzt kaufen
-  </button>
-</div> 
--->
 
-<!-- 
-<div id="card-element"></div>
-<div id="card-errors" role="alert"></div> 
--->
+  <div class="modal-body">
+    <form [formGroup]="timingsForm" class="d-flex flex-column justify-content-center gap-2">
+      <div class="form-group inputFormGroup d-flex justify-content-between gap-2">
+        <label for="name" class="text-secondary fw-bold">Von Datum</label>
+        <input type="date" id="name" formControlName="fromDate" class="form-control input-styling-timing"
+          (change)="checkAvailability(); checkDateValidation()" name="name" required />
+      </div>
+      <div class="form-group inputFormGroup d-flex justify-content-between gap-2">
+        <label for="name" class="text-secondary fw-bold">Von Uhrzeit</label>
+        <input type="time" id="name" formControlName="fromTime" class="form-control input-styling-timing"
+          (change)="checkAvailability(); checkDateValidation()" [disabled]="!timingsForm.get('fromDate')?.value"
+          name="name" required />
+      </div>
+      <div class="form-group inputFormGroup d-flex justify-content-between gap-2">
+        <label for="name" class="text-secondary fw-bold">Bis Datum</label>
+        <input type="date" id="name" formControlName="toDate" class="form-control input-styling-timing"
+          (change)="checkDateValidation(); checkAvailability()" name="name"
+          [disabled]="!timingsForm.get('fromDate')?.value || !timingsForm.get('fromTime')?.value" required />
+      </div>
+      <div class="form-group inputFormGroup d-flex justify-content-between gap-2">
+        <label for="name" class="text-secondary fw-bold">Bis Uhrzeit</label>
+        <input type="time" id="name" formControlName="toTime" class="form-control input-styling-timing"
+          (change)="checkDateValidation(); checkAvailability()" name="name" [disabled]="
+          !timingsForm.get('fromDate')?.value ||
+          !timingsForm.get('fromTime')?.value ||
+          !timingsForm.get('toDate')?.value
+        " required />
+      </div>
+      <div *ngIf="dateError; else messages" class="text-danger">
+        {{dateSelectionError}}
+      </div>
+
+      <ng-template #messages>
+        <div *ngIf="availabilityMessage || fullyBookedMsg || availableSlotsMsg" [ngClass]="{'text-danger fw-semibold': availabilityMessage.includes('Fully booked'),
+             'text-success fw-semibold': availabilityMessage.includes('Available slots')}"
+          class="availability-message bg-light p-3 rounded shadow-sm fs-6">
+
+          <div class="d-flex flex-column justify-content-center gap-1" *ngIf="fullyBookedMsg.length>0">
+            <strong>Vollständig gebuchte Tage:</strong>
+            <span class="d-block mt-1" class="fully-booked-days">{{ fullyBookedMsg }}</span>
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1" *ngIf="isAvailableSlots">
+            <strong>Verfügbare Zeitfenster:</strong>
+            <span class="d-block mt-1" class="available-slots">{{ availableSlotsMsg }}</span>
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1" *ngIf="allBooked">
+            <span class="d-block mt-1" class="all-booked-msg">{{ availabilityMessage }}</span>
+          </div>
+
+          <div class="d-flex flex-column justify-content-center gap-1" *ngIf="allAvailable && !allBooked">
+            <span class="d-block mt-1" class="all-available">{{ availabilityMessage }}</span>
+          </div>
+
+        </div>
+      </ng-template>
+    </form>
+  </div>
+
+  <div class="modal-footer justify-content-center">
+    <div  [ngClass]="{'btn-disabled': !isSlotValid, 'continue-btn': isSlotValid }" (click)="continue(); modal.dismiss('Cross click')">
+      Weitermachen
+    </div>
+  </div>
+</ng-template>
+

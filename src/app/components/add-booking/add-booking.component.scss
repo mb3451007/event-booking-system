@@ -541,6 +541,14 @@ font-family: 'Lato', sans-serif;
   }
 }
 
+.dish-content-menu-items {
+  padding: 15px 0;
+  border-bottom: 1px solid #eaeaea;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 100%;
+}
+
 /* Dish Details */
 .dish-title {
   font-size: 1rem;
@@ -645,7 +653,7 @@ font-family: 'Lato', sans-serif;
   background-color: #242A33;
   padding: 1rem;
   text-align: center;
-  // pointer-events: none;
+  pointer-events: none;
   opacity: 0.7;
   font-size: 1rem;
   font-weight: 600;
@@ -658,18 +666,54 @@ font-family: 'Lato', sans-serif;
   background-color: #171b20;
 }
 
+.dish-title-unchecked{
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #a0a4ab;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.dish-price-unchecked p {
+  font-size: 1.1rem;
+  color: #a8d5aa;
+}
+
+.image-unchecked{
+  filter: grayscale(100%);
+  opacity: 0.4;
+}
+
+.quantity-unchecked{
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.select-quantity-inp-unchecked{
+  color: #b3b3b3;
+}
+
+
+.subtotal-unchecked{
+  color: #a8d5aa;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
 /* Responsive */
 @media (max-width: 1480px) {
-  .dish-content {
-    // flex-direction: column;
-    // align-items: flex-start;
-  }
-
   .dish-title,
+  .dish-title-unchecked,
   .dish-price,
+  .dish-price-unchecked,
   .image,
+  .image-unchecked
   .select-quantity,
-  .subtotal {
+  .subtotal,
+  .subtotal-unchecked {
     text-align: left;
     margin-top: 10px;
   }
@@ -759,4 +803,32 @@ font-family: 'Lato', sans-serif;
   color: green;
   font-weight: 500;
     font-size: 1rem;
+}
+
+
+
+.loader{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+.spinner{
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite
+}
+
+@keyframes spin{
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(180deg);}
 }

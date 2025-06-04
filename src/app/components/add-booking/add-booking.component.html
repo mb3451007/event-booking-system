@@ -1,3 +1,6 @@
+ <div class="loader" *ngIf="isLoading">
+    <div class="spinner"></div>
+</div>
 <div>
   <div>
     <div class="modal-content">
@@ -105,7 +108,9 @@
         <div class="upper-sec d-flex flex-column justify-content-center gap-4">
           <div class="persons d-flex justify-content-between gap-2">
             <label for="persons" class="text-secondary fw-bold">Anzahl der Personen:</label>
-            <input name="person" type="number" min="1" value="1" (input)="calculatePersonsSubtotal($event)" class="input-styling" />
+            <input #personInput name="person" type="number" [min]="packageDetails.package?.minPersons"
+            [max]="packageDetails.package?.maxPersons" [value]="packageDetails.package?.minPersons" (input)="calculatePersonsSubtotal($event,false)" (blur)="calculatePersonsSubtotal($event, true)"
+              class="input-styling" />
           </div>
 
           <div class="perPersonSubTotal d-flex justify-content-between gap-2">
@@ -133,45 +138,126 @@
       </div>
     </div>
 
-    <div *ngIf="packageDetails" class="item-cards d-flex flex-column align-items-center justify-content-center gap-3">
-      <div class="items" *ngFor="let item of packageDetails.itemsWithSubItems">
-        <div class="menu-block p-4">
-          <h3 class="menu-title">{{ item.item?.name }}</h3>
-          <div class="menu-content">
-            <div class="row">
-              <div class="col-xs-12 my-3" *ngFor="let subItem of getSubItems(item)">
-                <div class="dish-content row">
-                  <h5 class="dish-title mb-2">{{ subItem.name }}</h5>
+    <div class="item-cards d-flex flex-column align-items-center justify-content-center gap-3">
+      <ng-container *ngFor="let item of packageDetails.itemsWithSubItems" >
+        <div class="items" *ngIf="additionalBookableOptions.includes(item.item?.name)">
+          <div class="menu-block p-4">
+            <h3 class="menu-title">{{ item.item?.name }}</h3>
+            <div class="menu-content">
 
-                  <div class="dish-price mb-2">
-                    <p>€{{ subItem.price.toFixed(2) }} pro Person</p>
-                  </div>
+              <div class="row">
+                <div class="col-xs-12 my-3" *ngFor="let subItem of getSubItems(item)">
+                  <div class="dish-content row">
 
-                  <div class="image mb-2">
-                    <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
-                      <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
+
+                    <h5 class="mb-2" [ngClass]="checkedState[subItem._id] ? 'dish-title' : 'dish-title-unchecked'">
+                      <div class="form-chec mb-2">
+                        <input type="checkbox" class="form-check-input"
+                          (click)="changeCheckedState(subItem._id, $event)" />
+                      </div>
+                      <span>{{ subItem.name }}</span>
+                    </h5>
+                    <div class="mb-2" [ngClass]="checkedState[subItem._id] ? 'dish-price' : 'dish-price-unchecked'">
+                      <p>€{{ subItem.price.toFixed(2) }} pro Person</p>
                     </div>
-                    <div *ngIf="getMediaURl(subItem.imageUrl) === ''" class="no-image">
-                      <p class="text-secondary fw-bold">Kein Bild hochgeladen</p>
+                    <div class="mb-2" [ngClass]="checkedState[subItem._id] ? 'image' : 'image-unchecked'">
+                      <div *ngIf="getMediaURl(subItem.imageUrl) !== ''" class="dish-image">
+                        <img [src]="getMediaURl(subItem.imageUrl)" width="100px" height="80px" />
+                      </div>
+                      <div *ngIf="getMediaURl(subItem.imageUrl) === ''" class="no-image">
+                        <p class="text-secondary fw-bold">Kein Bild hochgeladen</p>
+                      </div>
+                    </div>
+
+                    <div class="select-quantity mb-2">
+                      <span [ngClass]="checkedState[subItem._id] ? 'quantity' : 'quantity-unchecked'">Menge</span>
+                      <input type="number" min="0" [value]="checkedState[subItem._id] ? 1 : 0"
+                        (input)="calculateSubtotal(subItem._id, subItem.price, $event, subItem);" class="input-styling"
+                        [ngClass]="checkedState[subItem._id] ? 'select-quantity-inp' : 'select-quantity-inp-unchecked'"
+                        [disabled]="!checkedState[subItem._id]" />
+                    </div>
+
+                    <div class="mb-2" [ngClass]="checkedState[subItem._id] ? 'subtotal' : 'subtotal-unchecked'">
+                      {{ getSubTotal(subItem._id) }}
                     </div>
                   </div>
+                </div>
+                <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items mt-4">
+                  <p class="text-warning text-center">Keine Unterpunkte für diesen Artikel verfügbar.</p>
+                </div>
+              </div>
 
-                  <div class="select-quantity mb-2">
-                    <span class="quantity">Menge</span>
-                    <input type="number" min="0" value="1"
-                      (input)="calculateSubtotal(subItem._id, subItem.price, $event, item.item._id);"
-                      class="input-styling" />
-                  </div>
+            </div>
 
-                  <div class="subtotal mb-2">
-                    {{ getSubTotal(subItem._id) }}
+            <div *ngIf="!isScreenLarge" class="see-btn" (click)="toggleItemBtn(item.item._id)">
+              {{ itemBtn[item.item._id] ? 'Weniger anzeigen' : 'Mehr anzeigen' }}
+            </div>
+          </div>
+
+          <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
+            <p class="text-warning text-center">
+              Keine Artikel für dieses Paket verfügbar.
+            </p>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngFor="let item of packageDetails.itemsWithSubItems" >
+        <div class="items" *ngIf="!additionalBookableOptions.includes(item.item?.name)">
+          <div class="menu-block p-4">
+            <h3 class="menu-title">{{ item.item?.name }}</h3>
+            <div *ngIf="isMaxReached(item)" class="text-danger mt-2">
+              You cant select more than {{ item.item?.max_quantity }} items from this list.
+             </div>
+
+            <div class="menu-content">
+
+              <div class="row">
+                <div class="col-xs-12 my-3" *ngFor="let subItem of getSubItems(item)">
+                  <div class="dish-content-menu-items row">
+
+
+                    <h5 class="mb-2" [ngClass]="checkedState[subItem._id] ? 'dish-title' : 'dish-title-unchecked'">
+                      <div class="form-chec mb-2">
+                        <input type="checkbox" class="form-check-input"
+                          (click)="changeCheckedState(subItem._id, $event)"  [ngStyle]="{
+                            'pointer-events': !checkedState[subItem._id] && (isMaxReached(item)) ? 'none' : 'auto',
+                          }" />
+                      </div>
+                      <span>{{ subItem.name }}</span>
+                    </h5>
                   </div>
-                </div> <!-- .dish-content -->
-              </div> <!-- *ngFor subItem -->
-            </div> <!-- .row -->
-          </div> <!-- .menu-content -->
-        </div> <!-- .menu-block -->
-      </div> <!-- *ngFor item -->
-    </div> <!-- .item-cards -->
-  </div> <!-- .d-flex -->
-</div> <!-- outermost div -->
+                </div>
+                <div *ngIf="item.subItems?.length === 0" class="col-xs-12 no-sub-items mt-4">
+                  <p class="text-warning text-center">Keine Unterpunkte für diesen Artikel verfügbar.</p>
+                </div>
+              </div>
+
+            </div>
+
+            <div *ngIf="!isScreenLarge" class="see-btn" (click)="toggleItemBtn(item.item._id)">
+              {{ itemBtn[item.item._id] ? 'Weniger anzeigen' : 'Mehr anzeigen' }}
+            </div>
+          </div>
+
+          <div *ngIf="packageDetails.itemsWithSubItems?.length == 0" class="col-xs-12 no-sub-items">
+            <p class="text-warning text-center">
+              Keine Artikel für dieses Paket verfügbar.
+            </p>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+
+
+  </div>
+
+  <div (click)="addItem()" [ngClass]="{
+    'continue-btn': isSlotValid,
+    'invalid-btn': !isSlotValid
+  }">
+    Zur Kasse
+  </div>
+
+</div>

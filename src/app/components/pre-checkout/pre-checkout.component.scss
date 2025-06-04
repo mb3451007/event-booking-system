@@ -84,11 +84,13 @@
   grid-template-columns: 33% 16% 25% 16% 8%;
 
   @media (max-width:1500px){
-    grid-template-columns: 28% 12% 25% 20% 15%;
+    // grid-template-columns: 28% 12% 25% 20% 15%;
+    grid-template-columns: 32% 12% 25% 20% 11%;
   }
 
   @media (max-width:1160px){
-    grid-template-columns: 34% 14% 22% 18% 12%;
+    // grid-template-columns: 38% 14% 22% 18% 8%;
+    grid-template-columns: 100%;
   }
 
   @media (max-width:1050px){
@@ -107,6 +109,13 @@
     grid-template-columns: 100%;
   }
 }
+.dish-content-menu-items {
+  padding: 15px 0;
+  border-bottom: 1px solid #eaeaea;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 100%;
+}
 
 /* Dish Details */
 .dish-title {
@@ -114,6 +123,21 @@
   font-weight: 600;
   text-transform: uppercase;
   color: #242a33;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.dish-title-unchecked{
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #a0a4ab;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
 }
 
 .dish-price p {
@@ -121,14 +145,29 @@
   color: #4caf50;
 }
 
+.dish-price-unchecked p {
+  font-size: 1.1rem;
+  color: #a8d5aa;
+}
+
 .dish-image img {
   border-radius: 6px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.image-unchecked{
+  filter: grayscale(100%);
+  opacity: 0.4;
+}
+
 .no-image, .quantity {
   font-size: 0.9rem;
   color: #888;
+}
+
+.quantity-unchecked{
+  font-size: 0.9rem;
+  color: #ccc;
 }
 
 .select-quantity{
@@ -139,6 +178,10 @@
 
   @media (max-width:1120px) and (min-width:1050px) {
     gap: 0.5rem;
+  }
+
+  @media (max-width:770px) {
+    justify-content: flex-start;
   }
 }
 
@@ -162,6 +205,15 @@
   background-color: #f5f5f5;
 }
 
+.select-quantity-inp{
+  color: black;
+}
+
+.select-quantity-inp-unchecked{
+  color: #b3b3b3;
+}
+
+
 .input-styling-timing {
   width: 50%;
   padding: 3px;
@@ -177,10 +229,16 @@
   background-color: #ffffff;
 }
 
-.subtotal, .price {
+.subtotal, .price, .date {
   font-size: 1.1rem;
   font-weight: 600;
   color: #4caf50;
+}
+
+.subtotal-unchecked{
+  color: #a8d5aa;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .no-sub-items {
@@ -227,16 +285,15 @@
 
 /* Responsive */
 @media (max-width: 1480px) {
-  .dish-content {
-    // flex-direction: column;
-    // align-items: flex-start;
-  }
-
   .dish-title,
+  .dish-title-unchecked,
   .dish-price,
+  .dish-price-unchecked,
   .image,
+  .image-unchecked
   .select-quantity,
-  .subtotal {
+  .subtotal,
+  .subtotal-unchecked {
     text-align: left;
     margin-top: 10px;
   }
@@ -330,4 +387,35 @@
   color: green;
   font-weight: 500;
     font-size: 1rem;
+}
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
+
+.loader{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+.spinner{
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite
+}
+
+@keyframes spin{
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(180deg);}
 }

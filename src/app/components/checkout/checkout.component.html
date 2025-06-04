@@ -1,3 +1,9 @@
+
+<!-- <app-loader [isLoading]="isLoading"></app-loader> -->
+ <div class="loader" *ngIf="isLoading">
+    <div class="spinner"></div>
+</div>
+
 <form [formGroup]="infoForm" class="checkout-page d-flex flex-column justify-content-center align-items-center gap-5">
   <div class="details">
     <div class="d-flex flex-column gap-4">

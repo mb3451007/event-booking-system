@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -17,7 +17,7 @@ export class AddBookingComponent {
   dateSelectionError = ''
   packageDetails!: any;
   selectedPackage: any
-  subItemTotals: { [subItemId: number]: number } = {};
+  subItemTotals: { [subItemId: string]: number } = {};
   itemBtn: { [itemId: string]: boolean } = {}
   perPersonSubt = 0
   subItems!: any
@@ -72,6 +72,10 @@ export class AddBookingComponent {
   fromDate = ''
   isSlotValid = false
   errorMsg = ''
+  contactForm!: FormGroup;
+  checkedState: { [subItemId: string]: boolean } = {};
+  additionalBookableOptions = ['Zusätzlich buchbare Optionen', 'Mobiliar', 'Textilien', 'Tischdekoration', 'Raumdekoration & Outdoordekoration', 'Gedeckter Tisch & co']
+  @ViewChild('personInput') personInputRef!: ElementRef;
 
   constructor(
     private packageService: PackagesService,
@@ -94,10 +98,16 @@ export class AddBookingComponent {
       toTime: ['', Validators.required],
       status: ['', Validators.required]
     });
+
+    this.contactForm = this.fb.group({
+      title: ['', Validators.required],
+      subject: ['', Validators.required],
+      description: ['', Validators.required]
+    });
   }
 
   ngOnInit(): void {
-
+this.isLoading=true
 
     this.packageService.getAllPeckage().subscribe({
       next: (response: any) => {
@@ -139,7 +149,7 @@ export class AddBookingComponent {
     this.packageDetails.itemsWithSubItems?.forEach((item: any) => {
       item.subItems?.forEach((subItem: any) => {
         this.subItemTotals[subItem._id] = subItem.price;
-        // console.log('price', console.log(subItem))
+        this.checkedState[subItem._id] = false
       });
     });
 
@@ -157,6 +167,8 @@ export class AddBookingComponent {
 
     console.log('itemBtn', this.itemBtn);
     console.log('subItemTotals', this.subItemTotals);
+    console.log('checkedState', this.checkedState);
+
   }
 
   initializeFieldListeners(): void {
@@ -401,32 +413,6 @@ export class AddBookingComponent {
   }
 
 
-  // checkDateValidation() {
-  //   const fromDate = this.addItemForm.get('fromDate')?.value;
-  //   const fromTime = this.addItemForm.get('fromTime')?.value;
-  //   const toDate = this.addItemForm.get('toDate')?.value;
-  //   const toTime = this.addItemForm.get('toTime')?.value;
-
-  //   if (fromDate && fromTime && toDate && toTime) {
-  //     // Combine the date and time into a single Date object for comparison
-  //     const combinedFromDateTime = new Date(`${fromDate}T${fromTime}`);
-  //     const combinedToDateTime = new Date(`${toDate}T${toTime}`);
-
-  //     // Compare the two datetime objects
-  //     if (combinedFromDateTime >= combinedToDateTime) {
-  //       // To Date must be greater than From Date
-  //       this.dateError = true;
-  //       this.validationError = true;
-  //     } else {
-  //       this.dateError = false;
-  //       this.validationError = false;
-  //     }
-  //   } else {
-  //     // Reset errors if any field is missing
-  //     this.dateError = false;
-  //     this.validationError = false;
-  //   }
-  // }
 
 
   getAllItems() {
@@ -485,7 +471,9 @@ export class AddBookingComponent {
       (response: any) => {
         if (response && response.data) {
           this.packageDetails = response.data;
-          this.perPersonSubt += this.packageDetails.package.price
+          // this.perPersonSubt += this.packageDetails.package.price
+          this.perPersonSubt += this.packageDetails.package.price * this.packageDetails.package.minPersons
+
           this.total += this.perPersonSubt
           this.initializeQuantities()
           this.isLoading = false;
@@ -559,22 +547,55 @@ export class AddBookingComponent {
     console.log('Updated subItems:', this.subItems);
   }
 
-  calculatePersonsSubtotal(event: Event) {
+  // calculatePersonsSubtotal(event: Event) {
+  //   const inputElement = event.target as HTMLInputElement;
+
+  //   // Extract and parse the value, defaulting to 0 if invalid
+  //   const quantity = parseInt(inputElement.value, 10) || 0;
+  //   this.noOfPersons = quantity
+
+  //   this.perPersonSubt = quantity * this.packageDetails.package.price
+
+  //   console.log('perPersonSubt', this.perPersonSubt, this.total)
+
+  // }
+
+  calculatePersonsSubtotal(event: Event, enforceLimits: boolean = false) {
     const inputElement = event.target as HTMLInputElement;
+    let quantity = parseInt(inputElement.value, 10) || 0;
+    console.log('quantity', quantity)
+    const min = this.packageDetails.package?.minPersons || 1;
+    const max = this.packageDetails.package?.maxPersons || 1;
 
-    // Extract and parse the value, defaulting to 0 if invalid
-    const quantity = parseInt(inputElement.value, 10) || 0;
-    this.noOfPersons = quantity
+    if (enforceLimits) {
+      // Only enforce limits on blur
+      if (quantity < min) quantity = min;
+      if (quantity > max) quantity = max;
+      inputElement.value = quantity.toString(); // reflect corrected value
+    }
 
-    this.perPersonSubt = quantity * this.packageDetails.package.price
-
-    console.log('perPersonSubt', this.perPersonSubt, this.total)
-
+    this.noOfPersons = quantity;
+    this.perPersonSubt = quantity * this.packageDetails.package.price;
   }
 
-  getPersonsSubtotal() {
+  // getPersonsSubtotal() {
 
-    return this.perPersonSubt.toFixed(2);
+  //   return this.perPersonSubt.toFixed(2);
+  // }
+
+   getPersonsSubtotal() {
+    if (!this.personInputRef) return '';
+
+    const value = parseInt(this.personInputRef.nativeElement.value, 10);
+    const min = this.packageDetails.package?.minPersons || 1;
+    const max = this.packageDetails.package?.maxPersons || 1;
+
+    if (value >= min && value <= max) {
+      console.log('this.perPersonSubt.toFixed(2)',this.perPersonSubt.toFixed(2))
+      return this.perPersonSubt.toFixed(2);
+    }
+
+    return '';
   }
 
   getSubTotal(id: any) {
@@ -588,9 +609,26 @@ export class AddBookingComponent {
     return `€${formattedSubtotal}`;
   }
 
+  // getSubItemsTotal(): string {
+  //   // Calculate the sum of all the subItemTotals in the subItemTotals object
+  //   this.subItemTotal = Object.values(this.subItemTotals).reduce((sum, subtotal) => sum + (subtotal || 0), 0);
+
+  //   // Format the total to 2 decimal places
+  //   const formattedTotal = this.subItemTotal.toFixed(2);
+
+  //   // Return the total formatted as a currency
+  //   return `€${formattedTotal}`;
+  // }
   getSubItemsTotal(): string {
-    // Calculate the sum of all the subItemTotals in the subItemTotals object
-    this.subItemTotal = Object.values(this.subItemTotals).reduce((sum, subtotal) => sum + (subtotal || 0), 0);
+    // Calculate the sum of all the subItemTotals where checkedState is true
+    // console.log('subItemTotals', this.subItemTotals);
+    this.subItemTotal = Object.keys(this.subItemTotals).reduce((sum, subItemId) => {
+      if (this.checkedState[subItemId]) {
+        const subtotal = this.subItemTotals[subItemId] || 0;
+        sum += subtotal;
+      }
+      return sum;
+    }, 0);
 
     // Format the total to 2 decimal places
     const formattedTotal = this.subItemTotal.toFixed(2);
@@ -599,11 +637,25 @@ export class AddBookingComponent {
     return `€${formattedTotal}`;
   }
 
-  getTotal() {
-    this.total = this.subItemTotal
-    this.total += this.perPersonSubt
+  // getTotal() {
+  //   this.total = this.subItemTotal
+  //   this.total += this.perPersonSubt
 
-    return this.total.toFixed(2)
+  //   return this.total.toFixed(2)
+  // }
+
+  getTotal() {
+    const value = parseInt(this.personInputRef?.nativeElement?.value, 10) || 0;
+    const min = this.packageDetails.package?.minPersons || 1;
+    const max = this.packageDetails.package?.maxPersons || 1;
+
+    this.total = this.subItemTotal;
+
+    if (value >= min && value <= max) {
+      this.total += this.perPersonSubt;
+    }
+
+    return this.total.toFixed(2);
   }
 
   getAdvance() {
@@ -633,6 +685,14 @@ export class AddBookingComponent {
     this.isLoading = true;
 
     if (this.addItemForm.valid) {
+      const finalItems: { [x: string]: any; quantity: number; }[] = []
+      this.subItems.forEach((sub: {
+        [x: string]: any; quantity: number;
+      }) => {
+        if (sub.quantity !== 0 && this.checkedState[sub['_id']]) {
+          finalItems.push(sub);
+        }
+      });
       const packageName = this.packageDetails?.package?.name || '';
       const newItem = {
         userId: '676ebd9caa6ea87633c515c9',
@@ -647,14 +707,13 @@ export class AddBookingComponent {
         packageId: this.packageDetails?.package?._id,
         noOfPersons: this.noOfPersons,
         totalPrice: this.total.toFixed(2),
-        subItems: this.subItems
+        subItems: finalItems
       };
       console.log('formVal', this.addItemForm.value);
       console.log(newItem, 'jjhjhj');
 
       this.bookingService.addItem(newItem).subscribe({
         next: (response: any) => {
-          this.isLoading = false;
 
           const formatTime = (dateTime: string) => {
             const [date, time] = dateTime.split(' ');
@@ -688,36 +747,58 @@ export class AddBookingComponent {
 
 
           this.emailService.sendEmail(email).subscribe({
-          next: (resp: any) => {
-            console.log(response);
+            next: (resp: any) => {
+              console.log('email sent',response);
 
-          },
-          error: (err) => {
-            console.log(err)
-          }
-        })
+            },
+            error: (err) => {
+              console.log(err)
+            }
+          })
 
+          this.isLoading=false
           this.toastr.success('Item added successfully!');
-        this.getAllItems();
-        this.addItemForm.reset();
-        this.addItemForm.markAsPristine();
-        console.log(response);
-      },
+          this.getAllItems();
+          this.addItemForm.reset();
+          this.addItemForm.markAsPristine();
+          console.log(response);
+          this.isSlotValid=false
+        },
         error: (err) => {
           this.isLoading = false;
           this.toastr.error('Error Adding Item.');
           console.log(err);
         },
       });
-  } else {
-  console.log('invalid')
-  Object.keys(this.addItemForm.controls).forEach((key) => {
-    const controlErrors = this.addItemForm.controls[key].errors;
-    if (controlErrors) {
-      console.log(`Field "${key}" has errors:`, controlErrors);
+    } else {
+      console.log('invalid')
+      Object.keys(this.addItemForm.controls).forEach((key) => {
+        const controlErrors = this.addItemForm.controls[key].errors;
+        if (controlErrors) {
+          console.log(`Field "${key}" has errors:`, controlErrors);
+        }
+      });
+      this.addItemForm.markAllAsTouched();
     }
-  });
-  this.addItemForm.markAllAsTouched();
-}
   }
+
+
+  changeCheckedState(id: any, event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    const isChecked = checkbox.checked;
+
+    this.checkedState[id] = isChecked
+
+
+    console.log('Checkbox for', id, 'is checked:', this.checkedState[id]);
+
+    this.getSubItemsTotal()
+  }
+
+  isMaxReached(item: any): boolean {
+    const subItems = this.getSubItems(item);
+    const checkedCount = subItems.filter(subItem => this.checkedState[subItem._id]).length;
+    return checkedCount >= item.item?.max_quantity;
+  }
+
 }

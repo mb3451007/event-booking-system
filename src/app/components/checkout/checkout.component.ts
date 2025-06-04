@@ -3,9 +3,10 @@ import { Component, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Stripe, StripeElements, StripeCardElement, loadStripe } from '@stripe/stripe-js';
+import { ToastrService } from 'ngx-toastr';
 
 const stripePromise = loadStripe(
-  'pk_test_51N2zfiBHAK3VyaqUHLxCAue1ZffFof5jE4X4lRfxvBqffzikRlcQTxj3Lrb3zbVgkmHSob3i2hidx0aQEP153HTM00rJFnDGJo'
+  'pk_test_Kkgs1LAJBmrCbnnyEJDATR4600m1UIGnsQ'
 );
 
 @Component({
@@ -17,24 +18,26 @@ export class CheckoutComponent {
   stripe!: Stripe | null;
   elements!: StripeElements;
   card!: StripeCardElement;
-  advance= 0;
+  advance = 0;
   packageName: string = '';
   packageId!: any;
   checkoutPrice = 0;
   infoForm!: FormGroup;
   cardValid: boolean = false;
-  noOfPersons!:any
-  totalPrice!:any
-  fromDate!:any
-  toDate!:any
-  subItems!:any
+  noOfPersons!: any
+  totalPrice!: any
+  fromDate!: any
+  toDate!: any
+  subItems!: any
+  isLoading: boolean = false;
+
 
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private ngZone: NgZone
-  ) {}
+    private ngZone: NgZone, private toastr: ToastrService,
+  ) { }
 
   ngOnInit(): void {
     // this.checkoutPrice = parseFloat(this.advance);
@@ -49,14 +52,14 @@ export class CheckoutComponent {
       this.toDate = params['toDate'];
       this.subItems = JSON.parse(params['subItems']);
     });
-    console.log('this.advance',this.advance)
-    console.log('this.packageName',this.packageName)
-    console.log('this.packageId',this.packageId)
-    console.log('this.noOfPersons',this.noOfPersons)
-    console.log('this.totalPrice',this.totalPrice)
-    console.log('this.fromDate',this.fromDate)
-    console.log('this.toDate',this.toDate)
-    console.log('this.subItems',this.subItems)
+    console.log('this.advance', this.advance)
+    console.log('this.packageName', this.packageName)
+    console.log('this.packageId', this.packageId)
+    console.log('this.noOfPersons', this.noOfPersons)
+    console.log('this.totalPrice', this.totalPrice)
+    console.log('this.fromDate', this.fromDate)
+    console.log('this.toDate', this.toDate)
+    console.log('this.subItems', this.subItems)
     // console.log(this.total)
 
     this.initForm();
@@ -81,9 +84,11 @@ export class CheckoutComponent {
       return;
     }
 
+    this.isLoading=true
     this.elements = this.stripe.elements();
     this.card = this.elements.create('card');
     this.card.mount('#card-element');
+    this.isLoading=false
 
     // Listen for card changes and validate
     this.card.on('change', (event) => {
@@ -103,8 +108,9 @@ export class CheckoutComponent {
   async onCheckout(): Promise<void> {
     console.log(this.infoForm.value)
     console.log('card', this.cardValid)
+    this.isLoading=true
 
-    this.http.post('https://a684-154-192-1-94.ngrok-free.app/payment/create-payment-intent', {
+    this.http.post('https://3d2b-154-192-75-18.ngrok-free.app/payment/create-payment-intent', {
       amount: this.advance * 100,
       currency: 'eur',
       userId: '676ebd9caa6ea87633c515c9',
@@ -128,14 +134,29 @@ export class CheckoutComponent {
 
         if (result?.error) {
           console.error('Payment failed:', result.error.message);
-          alert('Payment failed: ' + result.error.message);
+          this.isLoading=false
+          this.toastr.error('Payment failed: ' + result.error.message, '', {
+            timeOut: 7000
+          });
         } else if (result?.paymentIntent?.status === 'succeeded') {
-          alert('Payment successful!');
+          this.isLoading=false
+
+          this.toastr.success('Payment successful!');
         } else {
-          alert('Payment could not be completed.');
+          this.isLoading=false
+
+          this.toastr.error('Payment could not be completed', '', {
+            timeOut: 7000
+          });
+
         }
       },
       error: (error) => {
+          this.isLoading=false
+
+        this.toastr.error('Payment could not be completed', '', {
+            timeOut: 7000
+          });
         console.error('Error creating payment intent:', error);
       }
     });
